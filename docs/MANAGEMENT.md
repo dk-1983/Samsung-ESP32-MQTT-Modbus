@@ -4,6 +4,31 @@
 
 ## Local settings
 
+### Passwords (0.4.4)
+
+`/settings` changes web authentication (`admin`, ports 80 and 8080), local OTA
+and Samsung-Setup access point passwords independently. Each new password needs
+confirmation; blank pairs preserve existing values. New web/OTA passwords accept
+16–64 printable ASCII characters without spaces; AP passwords accept 8–63.
+Existing web passwords of at least eight characters remain valid.
+
+All fields are validated before a single NVS blob is written. Errors leave all
+credentials unchanged. Actual changes restart the board after two seconds;
+unchanged values cause neither a write nor a restart. Credentials survive OTA
+and are never returned by the API. Sign in with the new web password after reboot.
+Future local OTA uploads require the new OTA password; the computer's `secrets.yaml`
+is not updated automatically.
+
+Home Wi-Fi, MQTT and GitHub signature verification are unaffected. Changes are
+blocked during OTA, scheduled restart or pending AC commands. Forgotten-password
+recovery is not implemented; this page requires existing access.
+
+Authenticated `GET /settings/config` returns only `credentials_ready`.
+POST to the same endpoint requires CSRF `token` and matching pairs:
+`web_password`/`web_confirm`, `ota_password`/`ota_confirm`,
+`setup_password`/`setup_confirm`. Empty or omitted pairs preserve credentials.
+Unknown/duplicate fields are rejected. Responses contain only `changed` and `restarting`.
+
 ### System information and restart (0.4.3)
 
 `/about` shows firmware, hostname, IP, Wi-Fi station MAC, uptime, internal RAM,

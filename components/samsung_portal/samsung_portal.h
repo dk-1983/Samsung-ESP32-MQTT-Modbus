@@ -4,6 +4,7 @@
 #include "esphome/components/mqtt/mqtt_client.h"
 #include "esphome/components/samsung_uart/samsung_uart.h"
 #include "settings_model.h"
+#include "credentials_model.h"
 #include <WebServer.h>
 #include "esphome/components/esphome/ota/ota_esphome.h"
 namespace esphome::samsung_portal {
@@ -22,6 +23,7 @@ class Portal:public Component {
  samsung_uart::SamsungClimate *ac_=nullptr;ESPHomeOTAComponent *ota_=nullptr;
  samsung_management::Config config_{};ESPPreferenceObject pref_;
  WebServer web_{80};String password_,token_,initial_ota_,initial_setup_;
+ samsung_credentials::Keys credentials_{};bool credentials_ok_=false;void credentials_web_();
  bool public_release_=false;void credentials_setup_();
  bool storage_ok_=true,mqtt_start_=false,web_started_=false,restart_=false;uint32_t restart_at_=0;
  bool test_auth_();bool post_auth_();void send_page_(const char *page);

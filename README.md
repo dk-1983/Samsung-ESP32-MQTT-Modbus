@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.3
+# Samsung-ESP32-MQTT-Modbus — 0.4.4
 
 [Русский](README_RU.md)
 
@@ -58,3 +58,8 @@ Experimental legacy controls require per-function verification on this model.
 The `/about` page shows firmware, memory, connections and UART freshness.
 Restart requires confirmation and preserves settings. It is rejected during OTA
 or while an AC command is pending.
+
+`/settings` independently changes web, local OTA and Samsung-Setup passwords.
+Blank fields preserve current credentials; new values require confirmation.
+Changes are stored in NVS and applied on restart. Forgotten-password recovery
+is not implemented yet.

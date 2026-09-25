@@ -10,7 +10,7 @@
 #include "MqttPage.h"
 #include "ModbusPage.h"
 namespace esphome::samsung_portal {
-static const char HOME[] PROGMEM=R"HTML(<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4vrs Samsung-ESP32</title>__STYLE__<body>__NAV__<main><h1>Samsung-ESP32</h1><p>Локальное управление кондиционером</p><div class="grid"><a class="card" href="/control">Веб-пульт</a><a class="card" href="/mqtt">Подключение MQTT</a><a class="card" href="/modbus">Modbus RTU / TCP</a><a class="card" href="/updates">Обновления GitHub</a><a class="card" href="/about">О системе и перезагрузка</a></div><p>MQTT и оба транспорта Modbus включаются независимо. Настройки сохраняются после отключения питания.</p></main></body></html>)HTML";
+static const char HOME[] PROGMEM=R"HTML(<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4vrs Samsung-ESP32</title>__STYLE__<body>__NAV__<main><h1>Samsung-ESP32</h1><p>Локальное управление кондиционером</p><div class="grid"><a class="card" href="/control">Веб-пульт</a><a class="card" href="/mqtt">Подключение MQTT</a><a class="card" href="/modbus">Modbus RTU / TCP</a><a class="card" href="/updates">Обновления GitHub</a><a class="card" href="/about">О системе и перезагрузка</a><a class="card" href="/settings">Пароли доступа</a></div><p>MQTT и оба транспорта Modbus включаются независимо. Настройки сохраняются после отключения питания.</p></main></body></html>)HTML";
 bool Portal::test_auth_(){if(web_.authenticate("admin",password_.c_str()))return true;web_.requestAuthentication();return false;}
 bool Portal::post_auth_(){if(!test_auth_())return false;if(web_.arg("token")!=token_){web_.send(403,"text/plain","Invalid token");return false;}if(updates_busy_()||restart_){web_.send(409,"text/plain","Update or restart in progress");return false;}return true;}
 void Portal::send_page_(const char *page){
@@ -80,9 +80,9 @@ void Portal::settings_web_(){
  web_.onNotFound([this](){if(test_auth_())web_.send(404,"text/plain","Not found");});
 }
 void Portal::credentials_setup_(){
- struct Keys{uint32_t magic=0x534b5901;char web[65]{},ota[65]{},setup[64]{};} keys;
+ samsung_credentials::Keys keys;
  ::Preferences store;bool ok=store.begin("samsung-keys",false);
- if(ok&&store.isKey("keys"))ok=store.getBytesLength("keys")==sizeof(keys)&&store.getBytes("keys",&keys,sizeof(keys))==sizeof(keys)&&keys.magic==0x534b5901&&memchr(keys.web,0,sizeof(keys.web))&&memchr(keys.ota,0,sizeof(keys.ota))&&memchr(keys.setup,0,sizeof(keys.setup))&&strlen(keys.web)>=8&&strlen(keys.ota)>=16&&strlen(keys.setup)>=8;
+ if(ok&&store.isKey("keys"))ok=store.getBytesLength("keys")==sizeof(keys)&&store.getBytes("keys",&keys,sizeof(keys))==sizeof(keys)&&samsung_credentials::valid(keys);
  else if(ok&&!public_release_){
   strlcpy(keys.web,password_.c_str(),sizeof(keys.web));strlcpy(keys.ota,initial_ota_.c_str(),sizeof(keys.ota));strlcpy(keys.setup,initial_setup_.c_str(),sizeof(keys.setup));
   ok=store.putBytes("keys",&keys,sizeof(keys))==sizeof(keys);
@@ -92,7 +92,7 @@ void Portal::credentials_setup_(){
   // A public OTA is for an already provisioned controller; never expose fallback credentials.
   char random[65];for(int i=0;i<8;++i)snprintf(random+8*i,9,"%08lx",(unsigned long)esp_random());
   password_=random;ota_->set_auth_password(random);
- }else{password_=keys.web;ota_->set_auth_password(keys.ota);auto *w=wifi::global_wifi_component;auto ap=w->get_ap();ap.set_password(keys.setup);w->set_ap(ap);}
+ }else{credentials_=keys;credentials_ok_=true;password_=keys.web;ota_->set_auth_password(keys.ota);auto *w=wifi::global_wifi_component;auto ap=w->get_ap();ap.set_password(keys.setup);w->set_ap(ap);}
  web_server_base::global_web_server_base->set_auth_password(password_.c_str());
 }
 void Portal::setup(){
@@ -102,7 +102,7 @@ void Portal::setup(){
  credentials_setup_();boot_id_=esp_random();
  char token[33];for(int i=0;i<4;++i)snprintf(token+8*i,9,"%08lx",(unsigned long)esp_random());token_=token;
  apply_mqtt_();ac_->configure_modbus(config_.rtu,config_.tcp,config_.unit,config_.baud);
- settings_web_();system_web_();updates_web_();updates_setup_();
+ settings_web_();credentials_web_();system_web_();updates_web_();updates_setup_();
 }
 void Portal::loop(){
  auto *w=wifi::global_wifi_component;bool connected=w&&w->is_connected();
