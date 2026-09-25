@@ -1,0 +1,11 @@
+secrets.yaml
+.esphome/
+work/
+__pycache__/
+*.bin
+*.elf
+*.log
+
+private/
+*.pem
+reference/

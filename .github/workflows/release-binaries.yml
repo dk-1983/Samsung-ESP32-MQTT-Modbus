@@ -1,0 +1,27 @@
+name: Prepare public OTA artifact
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python tests/run.py
+      - name: Public defaults in a clean checkout
+        run: |
+          test ! -e secrets.yaml
+          cp release.defaults.yaml secrets.yaml
+      - run: esphome -s public_release true compile samsung-s3.yaml
+      - run: python tools/package_release.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: samsung-public-ota
+          path: work/public-release/*
+          if-no-files-found: error

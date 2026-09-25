@@ -1,0 +1,476 @@
+substitutions:
+  public_release: "false"
+  test_update_feed: "false"
+  samsung_tx: GPIO17
+  samsung_rx: GPIO18
+  rs485_tx: GPIO15
+  rs485_rx: GPIO16
+  rs485_de: GPIO21
+
+esphome:
+  name: samsung-s3
+  friendly_name: Samsung UART Prototype
+  build_path: ../work/build
+  project:
+    name: fourvrs.samsung_uart_prototype
+    version: 0.4.1
+
+esp32:
+  board: esp32-s3-devkitc-1
+  flash_size: 16MB
+  framework:
+    type: arduino
+psram:
+  mode: octal
+  speed: 80MHz
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [samsung_uart, samsung_portal]
+
+logger:
+  level: DEBUG
+  hardware_uart: UART0
+  baud_rate: 115200
+
+wifi:
+  reboot_timeout: 0s
+  ap:
+    ssid: Samsung-Setup
+    password: !secret setup_password
+    ap_timeout: 10s
+captive_portal:
+
+web_server:
+  port: 8080
+  version: 3
+  local: true
+  include_internal: true
+  auth:
+    username: admin
+    password: !secret web_password
+
+ota:
+  - platform: esphome
+    id: local_ota
+    password: !secret ota_password
+    on_begin:
+      - lambda: id(management).ota_manual(true);
+    on_error:
+      - lambda: id(management).ota_manual(false);
+
+# MQTT credentials and enable flag are configured in the persistent local portal.
+mqtt:
+  enable_on_boot: false
+  broker: 192.0.2.1
+  reboot_timeout: 0s
+  topic_prefix: samsung-s3
+  discovery: true
+  log_topic: null
+
+uart:
+  - id: samsung_bus
+    tx_pin: ${samsung_tx}
+    rx_pin: ${samsung_rx}
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+    rx_buffer_size: 512
+    rx_full_threshold: 1
+    rx_timeout: 2
+  - id: rs485_bus
+    tx_pin: ${rs485_tx}
+    rx_pin: ${rs485_rx}
+    flow_control_pin: ${rs485_de}
+    baud_rate: 9600
+    data_bits: 8
+    parity: EVEN
+    stop_bits: 1
+    rx_buffer_size: 512
+    rx_full_threshold: 1
+    rx_timeout: 2
+
+climate:
+  - platform: samsung_uart
+    id: ac
+    name: Air conditioner
+    uart_id: samsung_bus
+    rs485_uart_id: rs485_bus
+    modbus_unit: 1
+
+switch:
+  - platform: template
+    id: uart_tx_enabled
+    name: UART transmission experimental
+    entity_category: config
+    restore_mode: ALWAYS_OFF
+    lambda: return id(ac).tx_enabled();
+    turn_on_action:
+      - lambda: id(ac).enable_tx(true);
+    turn_off_action:
+      - lambda: id(ac).enable_tx(false);
+    # TX enable is intentionally local web only, not replayable by retained MQTT.
+    internal: true
+
+  - platform: template
+    name: Extended status polling
+    entity_category: config
+    internal: true
+    restore_mode: ALWAYS_OFF
+    lambda: return id(ac).extended_poll();
+    turn_on_action:
+      - lambda: id(ac).set_extended_poll(true);
+    turn_off_action:
+      - lambda: id(ac).set_extended_poll(false);
+
+button:
+  - platform: template
+    name: Read Samsung status
+    on_press:
+      - lambda: id(ac).query();
+  - platform: template
+    name: Initialize older WiFi UART profile
+    entity_category: config
+    internal: true
+    on_press:
+      - lambda: id(ac).initialize_link();
+
+  - platform: template
+    name: Read extended Samsung status
+    on_press:
+      - lambda: id(ac).query_extended();
+  - platform: template
+    name: Reset filter reminder
+    on_press:
+      - lambda: |-
+          if (!id(ac).submit_extra(4, 0)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+  - platform: template
+    name: Reset usage counters
+    on_press:
+      - lambda: |-
+          if (!id(ac).submit_extra(6, 1)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+
+binary_sensor:
+  - platform: template
+    name: AC feedback fresh
+    lambda: return id(ac).feedback_fresh();
+
+text_sensor:
+  - platform: template
+    name: UART diagnostics
+    lambda: return id(ac).diagnostics();
+    update_interval: 2s
+  - platform: template
+    name: Last RX bytes
+    lambda: return id(ac).last_rx();
+    update_interval: 2s
+  - platform: template
+    name: Last TX frame
+    lambda: return id(ac).last_tx();
+    update_interval: 2s
+  - platform: template
+    name: Command result
+    lambda: return id(ac).command_status();
+    update_interval: 1s
+  - platform: template
+    name: Extended command result
+    lambda: return id(ac).extra_status();
+    update_interval: 1s
+  - platform: template
+    name: Last write reply
+    lambda: return id(ac).last_write_reply();
+    update_interval: 1s
+  - platform: template
+    name: Sleep flag raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(0);
+    update_interval: 2s
+  - platform: template
+    name: Auto clean raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(1);
+    update_interval: 2s
+  - platform: template
+    name: Ionizer SPI raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(2);
+    update_interval: 2s
+  - platform: template
+    name: Energy setting raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(3);
+    update_interval: 2s
+  - platform: template
+    name: Filter reminder reset raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(4);
+    update_interval: 2s
+  - platform: template
+    name: Filter interval raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(5);
+    update_interval: 2s
+  - platform: template
+    name: Usage reset raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(6);
+    update_interval: 2s
+  - platform: template
+    name: Beep raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(7);
+    update_interval: 2s
+  - platform: template
+    name: Error bytes raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(8);
+    update_interval: 2s
+  - platform: template
+    name: Outdoor temperature raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(9);
+    update_interval: 2s
+  - platform: template
+    name: Cooling capability raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(10);
+    update_interval: 2s
+  - platform: template
+    name: Heating capability raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(11);
+    update_interval: 2s
+  - platform: template
+    name: Power raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(12);
+    update_interval: 2s
+  - platform: template
+    name: Energy raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(13);
+    update_interval: 2s
+  - platform: template
+    name: Runtime raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(14);
+    update_interval: 2s
+  - platform: template
+    name: Filter usage raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(15);
+    update_interval: 2s
+  - platform: template
+    name: Main version raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(16);
+    update_interval: 2s
+  - platform: template
+    name: Panel version raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(17);
+    update_interval: 2s
+  - platform: template
+    name: Outdoor version raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(18);
+    update_interval: 2s
+  - platform: template
+    name: Model code raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(19);
+    update_interval: 2s
+  - platform: template
+    name: Option code raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(20);
+    update_interval: 2s
+  - platform: template
+    name: Control enable raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(21);
+    update_interval: 2s
+  - platform: template
+    name: WiFi status raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(22);
+    update_interval: 2s
+  - platform: template
+    name: Internet status raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(23);
+    update_interval: 2s
+  - platform: template
+    name: Legacy airflow direction raw feedback
+    entity_category: diagnostic
+    lambda: return id(ac).extra_state(24);
+    update_interval: 2s
+
+select:
+  - platform: template
+    name: Sleep flag legacy
+    optimistic: false
+    update_interval: 1s
+    options:
+      - "Disabled"
+      - "Enabled"
+    lambda: |-
+        switch (id(ac).extra_value(0)) {
+          case 255: return std::string("Disabled");
+          case 0: return std::string("Enabled");
+          default: return {};
+        }
+    set_action:
+      - lambda: |-
+          int value = -1;
+          if (x == "Disabled") value = 255;
+          if (x == "Enabled") value = 0;
+          if (value < 0 || !id(ac).submit_extra(0, value)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+  - platform: template
+    name: Auto clean
+    optimistic: false
+    update_interval: 1s
+    options:
+      - "Disabled"
+      - "Enabled"
+    lambda: |-
+        switch (id(ac).extra_value(1)) {
+          case 35: return std::string("Disabled");
+          case 34: return std::string("Enabled");
+          default: return {};
+        }
+    set_action:
+      - lambda: |-
+          int value = -1;
+          if (x == "Disabled") value = 35;
+          if (x == "Enabled") value = 34;
+          if (value < 0 || !id(ac).submit_extra(1, value)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+  - platform: template
+    name: Ionizer SPI legacy
+    optimistic: false
+    update_interval: 1s
+    options:
+      - "Disabled"
+      - "Enabled"
+    lambda: |-
+        switch (id(ac).extra_value(2)) {
+          case 240: return std::string("Disabled");
+          case 15: return std::string("Enabled");
+          default: return {};
+        }
+    set_action:
+      - lambda: |-
+          int value = -1;
+          if (x == "Disabled") value = 240;
+          if (x == "Enabled") value = 15;
+          if (value < 0 || !id(ac).submit_extra(2, value)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+  - platform: template
+    name: Filter interval legacy
+    optimistic: false
+    update_interval: 1s
+    options:
+      - "0"
+      - "180"
+      - "300"
+      - "500"
+      - "700"
+    lambda: |-
+        switch (id(ac).extra_value(5)) {
+          case 0: return std::string("0");
+          case 1: return std::string("180");
+          case 2: return std::string("300");
+          case 3: return std::string("500");
+          case 4: return std::string("700");
+          default: return {};
+        }
+    set_action:
+      - lambda: |-
+          int value = -1;
+          if (x == "0") value = 0;
+          if (x == "180") value = 1;
+          if (x == "300") value = 2;
+          if (x == "500") value = 3;
+          if (x == "700") value = 4;
+          if (value < 0 || !id(ac).submit_extra(5, value)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+  - platform: template
+    name: Airflow direction legacy
+    optimistic: false
+    update_interval: 1s
+    options:
+      - "Off"
+      - "Indirect"
+      - "Direct"
+      - "Center"
+      - "Wide"
+      - "Left"
+      - "Right"
+      - "Long"
+      - "Legacy vertical 82"
+      - "Vertical"
+      - "Horizontal"
+      - "Both"
+      - "Fixed"
+    lambda: |-
+        switch (id(ac).extra_value(24)) {
+          case 18: return std::string("Off");
+          case 33: return std::string("Indirect");
+          case 49: return std::string("Direct");
+          case 65: return std::string("Center");
+          case 81: return std::string("Wide");
+          case 97: return std::string("Left");
+          case 113: return std::string("Right");
+          case 129: return std::string("Long");
+          case 130: return std::string("Legacy vertical 82");
+          case 146: return std::string("Vertical");
+          case 162: return std::string("Horizontal");
+          case 178: return std::string("Both");
+          case 194: return std::string("Fixed");
+          default: return {};
+        }
+    set_action:
+      - lambda: |-
+          int value = -1;
+          if (x == "Off") value = 18;
+          if (x == "Indirect") value = 33;
+          if (x == "Direct") value = 49;
+          if (x == "Center") value = 65;
+          if (x == "Wide") value = 81;
+          if (x == "Left") value = 97;
+          if (x == "Right") value = 113;
+          if (x == "Long") value = 129;
+          if (x == "Legacy vertical 82") value = 130;
+          if (x == "Vertical") value = 146;
+          if (x == "Horizontal") value = 162;
+          if (x == "Both") value = 178;
+          if (x == "Fixed") value = 194;
+          if (value < 0 || !id(ac).submit_extra(24, value)) ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+
+number:
+  - platform: template
+    name: Energy setting raw legacy
+    min_value: 0
+    max_value: 255
+    step: 1
+    mode: box
+    optimistic: false
+    update_interval: 1s
+    lambda: |-
+      int value = id(ac).extra_value(3);
+      return value < 0 ? NAN : float(value);
+    set_action:
+      - lambda: |-
+          if (!std::isfinite(x) || x != std::floor(x) || !id(ac).submit_extra(3, uint16_t(x)))
+            ESP_LOGW("samsung_control", "Command rejected: disabled, busy or stale feedback");
+
+samsung_portal:
+  id: management
+  public_release: ${public_release}
+  test_update_feed: ${test_update_feed}
+  climate_id: ac
+  ota_id: local_ota
+  web_password: !secret web_password
+  ota_password: !secret ota_password
+  setup_password: !secret setup_password

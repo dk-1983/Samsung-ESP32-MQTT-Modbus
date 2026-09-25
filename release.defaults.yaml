@@ -1,0 +1,5 @@
+# Public OTA only: existing per-device credentials are loaded from NVS.
+# These values are never accepted as fallback credentials by the public image.
+setup_password: UNUSED-PUBLIC-SETUP
+ota_password: UNUSED-PUBLIC-OTA-PASSWORD
+web_password: UNUSED-PUBLIC-WEB-PASSWORD
