@@ -122,6 +122,7 @@ struct Session {
   }
   void tick(uint32_t now){if(pending&&uint32_t(now-started)>=10000){pending=false;result=3;}}
 };
+inline Command power_command(bool on){Command c;c.mask=1<<POWER;c.value[POWER]=on?1:0;return c;}
 inline Bytes command_payload(const Command &c){
   Bytes p;for(unsigned f=0;f<ROOM;++f)if(c.mask&(1<<f)){
     if(!allowed(Field(f),c.value[f]))return {};p.insert(p.end(),{IDS[f],1,encode(Field(f),c.value[f])});

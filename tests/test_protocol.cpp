@@ -13,6 +13,22 @@ int main(){
   test_extended();
   test_mim();
   test_management();
+  // Dedicated ON/OFF changes power only; no mode/target/fan/swing/preset writes.
+  for(bool on:{false,true}){
+    auto cmd=power_command(on);assert(cmd.mask==(1<<POWER));
+    assert(command_payload(cmd)==Bytes({2,1,uint8_t(on?0x0f:0xf0)}));
+    Session ps;ps.enable(true);ingest(ps,full(),100);auto old=ps.state;
+    assert(ps.accept(cmd,101));assert(ps.pending);
+    ingest(ps,frame(0x1205,1,{2,1,uint8_t(on?0x0f:0xf0)}),102);assert(ps.pending);
+    ingest(ps,frame(0x1203,1,{2,1,uint8_t(on?0x0f:0xf0)}),103);assert(ps.result==2&&!ps.pending);
+    for(unsigned f=TARGET;f<FIELD_COUNT;++f)assert(ps.state.value[f]==old.value[f]);
+  }
+
+  {
+    Session ps;ps.enable(true);ingest(ps,full(),100);assert(ps.accept(power_command(false),101));
+    ingest(ps,frame(0x1205,1,{2,1,0xfc}),102);assert(ps.pending&&ps.state.value[POWER]==1);
+    ingest(ps,full(),103);assert(ps.pending);ps.tick(10101);assert(ps.result==3&&ps.state.value[POWER]==1);
+  }
   auto b=full();assert(valid(b.data(),b.size()));
   // Reference initialization frame, independently pinned from upstream protocol notes.
   const Bytes expected={0xd0,0xc0,2,0x12,0,0,0,0,0,0,0xfe,0x12,4,6,1,1,0x0f,0x74,1,0xf0,0x64,0xe0};

@@ -13,7 +13,7 @@ esphome:
   build_path: ../work/build
   project:
     name: fourvrs.samsung_uart_prototype
-    version: 0.4.5
+    version: 0.4.6
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -127,6 +127,18 @@ switch:
       - lambda: id(ac).set_extended_poll(false);
 
 button:
+  - platform: template
+    id: ac_power_on
+    name: AC power on
+    on_press:
+      - lambda: |-
+          if (!id(ac).set_power(true)) ESP_LOGW("samsung_power", "ON rejected: UART disabled, busy or stale feedback");
+  - platform: template
+    id: ac_power_off
+    name: AC power off
+    on_press:
+      - lambda: |-
+          if (!id(ac).set_power(false)) ESP_LOGW("samsung_power", "OFF rejected: UART disabled, busy or stale feedback");
   - platform: template
     name: Read Samsung status
     on_press:

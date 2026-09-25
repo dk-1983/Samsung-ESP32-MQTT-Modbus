@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.5
+# Samsung-ESP32-MQTT-Modbus — 0.4.6
 
 [Русский](README_RU.md)
 
@@ -13,7 +13,7 @@ Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsu
 
 The portal on port80 links to controls, MQTT, Modbus and GitHub updates.
 The Control link
-opens the existing ESPHome controls on port8080. Both use `admin` and the same password.
+opens `/control`; advanced ESPHome controls remain on port8080. Both use `admin` and the same password.
 
 - Independent persistent checkboxes for MQTT, Modbus RTU and Modbus TCP; all default off.
 - Browser-configured MQTT broker/port/credentials/topic prefix and Home Assistant discovery.
@@ -67,3 +67,7 @@ is not implemented yet.
 `/wifi` shows network, IP, MAC, signal and channel. `/wifi/reset` confirms a
 Wi-Fi-only reset; reprovision through Samsung-Setup at `192.168.4.1:8080`.
 Other settings are preserved.
+
+[Overview, web controls and MQTT power commands (Russian)](docs/CONTROL_RU.md).
+
+Version 0.4.6 is prepared locally and has not been installed on the bench yet.

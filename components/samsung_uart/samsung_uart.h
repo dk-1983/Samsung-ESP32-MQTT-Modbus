@@ -17,6 +17,7 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
   void loop()override;
   void dump_config()override;
   bool submit(const samsung_proto::Command &c)override;
+  bool set_power(bool on){return submit(samsung_proto::power_command(on));}
   bool submit_extra(size_t index,uint16_t value)override;
   void query_extended();
   void set_extended_poll(bool value){extended_poll_=value;}
