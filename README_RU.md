@@ -1,6 +1,7 @@
+![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
+
 > Изменение 0.4.2: UART автоматически включён после каждой загрузки по решению владельца; описанный ниже режим monitor-only при запуске относится к 0.4.1. Сохранение MQTT-настроек перезагружает плату через 2 секунды для применения нового соединения.
 
-![4VRS Server Room — Home Assistant](docs/assets/banner_SRCC.png)
 
 # Samsung-ESP32-MQTT-Modbus — 0.4.2
 
@@ -64,5 +65,3 @@ MQTT Discovery с авторизацией, физический RS485 и при
 
 [Протокол](docs/PROTOCOL.md) · [Стенд](docs/BENCH_RU.md) · [Происхождение кода](THIRD_PARTY.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT_RU.md)
-
-Баннер сохранён в исходном виде для первого релиза; его иллюстрация содержит Haier.

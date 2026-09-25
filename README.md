@@ -1,6 +1,7 @@
+![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
+
 > Version 0.4.2: UART is enabled on every boot at the owner's request; any boot monitor-only behavior described below applies to 0.4.1. Saving MQTT settings reboots after two seconds to recreate the connection.
 
-![4VRS Server Room — Home Assistant](docs/assets/banner_SRCC.png)
 
 # Samsung-ESP32-MQTT-Modbus — 0.4.2
 
@@ -55,5 +56,3 @@ HA discovery with an authenticated broker, physical RS485 and forced rollback st
 Experimental legacy controls require per-function verification on this model.
 
 [Protocol](docs/PROTOCOL.md) · [Attribution](THIRD_PARTY.md)
-
-The supplied banner is preserved unchanged for the first release and depicts Haier.

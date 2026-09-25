@@ -57,6 +57,6 @@ signed download, installation, preserved settings/credentials and trial boot con
 The v0.4.1 prerelease was tested using the signed testing feed. The stable feed is
 not published yet, so normal stable checks currently return HTTP404; this does not
 invalidate the installed firmware. The supplied README banner is
-stored unchanged at `docs/assets/banner_SRCC.png`.
+stored unchanged at `docs/assets/banner-Samsung-ESP32.png`.
 
 [Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).
