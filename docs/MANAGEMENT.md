@@ -4,6 +4,27 @@
 
 ## Local settings
 
+### Wi-Fi (0.4.5)
+
+`/wifi` shows SSID, IP, station MAC, RSSI in dBm, channel and setup AP status.
+`/wifi/reset` separately confirms removal of only the saved network. Know the
+Samsung-Setup password before resetting. Confirmation erases the network record
+and restarts after two seconds; MQTT, Modbus, web/OTA/AP credentials and updater
+settings are preserved. Join Samsung-Setup and open `http://192.168.4.1:8080/`
+to provision a new 2.4 GHz network. Explicit reset does not restore the old network.
+Ordinary connection loss starts the setup AP after roughly ten seconds without
+erasing the saved network.
+
+Authenticated GET `/wifi/status` never returns passwords. GET `/wifi/reset` is
+read-only; POST requires authentication, CSRF `token` and `confirm=RESET_WIFI`.
+It is blocked during OTA, pending restart or an AC command. Only the Wi-Fi NVS
+record is erased, never all preferences. Configuration validation requires
+captive provisioning without compiled station networks; the key layout must be
+rechecked when upgrading the pinned ESPHome version.
+
+Read-only operation and request guards are checked on the live bench. Actual
+network deletion and reprovisioning require a separate test with setup AP access.
+
 ### Passwords (0.4.4)
 
 `/settings` changes web authentication (`admin`, ports 80 and 8080), local OTA

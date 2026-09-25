@@ -29,6 +29,7 @@ class Portal:public Component {
  bool test_auth_();bool post_auth_();void send_page_(const char *page);
  bool save_(const samsung_management::Config &c);void apply_mqtt_();
  uint32_t boot_id_=0;void system_web_();String system_json_();
+ void wifi_web_();String wifi_json_();
  void settings_web_();String config_json_(bool mqtt);
  void updates_setup_();void updates_web_();void updates_loop_();bool updates_busy_();
 };

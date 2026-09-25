@@ -48,7 +48,6 @@ String Portal::config_json_(bool is_mqtt){
 void Portal::settings_web_(){
  web_.on("/",HTTP_GET,[this](){if(test_auth_())send_page_(HOME);});
  web_.on("/control",HTTP_GET,[this](){if(!test_auth_())return;auto *w=wifi::global_wifi_component;char ip[network::IP_ADDRESS_BUFFER_SIZE];(w->is_connected()?w->get_ip_addresses()[0]:w->wifi_soft_ap_ip()).str_to(ip);web_.sendHeader("Location",String("http://")+ip+":8080/");web_.send(302,"text/plain","");});
- web_.on("/wifi",HTTP_GET,[this](){web_.sendHeader("Location","http://192.168.4.1:8080/");web_.send(302,"text/plain","");});
  web_.on("/mqtt",HTTP_GET,[this](){if(test_auth_())send_page_(MQTT_PAGE);});
  web_.on("/modbus",HTTP_GET,[this](){if(test_auth_())send_page_(MODBUS_PAGE);});
  web_.on("/mqtt/config",HTTP_GET,[this](){if(!test_auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",config_json_(true));});
@@ -102,7 +101,7 @@ void Portal::setup(){
  credentials_setup_();boot_id_=esp_random();
  char token[33];for(int i=0;i<4;++i)snprintf(token+8*i,9,"%08lx",(unsigned long)esp_random());token_=token;
  apply_mqtt_();ac_->configure_modbus(config_.rtu,config_.tcp,config_.unit,config_.baud);
- settings_web_();credentials_web_();system_web_();updates_web_();updates_setup_();
+ settings_web_();credentials_web_();wifi_web_();system_web_();updates_web_();updates_setup_();
 }
 void Portal::loop(){
  auto *w=wifi::global_wifi_component;bool connected=w&&w->is_connected();

@@ -1,5 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
+import esphome.final_validate as fv
 from esphome.components import esp32, socket
 from esphome.components.samsung_uart.climate import SamsungClimate
 from esphome.const import CONF_ID
@@ -33,3 +34,14 @@ async def to_code(config):
  for comp in ['esp_http_client','esp_https_ota']:
   esp32.include_builtin_idf_component(comp)
 
+
+# Wi-Fi reset erases the single saved-network key used by this captive-only build.
+def _final_validate(config):
+ full=fv.full_config.get()
+ wifi=full.get('wifi',{})
+ if wifi.get('networks') or wifi.get('ssid'):
+  raise cv.Invalid('Samsung Wi-Fi reset requires captive-portal provisioning; do not compile station networks')
+ if not wifi.get('ap') or 'captive_portal' not in full:
+  raise cv.Invalid('Samsung Wi-Fi reset requires an access point and captive_portal')
+ return config
+FINAL_VALIDATE_SCHEMA=_final_validate

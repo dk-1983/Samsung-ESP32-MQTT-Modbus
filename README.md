@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.4
+# Samsung-ESP32-MQTT-Modbus — 0.4.5
 
 [Русский](README_RU.md)
 
@@ -63,3 +63,7 @@ or while an AC command is pending.
 Blank fields preserve current credentials; new values require confirmation.
 Changes are stored in NVS and applied on restart. Forgotten-password recovery
 is not implemented yet.
+
+`/wifi` shows network, IP, MAC, signal and channel. `/wifi/reset` confirms a
+Wi-Fi-only reset; reprovision through Samsung-Setup at `192.168.4.1:8080`.
+Other settings are preserved.
