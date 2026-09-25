@@ -97,7 +97,8 @@ Unlike the factory adapter's retained cache, unknown/stale feedback returns0B;
 we do not publish a plausible temperature, mode or error code without evidence.
 Per-field read expiry is30s; writes require fresh core and affected fields within10s.
 Communication word50 is derived from UART feedback, not actual NASA tracking.
-Monitor-only starts after every reboot. Exceptions:01 unsupported FC,02 address,
+Firmware0.4.2 enables UART after every reboot at the owner's request; older versions
+started monitor-only. Exceptions:01 unsupported FC,02 address,
 03 value/batch,06 busy or TX disabled,0B unknown/stale/unrepresentable state.
 Repeated writes are commands, not a way to poll. Keep requests at least10ms apart.
 
@@ -111,3 +112,8 @@ constitute live testing of the new map, physical RS485 or an external MIM integr
 MQTT, RTU and TCP now have independent persistent checkboxes on the portal. RTU and TCP
 default off on first0.4.0 startup. Unit/baud are configured in the browser; parity stays Even.
 Diagnostic2479 bits1/2 reflect enabled transports. Register addresses remain unchanged.
+
+## Modbus Devices implementation
+
+[Complete implementation handoff in Russian](MODBUS_DEVICES_HANDOFF_RU.md):
+entity mapping, write confirmation, polling groups, raw catalog and acceptance checks.

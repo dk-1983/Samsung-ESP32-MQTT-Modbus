@@ -26,6 +26,7 @@ opens the existing ESPHome controls on port8080. Both use `admin` and the same p
 
 [Management and releases](docs/MANAGEMENT.md) · [Full device register map](docs/MODBUS.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT.md)
+· [Modbus Devices implementation handoff (Russian)](docs/MODBUS_DEVICES_HANDOFF_RU.md)
 · [UART catalog and test sequence](docs/FUNCTIONS_RU.md)
 
 UART TX/RX GPIO17/18 uses9600 8N1. RS485 TX/RX/DE uses15/16/21.

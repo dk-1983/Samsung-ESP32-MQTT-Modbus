@@ -65,3 +65,4 @@ MQTT Discovery с авторизацией, физический RS485 и при
 
 [Протокол](docs/PROTOCOL.md) · [Стенд](docs/BENCH_RU.md) · [Происхождение кода](THIRD_PARTY.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT_RU.md)
+· [Задание для Modbus Devices: полная карта и правила интеграции](docs/MODBUS_DEVICES_HANDOFF_RU.md)
