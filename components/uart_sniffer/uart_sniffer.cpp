@@ -1,5 +1,6 @@
 #include "uart_sniffer.h"
 #include <esp_system.h>
+#include "esphome/components/wifi/wifi_component.h"
 namespace esphome::uart_sniffer {
 void Sniffer::flush_(unsigned c){auto &p=pending_[c];if(!p.size)return;p.seq=++seq_;p.channel=c;ring_[(seq_-1)%128]=p;p.size=0;}
 String Sniffer::capture_(){
@@ -16,12 +17,14 @@ void Sniffer::setup(){
  boot_=esp_random();
  web_.on("/",HTTP_GET,[this](){if(!auth_())return;web_.send(200,"text/html; charset=utf-8",R"HTML(<!doctype html><meta charset="utf-8"><title>Samsung UART sniffer</title><h1>Samsung UART: passive RX only</h1><p>GPIO18: A. GPIO17: B. 9600 8N1. No UART TX. <a href="/capture">Raw JSON capture</a></p><pre id="out"></pre><script>let cursor=0,boot=null;async function poll(){try{let r=await fetch('/capture?after='+cursor);if(!r.ok)throw Error(r.status);let j=await r.json();if(boot!==j.boot_id){boot=j.boot_id;cursor=0;document.querySelector('pre').textContent='New boot '+boot+'\n';if(j.last_seq) {setTimeout(poll,100);return;}}let p=document.querySelector('pre');for(let c of j.chunks)p.textContent+=JSON.stringify(c)+'\n';cursor=j.last_seq;if(p.textContent.length>40000)p.textContent=p.textContent.slice(-30000);}catch(e){document.querySelector('pre').textContent+='Error '+e+'\n';}setTimeout(poll,1000);}poll();</script>)HTML");});
  web_.on("/capture",HTTP_GET,[this](){if(!auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",capture_());});
- web_.begin();
+
 }
 void Sniffer::loop(){
  for(unsigned c=0;c<2;++c){auto &p=pending_[c];uint32_t t=millis();if(p.size&&uint32_t(t-p.end)>=20)flush_(c);
   for(unsigned budget=0;budget<512&&buses_[c]->available();++budget){uint8_t v;if(!buses_[c]->read_byte(&v))break;t=millis();if(!p.size)p.at=t;p.end=t;p.data[p.size++]=v;++bytes_[c];if(p.size==48)flush_(c);}
  }
- web_.handleClient();
+ auto *w=wifi::global_wifi_component;
+ if(!web_started_&&w&&(w->is_connected()||w->is_ap_active())){web_.begin();web_started_=true;}
+ if(web_started_)web_.handleClient();
 }
 }

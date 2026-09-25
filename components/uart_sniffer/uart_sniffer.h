@@ -15,7 +15,7 @@ class Sniffer : public Component {
   Chunk ring_[128]{},pending_[2]{};
   uart::UARTComponent *buses_[2]{};
   uint32_t seq_=0,bytes_[2]{},boot_=0;
-  WebServer web_{80};String password_;
+  WebServer web_{80};String password_;bool web_started_=false;
   void flush_(unsigned channel);
   bool auth_(){if(web_.authenticate("admin",password_.c_str()))return true;web_.requestAuthentication();return false;}
   String capture_();
