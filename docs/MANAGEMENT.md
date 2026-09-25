@@ -1,4 +1,4 @@
-# Settings and GitHub OTA — Samsung-ESP32 0.4.0
+# Settings and GitHub OTA — Samsung-ESP32 0.4.1
 
 [Русский](MANAGEMENT_RU.md)
 
@@ -38,7 +38,8 @@ Samsung profile/asset URLs reject Haier manifests.
 
 The worker waits for the main-loop flash handoff and pauses local OTA while writing.
 Transport setting changes are rejected during updates, but disabling installation
-remains available during download. No live end-to-end updater test is claimed.
+remains available during download. GitHub OTA 0.4.0 → 0.4.1 passed on the device:
+signed download, installation, preserved settings/credentials and trial boot confirmation.
 
 ## Release
 
@@ -51,6 +52,9 @@ remains available during download. No live end-to-end updater test is claimed.
    The tool requires the key matching the firmware trust anchor.
 5. Publish `v<version>` and its OTA asset, then the signed stable.json to main.
 
-No release is published or device flashed by this change. Until stable.json exists,
-the empty repository produces a manifest-fetch error. The supplied README banner is
+The v0.4.1 prerelease was tested using the signed testing feed. The stable feed is
+not published yet, so normal stable checks currently return HTTP404; this does not
+invalidate the installed firmware. The supplied README banner is
 stored unchanged at `docs/assets/banner_SRCC.png`.
+
+[Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).

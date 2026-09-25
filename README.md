@@ -22,6 +22,7 @@ opens the existing ESPHome controls on port8080. Both use `admin` and the same p
 - Local ESPHome OTA remains available and is coordinated with the GitHub worker.
 
 [Management and releases](docs/MANAGEMENT.md) · [Full device register map](docs/MODBUS.md)
+· [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT.md)
 · [UART catalog and test sequence](docs/FUNCTIONS_RU.md)
 
 UART TX/RX GPIO17/18 uses9600 8N1. RS485 TX/RX/DE uses15/16/21.
@@ -46,8 +47,9 @@ already provisioned0.4.0+ devices. Signing/publishing is a separate step.
 See [release preparation](docs/MANAGEMENT.md#release).
 
 Power, fan Low/Medium/High/Turbo and both swing axes were tested on the target AC
-in earlier firmware. Version0.4.0 has host-test/build validation; its new web settings,
-a real MQTT broker, physical RS485 and end-to-end GitHub OTA still need device testing.
+in earlier firmware. Persistent web settings, Modbus TCP and GitHub OTA from0.4.0
+to0.4.1 passed on the device, including credential/settings retention and boot confirmation.
+HA discovery with an authenticated broker, physical RS485 and forced rollback still need testing.
 Experimental legacy controls require per-function verification on this model.
 
 [Protocol](docs/PROTOCOL.md) · [Attribution](THIRD_PARTY.md)
