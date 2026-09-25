@@ -12,9 +12,16 @@ Unknown register IDs are skipped, unknown enum values invalidate that field inst
 
 Types: 1202 read, 1203 read response, 1204 write, 1205 write response, 1206 notification, 1207 notification ACK.
 Only 1203/1206 update state. Notifications receive ACK only in active mode, with the received counter and payload.
-ACK counter semantics still need confirmation on hardware. No automatic retries; max 4 queued ACKs.
+ACK counter semantics still need confirmation on hardware. No automatic HVAC command retries; max 4 queued ACKs.
 Minimum TX interval 300 ms, minimum RX quiet interval 30 ms, status query every 5 s.
-Optional explicit initialization is 1204 with `01 01 0F 74 01 F0`; it does not run automatically.
+Since 0.4.7, each core poll also reads register 01. A fresh F0 triggers 1204
+with `01 01 0F` only, at most once per 30 seconds. Writes are gated until a
+1203/1206 readback reports 0F (expires after 15 seconds). A write ACK is not proof.
+Automatic recovery does not change beep, power, mode or replay failed commands.
+All recovery traffic respects the local UART disable switch and bus idle checks.
+The optional manual initialization still writes `01 01 0F 74 01 F0`.
+Bench diagnosis: both power and fan writes returned FC while 01=F0; enabling 01
+restored both commands. Upstream getInitData() supplies the original enable sequence.
 
 | ID | Meaning | Known values |
 |---|---|---|

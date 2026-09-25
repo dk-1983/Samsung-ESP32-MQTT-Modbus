@@ -1,5 +1,6 @@
 #include "components/samsung_uart/bridge.h"
 #include <cassert>
+#include "components/samsung_uart/control_link.h"
 #include <iostream>
 using namespace samsung_proto;
 using namespace samsung_modbus;
@@ -10,6 +11,19 @@ struct Fake:Bridge{unsigned sent=0;bool submit(const Command &c)override{if(!ses
 #include "test_mim.h"
 #include "test_management.h"
 int main(){
+  {
+    ControlLink link;assert(!link.ready(0)&&!link.needs_enable(0));
+    auto feed=[&](uint16_t type,const Bytes &payload,uint32_t t){auto b=frame(type,1,payload);link.receive(b.data(),b.size(),t);};
+    feed(0x1203,{1,1,0xf0},100);assert(link.needs_enable(101));link.sent(101);
+    feed(0x1205,{1,1,0x0f},102);assert(!link.ready(102)&&!link.needs_enable(102));
+    feed(0x1203,{1,1,0x0f},103);assert(link.ready(103));assert(!link.ready(15103));
+    feed(0x1206,{1,1,0xf0},200);assert(!link.ready(200)&&!link.needs_enable(200));
+    feed(0x1203,{1,1,0xf0},30101);assert(link.needs_enable(30101));
+    feed(0x1203,{1,1,15,1,1,240},30102);assert(!link.ready(30102)&&!link.needs_enable(30102));
+    feed(0x1203,{1,1,15},0xfffffff0);assert(link.ready(0x10));
+    link.reset();assert(!link.ready(0x10));
+    assert(query_payload()[0]==1&&query_payload()[1]==0);
+  }
   test_extended();
   test_mim();
   test_management();

@@ -8,11 +8,12 @@ String Portal::control_json_(){
  cJSON *j=cJSON_CreateObject();if(!j)return "{}";
  cJSON_AddBoolToObject(j,"ac_fresh",ac_->feedback_fresh());
  cJSON_AddBoolToObject(j,"uart",ac_->tx_enabled());
+ cJSON_AddBoolToObject(j,"control_ready",ac_->control_ready());
  cJSON_AddBoolToObject(j,"mqtt_enabled",config_.mqtt);
  cJSON_AddBoolToObject(j,"mqtt_connected",mqtt::global_mqtt_client->is_connected());
  bool busy=ac_->session.pending||ac_->extended.pending||updates_busy_()||restart_;
  cJSON_AddBoolToObject(j,"busy",busy);
- cJSON_AddBoolToObject(j,"can_command",!busy&&ac_->tx_enabled()&&s.fresh_mask(CORE,now,10000));
+ cJSON_AddBoolToObject(j,"can_command",!busy&&ac_->tx_enabled()&&ac_->control_ready()&&s.fresh_mask(CORE,now,10000));
  cJSON_AddStringToObject(j,"command_result",ac_->command_status().c_str());
  cJSON_AddStringToObject(j,"extended_result",ac_->extra_status().c_str());
  const char *keys[]={"power","target","mode","fan","swing","preset","room"};

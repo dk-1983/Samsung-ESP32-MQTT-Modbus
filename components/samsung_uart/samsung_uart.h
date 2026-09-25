@@ -4,6 +4,7 @@
 #include "esphome/components/climate/climate.h"
 #include "esphome/components/uart/uart.h"
 #include "bridge.h"
+#include "control_link.h"
 #include <WiFi.h>
 #include <deque>
 namespace esphome { namespace samsung_uart {
@@ -28,6 +29,7 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
   std::string last_write_reply()const{return last_write_reply_;}
   void enable_tx(bool value);
   bool tx_enabled()const{return session.enabled;}
+  bool control_ready()const{return link_.ready(millis());}
   void query();
   void initialize_link();
   std::string diagnostics() const;
@@ -44,6 +46,7 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
   bool send_(uint16_t type,const samsung_proto::Bytes &payload,uint8_t counter);
   uart::UARTComponent *rs485_=nullptr;
   samsung_proto::Parser parser_;
+  samsung_proto::ControlLink link_;
   uint32_t rx_bytes_=0,tx_frames_=0,last_rx_ms_=0,last_tx_ms_=0,last_poll_=0,last_publish_=0;
   uint8_t counter_=0,unit_=1;
   struct Ack {samsung_proto::Bytes payload;uint8_t counter;uint16_t type;};

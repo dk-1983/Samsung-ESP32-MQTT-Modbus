@@ -27,7 +27,7 @@ ClimateTraits SamsungClimate::traits(){
   t.set_visual_min_temperature(16);t.set_visual_max_temperature(30);t.set_visual_temperature_step(1);return t;
 }
 void SamsungClimate::enable_tx(bool value){
-  session.enable(value);if(!value)extended.cancel();acks_.clear();reads_.clear();last_poll_=millis();
+  link_.reset();session.enable(value);if(!value)extended.cancel();acks_.clear();reads_.clear();last_poll_=millis();
   ESP_LOGW(TAG,"UART transmission %s (not persisted)",value?"ENABLED":"DISABLED: MONITOR ONLY");
 }
 bool SamsungClimate::send_(uint16_t type,const Bytes &payload,uint8_t counter){
@@ -47,7 +47,7 @@ void SamsungClimate::initialize_link(){
 }
 bool SamsungClimate::submit(const Command &c){
   now=millis();
-  if(extended.pending)return false;
+  if(extended.pending||!control_ready())return false;
   // Reserve session only when UART can transmit immediately; no stale command queue.
   if(!acks_.empty() || available() || parser_.used || uint32_t(now-last_tx_ms_)<300 || uint32_t(now-last_rx_ms_)<30)return false;
   if(!session.accept(c,now))return false;
@@ -56,7 +56,7 @@ bool SamsungClimate::submit(const Command &c){
 }
 bool SamsungClimate::submit_extra(size_t index,uint16_t value){
   now=millis();
-  if(!session.enabled||session.pending||extended.pending||!safely_fresh()||!extra_allowed(index,value))return false;
+  if(!session.enabled||!control_ready()||session.pending||extended.pending||!safely_fresh()||!extra_allowed(index,value))return false;
   if(!acks_.empty()||available()||parser_.used||uint32_t(now-last_tx_ms_)<300||uint32_t(now-last_rx_ms_)<30)return false;
   if(!extended.accept(index,value,counter_,now))return false;
   auto &d=EXTRA[index];
@@ -116,7 +116,7 @@ void SamsungClimate::control(const ClimateCall &call){
 void SamsungClimate::received_(const uint8_t *p,size_t n){
   last_rx_=hex(p,n);ESP_LOGD(TAG,"RX valid %s",last_rx_.c_str());
   if(p[10]!=0xfe){++other_frames_;return;} // Observed FC service frames: capture only, no guessed ACK.
-  now=millis();session.receive(p,n,now);extended.receive(p,n,now);
+  now=millis();link_.receive(p,n,now);session.receive(p,n,now);extended.receive(p,n,now);
   if(p[12]==5)last_write_reply_=last_rx_;
   if(p[11]==0x12 && (p[12]==3||p[12]==6)){
     ++status_count;seen_status=true;last_status=now;publish_feedback_();
@@ -167,6 +167,12 @@ void SamsungClimate::loop(){
   if(session.enabled){
     if(!acks_.empty()){
       if(send_(acks_.front().type,acks_.front().payload,acks_.front().counter))acks_.pop_front();
+    }else if(!session.pending&&!extended.pending&&link_.needs_enable(now)){
+      // Restore only control permission; leave beep and HVAC settings untouched.
+      if(send_(0x1204,{0x01,1,0x0f},counter_)){
+        ++counter_;link_.sent(now);last_poll_=now-4500;
+        ESP_LOGW(TAG,"Restoring UART control permission; waiting for readback");
+      }
     }else if(uint32_t(now-last_poll_)>=5000)query();
     else if(!session.pending && uint32_t(now-last_extra_poll_)>=800 && (extended.pending||!reads_.empty()||extended_poll_)){
       uint8_t i=extended.pending?extended.index:!reads_.empty()?reads_.front():poll_index_;

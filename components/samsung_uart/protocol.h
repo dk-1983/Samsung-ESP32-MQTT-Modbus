@@ -129,5 +129,5 @@ inline Bytes command_payload(const Command &c){
   }
   return p;
 }
-inline Bytes query_payload(){Bytes p;for(uint8_t id:IDS)p.insert(p.end(),{id,0});return p;}
+inline Bytes query_payload(){Bytes p={0x01,0};for(uint8_t id:IDS)p.insert(p.end(),{id,0});return p;}
 }

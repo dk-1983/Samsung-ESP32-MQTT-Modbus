@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.6
+# Samsung-ESP32-MQTT-Modbus — 0.4.7
 
 [Русский](README_RU.md)
 
@@ -70,4 +70,4 @@ Other settings are preserved.
 
 [Overview, web controls and MQTT power commands (Russian)](docs/CONTROL_RU.md).
 
-Version 0.4.6 is prepared locally and has not been installed on the bench yet.
+Version 0.4.7 automatically restores UART control permission (register 01) after a reset. HVAC commands wait for readback; requested power is never restored automatically.

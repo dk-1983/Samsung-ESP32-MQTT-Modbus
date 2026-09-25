@@ -1,2 +1,2 @@
 #pragma once
-#define SAMSUNG_FIRMWARE_VERSION "0.4.6"
+#define SAMSUNG_FIRMWARE_VERSION "0.4.7"
