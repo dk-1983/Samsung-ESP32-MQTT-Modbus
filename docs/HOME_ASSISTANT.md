@@ -1,3 +1,5 @@
+> Version 0.4.2: UART is enabled on every boot at the owner's request; any boot monitor-only behavior described below applies to 0.4.1. Saving MQTT settings reboots after two seconds to recreate the connection.
+
 # Home Assistant through MQTT Discovery
 
 [Русский](HOME_ASSISTANT_RU.md)

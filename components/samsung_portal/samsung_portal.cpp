@@ -69,10 +69,12 @@ void Portal::settings_web_(){
   strlcpy(c.host,web_.arg("host").c_str(),sizeof(c.host));strlcpy(c.username,web_.arg("username").c_str(),sizeof(c.username));strlcpy(c.prefix,web_.arg("prefix").c_str(),sizeof(c.prefix));
   if(web_.arg("clear_password")=="1")c.password[0]=0;else if(web_.arg("password").length())strlcpy(c.password,web_.arg("password").c_str(),sizeof(c.password));
   if(!samsung_management::valid(c)){web_.send(400,"text/plain","Invalid host or topic prefix");return;}
-  bool changed=strcmp(c.prefix,config_.prefix)!=0;
   if(!save_(c)){web_.send(503,"text/plain","Settings not saved");return;}
+  // ESPHome's ESP32 MQTT backend initializes its IDF client only once.
+  // disable()/enable() does not recreate it with changed credentials/server.
+  // Persist first, then reboot after the HTTP response to apply all MQTT settings.
   mqtt::global_mqtt_client->disable();
-  if(changed){restart_=true;restart_at_=millis()+1200;}else apply_mqtt_();
+  mqtt_start_=false;restart_=true;restart_at_=millis()+2000;
   web_.send(200,"application/json","{}");
  });
  web_.onNotFound([this](){if(test_auth_())web_.send(404,"text/plain","Not found");});

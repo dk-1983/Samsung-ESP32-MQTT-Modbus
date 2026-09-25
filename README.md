@@ -1,6 +1,8 @@
+> Version 0.4.2: UART is enabled on every boot at the owner's request; any boot monitor-only behavior described below applies to 0.4.1. Saving MQTT settings reboots after two seconds to recreate the connection.
+
 ![4VRS Server Room — Home Assistant](docs/assets/banner_SRCC.png)
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.1
+# Samsung-ESP32-MQTT-Modbus — 0.4.2
 
 [Русский](README_RU.md)
 

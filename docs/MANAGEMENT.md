@@ -1,3 +1,5 @@
+> Version 0.4.2: UART is enabled on every boot at the owner's request; any boot monitor-only behavior described below applies to 0.4.1. Saving MQTT settings reboots after two seconds to recreate the connection.
+
 # Settings and GitHub OTA — Samsung-ESP32 0.4.1
 
 [Русский](MANAGEMENT_RU.md)
@@ -10,8 +12,8 @@ admin password. Initial private0.4.0 boot stores web/OTA/AP credentials from sec
 in NVS; later OTA images restore these values instead of their compiled defaults.
 
 MQTT, RTU and TCP default off and have independent persistent checkboxes. Blank MQTT
-password keeps the saved password; a separate checkbox clears it. Broker and discovery
-changes apply without reboot. Changing topic prefix restarts to rebuild subscriptions;
+password keeps the saved password; a separate checkbox clears it. Since 0.4.2 every MQTT settings save restarts the controller after two seconds
+to recreate the MQTT client with the saved broker and credentials;
 UART then returns to monitor-only. MQTT topics/discovery remain ESPHome, not Haier
 `/set/<field>`. Previously retained discovery messages are not removed when disabled.
 

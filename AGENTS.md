@@ -6,7 +6,7 @@ Read README_RU.md, docs/PROTOCOL.md and docs/MODBUS.md before hardware changes.
 
 Actual target AC: Samsung AR24BSFCMWKNER. Direct Wi-Fi UART D0 profile is experimental; core ventilation controls have been
 verified on this model. Do not infer connector voltage/pins from another model or assume NASA == Wi-Fi UART.
-Always default to monitor-only on boot: all UART transmissions, including polls and ACKs, must be gated.
+User explicitly requested UART enabled on every boot starting with 0.4.2. Keep the local disable switch and gate all transmissions, including polls and ACKs, when disabled.
 Never publish requested state as received state; keep freshness and command confirmation tests.
 No hardware flashing or eFuse changes as part of routine builds. Do not publish secrets.yaml or binaries
 containing private credentials to a public repository. Local binary delivery to the user is expected.

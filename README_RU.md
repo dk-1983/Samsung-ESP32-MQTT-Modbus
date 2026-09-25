@@ -1,6 +1,8 @@
+> Изменение 0.4.2: UART автоматически включён после каждой загрузки по решению владельца; описанный ниже режим monitor-only при запуске относится к 0.4.1. Сохранение MQTT-настроек перезагружает плату через 2 секунды для применения нового соединения.
+
 ![4VRS Server Room — Home Assistant](docs/assets/banner_SRCC.png)
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.1
+# Samsung-ESP32-MQTT-Modbus — 0.4.2
 
 [English](README.md)
 

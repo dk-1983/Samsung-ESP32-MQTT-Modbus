@@ -14,8 +14,8 @@ static std::string hex(const uint8_t *p,size_t n){
 void SamsungClimate::setup(){
   set_supported_custom_presets({"quiet","legacy_smart","legacy_soft_cool","legacy_wind_1","legacy_wind_2","legacy_wind_3"});
   set_supported_custom_fan_modes({"turbo"});
-  enable_tx(false);current_temperature=NAN;target_temperature=NAN;
-  ESP_LOGW(TAG,"Wi-Fi UART D0 profile: core controls tested on AR24BSFCMWKNER; extended features experimental. MONITOR ONLY.");
+  enable_tx(true);current_temperature=NAN;target_temperature=NAN;
+  ESP_LOGW(TAG,"Wi-Fi UART D0 profile: core controls tested on AR24BSFCMWKNER; extended features experimental. UART enabled at boot.");
 }
 void SamsungClimate::dump_config(){ESP_LOGCONFIG(TAG,"Samsung Wi-Fi UART prototype; Modbus unit %u, TCP 502, RTU 9600 8E1",unit_);}
 ClimateTraits SamsungClimate::traits(){
