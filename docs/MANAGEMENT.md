@@ -4,6 +4,21 @@
 
 ## Local settings
 
+### System information and restart (0.4.3)
+
+`/about` shows firmware, hostname, IP, Wi-Fi station MAC, uptime, internal RAM,
+PSRAM and Flash. Wi-Fi, MQTT, UART, AC freshness and enabled Modbus transports
+are reported separately. The station MAC can be used for a DHCP reservation.
+
+Restart requires confirmation and preserves settings. The page waits for a new
+boot and reloads after reconnection. Restart is rejected during OTA or a pending
+AC command. UART starts enabled. If the IP changes, reopen the page at its new address.
+
+API: authenticated `GET /system/status` and `POST /system/restart`. POST also
+requires the current CSRF `token` and `confirm=RESTART`; GET never restarts.
+Diagnostics contain no passwords. `boot_id` changes on boot, `uptime_s` is uptime;
+`storage_ok` reports storage initialization, not a continuous memory test.
+
 Port80 hosts `/mqtt`, `/modbus`, `/updates`. Existing ESPHome controls/REST move to8080;
 local ESPHome OTA remains3232. Modbus uses the0.3.0 map. Both web servers use the same
 admin password. Initial private0.4.0 boot stores web/OTA/AP credentials from secrets.yaml

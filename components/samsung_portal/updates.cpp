@@ -259,7 +259,7 @@ inline String status() {
 #include "esphome/components/wifi/wifi_component.h"
 namespace esphome::samsung_portal {
 void Portal::updates_setup_(){configTime(0,0,"pool.ntp.org","time.cloudflare.com");if(!SamsungUpdate::begin(SAMSUNG_FIRMWARE_VERSION))ESP_LOGE("updates","Update service unavailable");}
-bool Portal::updates_busy_(){return SamsungUpdate::busy||SamsungUpdate::restartRequested;}
+bool Portal::updates_busy_(){return SamsungUpdate::busy||SamsungUpdate::restartRequested||SamsungUpdate::manual;}
 void Portal::ota_manual(bool value){SamsungUpdate::manual=value;}
 void Portal::updates_loop_(){
  if(!SamsungUpdate::mutex||!SamsungUpdate::serviceReady)return;

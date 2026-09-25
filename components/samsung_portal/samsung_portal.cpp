@@ -10,7 +10,7 @@
 #include "MqttPage.h"
 #include "ModbusPage.h"
 namespace esphome::samsung_portal {
-static const char HOME[] PROGMEM=R"HTML(<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4vrs Samsung-ESP32</title>__STYLE__<body>__NAV__<main><h1>Samsung-ESP32</h1><p>Локальное управление кондиционером</p><div class="grid"><a class="card" href="/control">Веб-пульт</a><a class="card" href="/mqtt">Подключение MQTT</a><a class="card" href="/modbus">Modbus RTU / TCP</a><a class="card" href="/updates">Обновления GitHub</a></div><p>MQTT и оба транспорта Modbus включаются независимо. Настройки сохраняются после отключения питания.</p></main></body></html>)HTML";
+static const char HOME[] PROGMEM=R"HTML(<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4vrs Samsung-ESP32</title>__STYLE__<body>__NAV__<main><h1>Samsung-ESP32</h1><p>Локальное управление кондиционером</p><div class="grid"><a class="card" href="/control">Веб-пульт</a><a class="card" href="/mqtt">Подключение MQTT</a><a class="card" href="/modbus">Modbus RTU / TCP</a><a class="card" href="/updates">Обновления GitHub</a><a class="card" href="/about">О системе и перезагрузка</a></div><p>MQTT и оба транспорта Modbus включаются независимо. Настройки сохраняются после отключения питания.</p></main></body></html>)HTML";
 bool Portal::test_auth_(){if(web_.authenticate("admin",password_.c_str()))return true;web_.requestAuthentication();return false;}
 bool Portal::post_auth_(){if(!test_auth_())return false;if(web_.arg("token")!=token_){web_.send(403,"text/plain","Invalid token");return false;}if(updates_busy_()||restart_){web_.send(409,"text/plain","Update or restart in progress");return false;}return true;}
 void Portal::send_page_(const char *page){
@@ -99,10 +99,10 @@ void Portal::setup(){
  pref_=global_preferences->make_preference<samsung_management::Config>(0x534d4701);
  samsung_management::Config saved;if(pref_.load(&saved)&&samsung_management::valid(saved))config_=saved;
  else {storage_ok_=pref_.save(&config_)&&global_preferences->sync();}
- credentials_setup_();
+ credentials_setup_();boot_id_=esp_random();
  char token[33];for(int i=0;i<4;++i)snprintf(token+8*i,9,"%08lx",(unsigned long)esp_random());token_=token;
  apply_mqtt_();ac_->configure_modbus(config_.rtu,config_.tcp,config_.unit,config_.baud);
- settings_web_();updates_web_();updates_setup_();
+ settings_web_();system_web_();updates_web_();updates_setup_();
 }
 void Portal::loop(){
  auto *w=wifi::global_wifi_component;bool connected=w&&w->is_connected();

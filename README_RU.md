@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.2
+# Samsung-ESP32-MQTT-Modbus — 0.4.3
 
 [English](README.md)
 
@@ -63,3 +63,7 @@ RTU: 9600 8E1 по умолчанию; TCP: порт 502. UART кондицио�
 [Протокол](docs/PROTOCOL.md) · [Стенд](docs/BENCH_RU.md) · [Происхождение кода](THIRD_PARTY.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT_RU.md)
 · [Информационный лист регистров Modbus](docs/MODBUS_REGISTERS_RU.md)
+
+Страница `/about` показывает версию, память, соединения и свежесть UART.
+Перезагрузка доступна с подтверждением; настройки сохраняются. Во время OTA
+или незавершённой команды кондиционера перезагрузка отклоняется.

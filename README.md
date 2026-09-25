@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.2
+# Samsung-ESP32-MQTT-Modbus — 0.4.3
 
 [Русский](README_RU.md)
 
@@ -54,3 +54,7 @@ Authenticated MQTT connectivity is verified. Physical RS485 and forced rollback 
 Experimental legacy controls require per-function verification on this model.
 
 [Protocol](docs/PROTOCOL.md) · [Attribution](THIRD_PARTY.md)
+
+The `/about` page shows firmware, memory, connections and UART freshness.
+Restart requires confirmation and preserves settings. It is rejected during OTA
+or while an AC command is pending.
