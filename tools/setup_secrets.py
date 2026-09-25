@@ -1,4 +1,4 @@
-"""Generate local prototype credentials once; never import Haier credentials."""
+"""Generate local Samsung credentials once; never import credentials from another device."""
 from pathlib import Path
 import secrets
 root = Path(__file__).resolve().parents[1]

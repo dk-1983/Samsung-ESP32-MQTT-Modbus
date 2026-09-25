@@ -67,7 +67,7 @@ inline bool saveSettings(const Settings &next) {
   xSemaphoreGive(policyGate);return ok;
 }
 inline bool localPolicy(bool enabled) {Settings next=settings;next.web=enabled;bool ok=saveSettings(next);if(ok&&enabled)checkRequested=true;return ok;}
-using haier_management::newer;
+using samsung_update::newer;
 inline void hex(const unsigned char *in,size_t n,char *out) {for(size_t i=0;i<n;++i)sprintf(out+i*2,"%02x",in[i]);}
 inline int digit(char c){return c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;}
 inline bool unhex(const char *s,unsigned char *out,size_t n){if(strlen(s)!=n*2)return false;for(size_t i=0;i<n;++i){int a=digit(s[2*i]),b=digit(s[2*i+1]);if(a<0||b<0)return false;out[i]=(a<<4)|b;}return true;}

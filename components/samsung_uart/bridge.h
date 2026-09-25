@@ -7,15 +7,15 @@
 namespace samsung_proto {
 // MIM-B19N/B19NT DB68-07538A-03: zero-based PDU addresses, one indoor unit (IU0).
 // Custom fields follow the complete 48-unit factory range (50..2449), not IU1.
-struct Bridge : haier_bridge::Backend {
+struct Bridge : samsung_modbus::Backend {
   static constexpr uint16_t EXTRA_BASE=2450, DIAG_BASE=2475, RAW_BASE=2500;
   Session session;Extended extended;uint32_t now=0,status_count=0,last_status=0;bool seen_status=false;
   bool rtu_enabled=false,tcp_enabled=false;
   virtual bool submit(const Command &c)=0;
   virtual bool submit_extra(size_t,uint16_t){return false;}
   bool supports_function(uint8_t fc)const override{return fc==3||fc==4||fc==6||fc==16;}
-  uint8_t read(haier_bridge::Table table,uint16_t a,uint16_t &v)override{
-    using haier_bridge::Table;auto &s=session.state;Field f=POWER;
+  uint8_t read(samsung_modbus::Table table,uint16_t a,uint16_t &v)override{
+    using samsung_modbus::Table;auto &s=session.state;Field f=POWER;
     if(table==Table::COIL)return 2;
     // Both read functions expose the same readable words; writes are separately validated.
     if(a>=EXTRA_BASE && a<EXTRA_BASE+EXTRA_COUNT){
@@ -50,8 +50,8 @@ struct Bridge : haier_bridge::Backend {
     if(a==2487)v=v==3;
     return 0;
   }
-  uint8_t write(const haier_bridge::Change *changes,size_t count)override{
-    using haier_bridge::Table;if(!count||count>8)return 3;Command c;
+  uint8_t write(const samsung_modbus::Change *changes,size_t count)override{
+    using samsung_modbus::Table;if(!count||count>8)return 3;Command c;
     int extra_index=-1;uint16_t extra_value=0;
     for(size_t i=0;i<count;++i){const auto &x=changes[i];Field f=POWER;int v=x.value;
       if(x.table!=Table::HOLDING)return 2;

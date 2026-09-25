@@ -206,13 +206,13 @@ void SamsungClimate::transports_(){
       for(unsigned budget=0;budget<260&&c.socket.available();++budget){
         int b=c.socket.read();if(b<0)break;c.last=now;int result=c.frame.push(uint8_t(b));
         if(result<0){c.socket.stop();break;}
-        if(result==1){uint8_t out[260];size_t n=haier_bridge::tcp(*this,c.frame.bytes,c.frame.used,unit_,out);c.frame.clear();
+        if(result==1){uint8_t out[260];size_t n=samsung_modbus::tcp(*this,c.frame.bytes,c.frame.used,unit_,out);c.frame.clear();
           if(!n||c.socket.write(out,n)!=n){c.socket.stop();break;}}
       }
     }
   }
   if(!rtu_enabled){for(unsigned budget=0;budget<512&&rs485_->available();++budget){uint8_t v;rs485_->read_byte(&v);}rtu_used_=0;rtu_overflow_=false;return;}
-  auto dispatch=[this](){uint8_t out[256];size_t n=haier_bridge::rtu(*this,rtu_,rtu_used_,unit_,out);
+  auto dispatch=[this](){uint8_t out[256];size_t n=samsung_modbus::rtu(*this,rtu_,rtu_used_,unit_,out);
     if(n){rs485_->write_array(out,n);rs485_->flush();}rtu_used_=0;};
   // Fixed 9600 8E1 profile (3.5 characters = 4011 us). Hardware RX timeout configured to 2 characters.
   if(uint32_t(micros()-rtu_last_)>=rtu_gap_us_ && !rs485_->available()){

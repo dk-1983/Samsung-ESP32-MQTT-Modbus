@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 #include <cstdio>
-namespace haier_management {
+namespace samsung_update {
 inline bool newer(const char *candidate,const char *current) {
   auto valid=[](const char *s){unsigned dots=0,digits=0;for(;*s;++s){if(*s=='.'){if(!digits)return false;++dots;digits=0;}else if(*s>='0'&&*s<='9'){if(++digits>5)return false;}else return false;}return dots==2&&digits>0;};
   if(!valid(candidate)||!valid(current))return false;

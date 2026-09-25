@@ -10,7 +10,7 @@ void test_management(){
  c.baud=9600;memset(c.password,'x',sizeof(c.password));assert(!valid(c));
  uint32_t n=0;assert(numeric("247",1,247,n)&&n==247);
  for(auto s:{"","0","248","-1","1x","999999999999999999"})assert(!numeric(s,1,247,n));
- assert(haier_management::newer("0.4.0","0.3.0"));assert(!haier_management::newer("0.4.0","0.4.0"));assert(!haier_management::newer("0.4.0-beta","0.3.0"));
+ assert(samsung_update::newer("0.4.0","0.3.0"));assert(!samsung_update::newer("0.4.0","0.4.0"));assert(!samsung_update::newer("0.4.0-beta","0.3.0"));
  Fake f;f.now=100;ingest(f.session,full(),100);uint16_t flags=0;
  assert(f.read(Table::INPUT_REGISTER,2479,flags)==0&&flags==1);
  f.rtu_enabled=true;assert(f.read(Table::INPUT_REGISTER,2479,flags)==0&&flags==3);

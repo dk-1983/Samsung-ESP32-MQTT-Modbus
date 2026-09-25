@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-namespace haier_bridge {
+namespace samsung_modbus {
 enum class Table { COIL, HOLDING, INPUT_REGISTER };
 struct Change { Table table; uint16_t address; uint16_t value; };
 struct Backend {
@@ -77,4 +77,4 @@ struct TcpFrame {
   }
   void clear(){used=0;}
 };
-} // namespace haier_bridge
+} // namespace samsung_modbus

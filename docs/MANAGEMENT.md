@@ -1,6 +1,4 @@
-> Version 0.4.2: UART is enabled on every boot at the owner's request; any boot monitor-only behavior described below applies to 0.4.1. Saving MQTT settings reboots after two seconds to recreate the connection.
-
-# Settings and GitHub OTA — Samsung-ESP32 0.4.1
+# Settings and GitHub OTA — Samsung-ESP32 0.4.2
 
 [Русский](MANAGEMENT_RU.md)
 
@@ -14,8 +12,7 @@ in NVS; later OTA images restore these values instead of their compiled defaults
 MQTT, RTU and TCP default off and have independent persistent checkboxes. Blank MQTT
 password keeps the saved password; a separate checkbox clears it. Since 0.4.2 every MQTT settings save restarts the controller after two seconds
 to recreate the MQTT client with the saved broker and credentials;
-UART then returns to monitor-only. MQTT topics/discovery remain ESPHome, not Haier
-`/set/<field>`. Previously retained discovery messages are not removed when disabled.
+UART starts enabled. MQTT topics and discovery use ESPHome. Previously retained discovery messages are not removed when disabled.
 
 Modbus changes apply immediately and close existing TCP clients. RTU uses8E1 with
 9600/19200/38400/57600/115200 baud; unit1–247. Disabled RTU discards requests and disabled
@@ -27,16 +24,16 @@ Initial Wi-Fi configuration remains on the ESPHome captive portal at
 
 Feed: `https://raw.githubusercontent.com/dk-1983/Samsung-ESP32-MQTT-Modbus/main/releases/stable.json`.
 Profile: `samsung-s3-n16r8-v1`; assets must belong to Releases of that repository.
-Automatic installation defaults on, as in Haier. Disabling it blocks installation but
+Automatic installation defaults on. Disabling it blocks installation but
 allows checking. Checks start about one minute after boot and recur every6hours with
 jitter. Network connectivity and synchronized clock are required.
 
-The Haier worker supplies HTTPS verification, ECDSA P-256 manifest verification,
+The updater provides HTTPS verification, ECDSA P-256 manifest verification,
 profile/size/SHA256/ESP32-S3 checks, separate app slot, trial boot confirmation and
 rollback. A trial needs45seconds of healthy local services/network; failed restart or
 timeout can select the previous slot. Samsung rollback has not yet been exercised.
 The existing4vrs publisher public key is retained; no private key is copied. Distinct
-Samsung profile/asset URLs reject Haier manifests.
+Samsung profile/asset URLs reject manifests for other devices.
 
 The worker waits for the main-loop flash handoff and pauses local OTA while writing.
 Transport setting changes are rejected during updates, but disabling installation

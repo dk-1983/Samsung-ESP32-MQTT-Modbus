@@ -55,7 +55,7 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
   std::string last_rx_,last_tx_;
   uint8_t raw_[48]{};size_t raw_used_=0;
   WiFiServer server_{502};bool listening_=false;
-  struct Client {WiFiClient socket;haier_bridge::TcpFrame frame;uint32_t last=0;} clients_[2];
+  struct Client {WiFiClient socket;samsung_modbus::TcpFrame frame;uint32_t last=0;} clients_[2];
   uint8_t rtu_[256]{};size_t rtu_used_=0;uint32_t rtu_last_=0;bool rtu_overflow_=false;
 };
 }}

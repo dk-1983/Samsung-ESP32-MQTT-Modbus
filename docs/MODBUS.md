@@ -60,7 +60,7 @@ ranges above: a request crossing an unassigned address fails as a whole (02).
 
 ## Custom continuation after the complete factory indoor range
 
-These addresses belong to **our project**, not Samsung. No old Haier aliases remain.
+These addresses belong to **our project**, not Samsung. No compatibility aliases for other devices are provided.
 
 | PDU | Access | Meaning |
 |---:|---|---|
@@ -113,7 +113,7 @@ MQTT, RTU and TCP now have independent persistent checkboxes on the portal. RTU 
 default off on first0.4.0 startup. Unit/baud are configured in the browser; parity stays Even.
 Diagnostic2479 bits1/2 reflect enabled transports. Register addresses remain unchanged.
 
-## Modbus Devices implementation
+## Register reference
 
-[Complete implementation handoff in Russian](MODBUS_DEVICES_HANDOFF_RU.md):
-entity mapping, write confirmation, polling groups, raw catalog and acceptance checks.
+[Register information sheet in Russian](MODBUS_REGISTERS_RU.md):
+addresses, values, write confirmation, raw catalog and polling behavior.

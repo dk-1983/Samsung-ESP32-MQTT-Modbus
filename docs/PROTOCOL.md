@@ -27,7 +27,7 @@ Optional explicit initialization is 1204 with `01 01 0F 74 01 F0`; it does not r
 | 44 | Preset | 12 none / 22 boost / 42 sleep / 52 quiet |
 
 Version 0.2.0 adds legacy presets 32/62/82/92/A2 and an explicit experimental direction selector; see FUNCTIONS_RU.md.
-No WindFree assumption. F7 error payload is not reduced to Haier error codes.
+No WindFree assumption. F7 error payload is preserved as raw Samsung bytes.
 
 The first valid state can be collected passively. A command requires fresh core data (power, mode,
 temperature and fan) and fresh data for every requested field. Confirmation requires all requested fields

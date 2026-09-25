@@ -2,7 +2,7 @@
 #include <cassert>
 #include <iostream>
 using namespace samsung_proto;
-using namespace haier_bridge;
+using namespace samsung_modbus;
 Bytes full(uint16_t type=0x1203){return frame(type,7,{2,1,15,0x43,1,0x12,0x5a,1,24,0x62,1,0,0x63,1,0x12,0x44,1,0x12,0x5c,1,25});}
 void ingest(Session &s,const Bytes &b,uint32_t now){s.receive(b.data(),b.size(),now);}
 struct Fake:Bridge{unsigned sent=0;bool submit(const Command &c)override{if(!session.accept(c,now))return false;++sent;return true;}};
