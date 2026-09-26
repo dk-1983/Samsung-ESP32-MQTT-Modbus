@@ -9,6 +9,10 @@ Local Samsung air conditioner control through ESP32-S3-WROOM-1 N16R8 and the
 stock Wi-Fi module's UART. Target AC: AR24BSFCMWKNER. No Samsung cloud required.
 Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus).
 
+The separate experimental [UART bridge build](docs/UART_BRIDGE_RU.md) forwards
+factory traffic in both directions. It requires different wiring; command
+injection, MQTT and Modbus are not included in this diagnostic build.
+
 ## Controls and connections
 
 The portal on port80 links to controls, MQTT, Modbus and GitHub updates.
