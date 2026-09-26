@@ -2,6 +2,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
 #include <WebServer.h>
+#include <esp_attr.h>
 namespace esphome::uart_sniffer {
 class Sniffer : public Component {
  public:
@@ -21,6 +22,9 @@ class Sniffer : public Component {
   bool bridge_=false,forwarding_=true;
   bool monitor_only_=false;
   int loopback_result_[2]{-1,-1};
+  volatile uint32_t rx_edges_[2]{};
+  int edge_errors_[2]{-1,-1};
+  static void IRAM_ATTR on_edge_(void *arg);
   uint32_t forwarded_[2]{};
   WebServer web_{80};String password_;bool web_started_=false;
   void flush_(unsigned channel);
