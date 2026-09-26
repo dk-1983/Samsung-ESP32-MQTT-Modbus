@@ -21,6 +21,33 @@ struct Harness{
  void start(){baseline();assert(s.request(6000));tick(6000);assert(s.result==Scheduler::Result::WAITING);assert(out.size()==1&&out[0].own&&out[0].destination==0);}
 };
 int main(int argc,char **argv){
+ {Harness h;h.baseline();assert(h.s.request_fan(6000));h.tick(6000);auto pre=h.s.counter;
+  h.feed(0,frame(3,pre,{1,1,15,2,1,15,0x43,1,0x32,0x62,1,0x12}),6100);
+  assert(h.s.result==Scheduler::Result::QUEUED&&h.s.target_fan==0x14);h.tick(6200);
+  assert(h.out.back().bytes==frame(4,h.s.counter,{0x62,1,0x14})&&h.s.counter!=pre);
+  auto wr=h.s.counter;h.feed(0,frame(5,wr,{0x62,1,0x14}),6300);
+  assert(h.s.write_ack&&h.s.result!=Scheduler::Result::CONFIRMED);
+  h.feed(0,frame(6,60,{0x62,1,0x14}),6310);h.feed(1,frame(7,60,{0x62,1,0x14}),6320);
+  h.tick(6450);assert(h.s.counter!=wr&&h.s.counter!=pre);
+  h.feed(0,frame(3,h.s.counter,{1,1,15,2,1,15,0x43,1,0x32,0x62,1,0x14}),6550);
+  assert(h.s.result==Scheduler::Result::CONFIRMED&&h.s.fan==0x14);
+ }
+ for(uint8_t mode:{0x12,0x22,0x42,0xE2}){Harness h;h.baseline();h.s.request_fan(6000);h.tick(6000);
+  h.feed(0,frame(3,h.s.counter,{1,1,15,2,1,15,0x43,1,mode,0x62,1,0x12}),6100);
+  assert(h.s.result==Scheduler::Result::REJECTED&&h.out.size()==1);
+ }
+ for(uint8_t speed:{0x00,0xFF}){Harness h;h.baseline();h.s.request_fan(6000);h.tick(6000);
+  h.feed(0,frame(3,h.s.counter,{1,1,15,2,1,15,0x43,1,0x32,0x62,1,speed}),6100);assert(h.s.result==Scheduler::Result::REJECTED);
+ }
+ {Harness h;h.baseline();h.s.request_fan(6000);h.tick(6000);
+  h.feed(0,frame(3,h.s.counter,{1,1,15,2,1,15,0x43,1,0x32,0x62,1,0x12}),6100);
+  h.feed(0,frame(6,45,{0x43,1,0x12}),6110);h.feed(1,frame(7,45,{0x43,1,0x12}),6120);h.tick(6250);
+  assert(h.s.result==Scheduler::Result::REJECTED);for(auto &o:h.out)assert(!o.own||o.bytes[12]==2);
+ }
+ {Harness h;h.baseline();h.s.request_fan(6000);h.tick(6000);
+  h.feed(0,frame(3,h.s.counter,{1,1,15,2,1,15,0x43,1,0x32,0x62,1,0x18}),6100);
+  assert(h.s.target_fan==0x16);h.tick(9200);assert(h.s.result==Scheduler::Result::REJECTED);
+ }
  {Harness h;h.start();auto counter=h.s.counter;
   h.feed(1,frame(2,42),6010);assert(h.s.held_count==1&&h.out.size()==1);
   h.feed(0,frame(6,43,{2,1,0xF0}),6020);h.feed(1,frame(7,43,{2,1,0xF0}),6030);

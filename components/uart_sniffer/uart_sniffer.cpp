@@ -17,6 +17,7 @@ String Sniffer::scheduler_status_(){
  String out="{\"status\":\""+String(s.status())+"\",\"counter\":"+String(s.counter)+",\"sent_at_ms\":"+String(s.sent_at)+",\"injected_bytes\":"+String(injected_bytes_)+",\"stock_pending\":"+String(unsigned(s.pending()))+",\"held_requests\":"+String(unsigned(s.held_count))+",\"completed\":"+String(s.completed)+",\"expired\":"+String(s.expired)+",\"framing_errors\":"+String(s.errors)+",\"suppressed_responses\":"+String(s.suppressed)+",\"frames_main\":"+String(s.valid[0])+",\"frames_factory\":"+String(s.valid[1]);
  out+=",\"power\":";
  if(s.result==samsung_bridge::Scheduler::Result::CONFIRMED)out+=s.power==0x0F?"true":"false";else out+="null";
+ out+=",\"phase\":\""+String(s.phase_name())+"\",\"mode_raw\":"+String(s.mode)+",\"fan_raw\":"+String(s.fan)+",\"fan_before_raw\":"+String(s.before_fan)+",\"fan_target_raw\":"+String(s.target_fan)+",\"permission_raw\":"+String(s.permission)+",\"write_ack\":"+String(s.write_ack?"true":"false");
  return out+"}";
 }
 void IRAM_ATTR Sniffer::on_edge_(void *arg){
@@ -26,7 +27,7 @@ void Sniffer::flush_(unsigned c){auto &p=pending_[c];if(!p.size)return;p.seq=++s
 String Sniffer::capture_(){
  uint32_t after=strtoul(web_.arg("after").c_str(),nullptr,10),first=seq_>128?seq_-127:1;
  String out;out.reserve(22000);
- out="{\"version\":\""+String(bridge_?"0.4.8-bridge-read":"0.4.7-sniffer")+"\",\"passive\":"+String(bridge_?"false":"true")+",\"bridge\":"+String(bridge_?"true":"false")+",\"forwarding\":"+String(bridge_&&forwarding_?"true":"false")+",\"forwarded_a\":"+String(forwarded_[0])+",\"forwarded_b\":"+String(forwarded_[1])+",\"boot_id\":"+String(boot_)+",\"uptime_ms\":"+String(millis())+",\"rx18_bytes\":"+String(bytes_[0])+",\"rx17_bytes\":"+String(bytes_[1])+",\"last_seq\":"+String(seq_)+",\"oldest_seq\":"+String(first)+",\"chunks\":[";
+ out="{\"version\":\""+String(bridge_?"0.4.9-bridge-fan":"0.4.7-sniffer")+"\",\"passive\":"+String(bridge_?"false":"true")+",\"bridge\":"+String(bridge_?"true":"false")+",\"forwarding\":"+String(bridge_&&forwarding_?"true":"false")+",\"forwarded_a\":"+String(forwarded_[0])+",\"forwarded_b\":"+String(forwarded_[1])+",\"boot_id\":"+String(boot_)+",\"uptime_ms\":"+String(millis())+",\"rx18_bytes\":"+String(bytes_[0])+",\"rx17_bytes\":"+String(bytes_[1])+",\"last_seq\":"+String(seq_)+",\"oldest_seq\":"+String(first)+",\"chunks\":[";
  bool comma=false;
  for(uint32_t i=first;i<=seq_&&i!=0;++i){if(i<=after)continue;auto &p=ring_[(i-1)%128];if(comma)out+=",";comma=true;
  out+="{\"seq\":"+String(p.seq)+",\"gpio\":"+String(rx_gpio_(p.channel))+",\"start_ms\":"+String(p.at)+",\"end_ms\":"+String(p.end)+",\"hex\":\"";
@@ -84,6 +85,12 @@ void Sniffer::setup(){
   if(!auth_())return;
   if(web_.header("X-Samsung-Probe")!="read-only"){web_.send(403,"text/plain","Missing probe header");return;}
   if(!bridge_||monitor_only_||!forwarding_||!scheduler_.request(millis())){web_.send(409,"text/plain","Requires active bridge; one read per boot");return;}
+  web_.send(202,"application/json",scheduler_status_());
+ });
+ web_.on("/bridge/test-fan-step",HTTP_POST,[this](){
+  if(!auth_())return;
+  if(web_.header("X-Samsung-Probe")!="fan-step"){web_.send(403,"text/plain","Missing fan-step header");return;}
+  if(!bridge_||monitor_only_||!forwarding_||!scheduler_.request_fan(millis())){web_.send(409,"text/plain","Requires active bridge; one operation per boot");return;}
   web_.send(202,"application/json",scheduler_status_());
  });
  web_.on("/diagnostics",HTTP_GET,[this](){
