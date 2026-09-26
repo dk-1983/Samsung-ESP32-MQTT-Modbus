@@ -18,12 +18,33 @@ String Sniffer::capture_(){
  }out+="]}";return out;
 }
 void Sniffer::setup(){
+ if(bridge_&&monitor_only_){
+  gpio_config_t cfg{};cfg.pin_bit_mask=(1ULL<<17)|(1ULL<<9);cfg.mode=GPIO_MODE_INPUT;
+  cfg.pull_up_en=GPIO_PULLUP_DISABLE;cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
+  gpio_config(&cfg);
+  gpio_io_config_t a{},b{};
+  if(gpio_get_io_config(GPIO_NUM_17,&a)==ESP_OK&&gpio_get_io_config(GPIO_NUM_9,&b)==ESP_OK&&!a.oe&&!b.oe){
+   const uint8_t probe[]={0x55,0xAA,0x00,0xFF,0x01,0x80,0x7F,0xFE};
+   for(unsigned c=0;c<2;++c){
+    auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);
+    auto port=static_cast<uart_port_t>(bus->get_hw_serial_number());
+    loopback_result_[c]=-2;
+    if(uart_set_loop_back(port,true)!=ESP_OK)continue;
+    uart_flush_input(port);bus->write_array(probe,sizeof(probe));
+    uart_wait_tx_done(port,pdMS_TO_TICKS(100));
+    uint8_t received[sizeof(probe)]{};
+    bool ok=bus->read_array(received,sizeof(received));
+    loopback_result_[c]=ok&&memcmp(probe,received,sizeof(probe))==0?1:0;
+    uart_set_loop_back(port,false);uart_flush_input(port);
+   }
+  }
+ }
  boot_=esp_random();
  web_.on("/",HTTP_GET,[this](){if(!auth_())return;web_.send(200,"text/html; charset=utf-8",R"HTML(<!doctype html><meta charset="utf-8"><title>Samsung UART sniffer</title><h1>Samsung UART diagnostic capture</h1><p>A: main board RX18. B: factory board RX17 (sniffer) / RX8 (bridge). 9600 8N1. See /capture for active mode. Bridge forwards traffic; sniffer never transmits. <a href="/capture">Raw JSON capture</a></p><pre id="out"></pre><script>let cursor=0,boot=null;async function poll(){try{let r=await fetch('/capture?after='+cursor);if(!r.ok)throw Error(r.status);let j=await r.json();if(boot!==j.boot_id){boot=j.boot_id;cursor=0;document.querySelector('pre').textContent='New boot '+boot+'\n';if(j.last_seq) {setTimeout(poll,100);return;}}let p=document.querySelector('pre');for(let c of j.chunks)p.textContent+=JSON.stringify(c)+'\n';cursor=j.last_seq;if(p.textContent.length>40000)p.textContent=p.textContent.slice(-30000);}catch(e){document.querySelector('pre').textContent+='Error '+e+'\n';}setTimeout(poll,1000);}poll();</script>)HTML");});
  web_.on("/capture",HTTP_GET,[this](){if(!auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",capture_());});
  web_.on("/diagnostics",HTTP_GET,[this](){
   if(!auth_())return;
-  String out="{\"uart\":[";
+  String out="{\"monitor_only\":"+String(monitor_only_?"true":"false")+",\"loopback\":["+String(loopback_result_[0])+","+String(loopback_result_[1])+"],\"uart\":[";
   for(unsigned c=0;c<2;++c){
    auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);
    auto port=static_cast<uart_port_t>(bus->get_hw_serial_number());

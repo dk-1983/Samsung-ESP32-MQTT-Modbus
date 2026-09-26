@@ -9,7 +9,8 @@ class Sniffer : public Component {
   void set_rx_b(uart::UARTComponent *v){buses_[1]=v;}
   void set_password(const std::string &v){password_=v.c_str();}
   void set_bridge(bool v){bridge_=v;}
-  void set_forwarding(bool v){forwarding_=v;}
+  void set_forwarding(bool v){forwarding_=v&&!monitor_only_;}
+  void set_monitor_only(bool v){monitor_only_=v;if(v)forwarding_=false;}
   void setup()override;
   void loop()override;
  protected:
@@ -18,6 +19,8 @@ class Sniffer : public Component {
   uart::UARTComponent *buses_[2]{};
   uint32_t seq_=0,bytes_[2]{},boot_=0;
   bool bridge_=false,forwarding_=true;
+  bool monitor_only_=false;
+  int loopback_result_[2]{-1,-1};
   uint32_t forwarded_[2]{};
   WebServer web_{80};String password_;bool web_started_=false;
   void flush_(unsigned channel);
