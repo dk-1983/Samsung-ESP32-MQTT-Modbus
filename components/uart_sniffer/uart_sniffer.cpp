@@ -17,7 +17,7 @@ String Sniffer::capture_(){
  out="{\"version\":\""+String(bridge_?"0.4.7-bridge":"0.4.7-sniffer")+"\",\"passive\":"+String(bridge_?"false":"true")+",\"bridge\":"+String(bridge_?"true":"false")+",\"forwarding\":"+String(bridge_&&forwarding_?"true":"false")+",\"forwarded_a\":"+String(forwarded_[0])+",\"forwarded_b\":"+String(forwarded_[1])+",\"boot_id\":"+String(boot_)+",\"uptime_ms\":"+String(millis())+",\"rx18_bytes\":"+String(bytes_[0])+",\"rx17_bytes\":"+String(bytes_[1])+",\"last_seq\":"+String(seq_)+",\"oldest_seq\":"+String(first)+",\"chunks\":[";
  bool comma=false;
  for(uint32_t i=first;i<=seq_&&i!=0;++i){if(i<=after)continue;auto &p=ring_[(i-1)%128];if(comma)out+=",";comma=true;
- out+="{\"seq\":"+String(p.seq)+",\"gpio\":"+String(p.channel?(bridge_?8:17):18)+",\"start_ms\":"+String(p.at)+",\"end_ms\":"+String(p.end)+",\"hex\":\"";
+ out+="{\"seq\":"+String(p.seq)+",\"gpio\":"+String(rx_gpio_(p.channel))+",\"start_ms\":"+String(p.at)+",\"end_ms\":"+String(p.end)+",\"hex\":\"";
  const char *hex="0123456789ABCDEF";for(unsigned j=0;j<p.size;++j){out+=hex[p.data[j]>>4];out+=hex[p.data[j]&15];}out+="\"}";
  }out+="]}";return out;
 }
@@ -25,7 +25,7 @@ void Sniffer::setup(){
  // UART pin routing alone does not fully initialize RTC-capable GPIO inputs.
  // Explicit digital input setup clears RTC mux and leaves input matrix routes intact.
  gpio_config_t rx_cfg{};
- rx_cfg.pin_bit_mask=(1ULL<<18)|(1ULL<<(bridge_?8:17));
+ rx_cfg.pin_bit_mask=(1ULL<<18)|(1ULL<<rx_gpio_(1));
  rx_cfg.mode=GPIO_MODE_INPUT;
  rx_cfg.pull_up_en=GPIO_PULLUP_DISABLE;rx_cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
  const auto rx_setup_error=gpio_config(&rx_cfg);
@@ -35,7 +35,7 @@ void Sniffer::setup(){
   cfg.pull_up_en=GPIO_PULLUP_DISABLE;cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
   gpio_config(&cfg);
   gpio_io_config_t a{},b{};
-  if(gpio_get_io_config(GPIO_NUM_17,&a)==ESP_OK&&gpio_get_io_config(GPIO_NUM_9,&b)==ESP_OK&&!a.oe&&!b.oe){
+  if(!buses_[2]&&gpio_get_io_config(GPIO_NUM_17,&a)==ESP_OK&&gpio_get_io_config(GPIO_NUM_9,&b)==ESP_OK&&!a.oe&&!b.oe){
    const uint8_t probe[]={0x55,0xAA,0x00,0xFF,0x01,0x80,0x7F,0xFE};
    for(unsigned c=0;c<2;++c){
     auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);
@@ -55,8 +55,8 @@ void Sniffer::setup(){
  const char *headers[]={"X-Samsung-Probe"};web_.collectHeaders(headers,1);
  // Observe RX edges independently of UART framing without changing pin mux/pulls.
  auto service=gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
- for(unsigned c=0;c<2;++c){
-  auto pin=static_cast<gpio_num_t>(c?(bridge_?8:17):18);
+ for(unsigned c=0;c<bus_count_();++c){
+  auto pin=static_cast<gpio_num_t>(rx_gpio_(c));
   esp_err_t err=service;
   if(err==ESP_OK||err==ESP_ERR_INVALID_STATE){
    err=gpio_set_intr_type(pin,GPIO_INTR_ANYEDGE);
@@ -82,11 +82,11 @@ void Sniffer::setup(){
  web_.on("/diagnostics",HTTP_GET,[this](){
   if(!auth_())return;
   String out="{\"probe_sent\":"+String(probe_sent_?"true":"false")+",\"probe_at_ms\":"+String(probe_at_)+",\"monitor_only\":"+String(monitor_only_?"true":"false")+",\"loopback\":["+String(loopback_result_[0])+","+String(loopback_result_[1])+"],\"uart\":[";
-  for(unsigned c=0;c<2;++c){
+  for(unsigned c=0;c<bus_count_();++c){
    auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);
    auto port=static_cast<uart_port_t>(bus->get_hw_serial_number());
    uint32_t baud=0;auto err=uart_get_baudrate(port,&baud);
-   int rx=c?(bridge_?8:17):18;
+   int rx=rx_gpio_(c);
    if(c)out+=",";
    out+="{\"edges\":"+String(uint32_t(rx_edges_[c]))+",\"edge_error\":"+String(edge_errors_[c])+",";
    out+="\"port\":"+String(unsigned(port))+",\"failed\":"+String(bus->is_failed()?"true":"false")+",\"driver_installed\":"+String(uart_is_driver_installed(port)?"true":"false")+",\"baud\":"+String(baud)+",\"baud_error\":"+String(int(err))+",\"rx_gpio\":"+String(rx)+",\"rx_level\":"+String(gpio_get_level(static_cast<gpio_num_t>(rx)))+",\"available\":"+String(bus->available())+",\"received\":"+String(bytes_[c])+",\"forwarded\":"+String(forwarded_[c])+"}";
@@ -104,8 +104,8 @@ void Sniffer::setup(){
 
 }
 void Sniffer::loop(){
- for(unsigned c=0;c<2;++c){auto &p=pending_[c];uint32_t t=millis();if(p.size&&uint32_t(t-p.end)>=20)flush_(c);
-  for(unsigned budget=0;budget<48&&buses_[c]->available();++budget){uint8_t v;if(!buses_[c]->read_byte(&v))break;if(bridge_&&forwarding_){buses_[1-c]->write_byte(v);++forwarded_[c];}t=millis();if(!p.size)p.at=t;p.end=t;p.data[p.size++]=v;++bytes_[c];if(p.size==48)flush_(c);}
+ for(unsigned c=0;c<bus_count_();++c){auto &p=pending_[c];uint32_t t=millis();if(p.size&&uint32_t(t-p.end)>=20)flush_(c);
+  for(unsigned budget=0;budget<48&&buses_[c]->available();++budget){uint8_t v;if(!buses_[c]->read_byte(&v))break;if(c<2&&bridge_&&forwarding_){buses_[1-c]->write_byte(v);++forwarded_[c];}t=millis();if(!p.size)p.at=t;p.end=t;p.data[p.size++]=v;++bytes_[c];if(p.size==48)flush_(c);}
  }
  auto *w=wifi::global_wifi_component;
  if(!web_started_&&w&&(w->is_connected()||w->is_ap_active())){web_.begin();web_started_=true;}
