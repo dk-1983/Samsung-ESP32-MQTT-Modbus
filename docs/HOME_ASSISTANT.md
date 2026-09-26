@@ -38,3 +38,32 @@ on the bench. Experimental functions still require hardware validation. Requeste
 values are not published as observed AC feedback.
 
 [Home Assistant MQTT documentation](https://www.home-assistant.io/integrations/mqtt/).
+
+## Own MQTT broker without Home Assistant
+
+Connect the controller to an independent MQTT broker using `/mqtt`: configure the host,
+port, credentials and topic prefix. Home Assistant is not required; your own server,
+Node-RED or another automation client can publish commands and consume feedback.
+
+MQTT uses topics and message payloads, not Modbus register addresses. To obtain the
+interface inventory for the installed firmware, enable MQTT and Discovery, subscribe
+to `homeassistant/#` and identify the device configurations by MAC / `device`.
+Discovery publishing does not require a running Home Assistant instance. Read command
+and state topics, supported values, templates and availability from the configuration
+JSON; field names may be abbreviated. Subscribe to `<prefix>/#` to observe operational
+messages (default `samsung-s3/#`). Use the actual topics advertised by Discovery.
+
+These retained configurations form a machine-readable entity inventory. Discovery
+can be disabled after setting up your client while operational MQTT remains enabled;
+disabling Discovery does not erase previously retained configurations.
+
+| Action | Topic with default prefix | Payload |
+|---|---|---|
+| Power on | `samsung-s3/button/ac_power_on/command` | `PRESS` |
+| Power off | `samsung-s3/button/ac_power_off/command` | `PRESS` |
+
+Send commands without retain and confirm execution from AC feedback. Publishing a
+message or receiving a broker acknowledgement does not prove AC execution.
+
+[Power commands and HTTP API (Russian)](CONTROL_RU.md) ·
+[UART function catalog (Russian)](FUNCTIONS_RU.md) · [Separate Modbus register map](MODBUS.md).

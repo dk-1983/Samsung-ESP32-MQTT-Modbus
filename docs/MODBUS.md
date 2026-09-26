@@ -22,6 +22,25 @@ FC16 accepts up to 8 words, validates the entire request before submitting one
 UART command, and rejects mixed core/extended or multiple extended writes (03).
 Positive response means accepted, not confirmed: check subsequent feedback.
 
+## Samsung / 4VRS address boundary
+
+**2449 ends the Samsung factory indoor-unit range; 2450 starts the custom 4VRS extensions.**
+This does not mark the end of all Samsung addressing: factory MessageSet 6000/7000
+is separate and is not implemented here.
+
+| PDU range | Origin | Implementation |
+|---|---|---|
+| 50–99 | Samsung IU0 | Assigned: 50–55, 57–59 |
+| 100–2449 | Samsung IU1–IU47 | Reserved; this controller serves IU0 only |
+| **2450–2474** | **4VRS custom extension begins** | Additional UART catalog |
+| 2475–2483 | 4VRS | Diagnostics and command results |
+| 2484–2487 | 4VRS | Full swing, presets, full fan including Turbo, Quiet |
+| 2488–2499 | 4VRS reserve | Unassigned |
+| 2500–2949 | 4VRS | Raw catalog payloads and freshness |
+
+Unassigned addresses are not readable zero-filled registers. Matching Samsung
+addresses does not imply complete factory-adapter emulation; see the semantics below.
+
 ## Implemented factory positions (IU0)
 
 | PDU | Access | Meaning and values |

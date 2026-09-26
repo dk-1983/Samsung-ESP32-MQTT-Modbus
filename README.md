@@ -5,13 +5,40 @@
 
 [Русский](README_RU.md)
 
-Local Samsung air conditioner control through ESP32-S3-WROOM-1 N16R8 and the
-stock Wi-Fi module's UART. Target AC: AR24BSFCMWKNER. No Samsung cloud required.
-Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus).
+**Keep Samsung's factory features and add 4VRS control.**
 
-Firmware 0.5.0 includes an inline UART bridge between the main and original
-Wi-Fi/display boards. Web, MQTT and Modbus share one command dispatcher.
+Samsung-ESP32-MQTT-Modbus is an ESP32-S3 expansion controller with a transparent
+inline UART bridge between the AC motherboard and its original display/Wi-Fi board.
+The architecture is designed to preserve the full factory functionality: the
+original boards keep communicating, while the IR remote, display and Samsung
+SmartThings coexist with the additional 4VRS interfaces.
+
+Our 4VRS polling and command dispatcher runs on the ESP32. It tracks factory
+transactions, selects an idle window for each own request and coordinates access
+from the web controls, MQTT and Modbus to the shared UART bus. A command is confirmed
+only by reading the actual AC state. Unknown factory packets are forwarded unchanged,
+so forwarding is not limited to the commands implemented by our firmware.
+
+Additional interfaces:
+
+- **Wi-Fi:** local network connectivity and OTA firmware updates.
+- **HTTP Remote:** a local web remote and HTTP API for control over the network.
+- **MQTT / Home Assistant Discovery:** automatic device and entity discovery. No custom Samsung/4VRS integration, HACS package or manual entity configuration is required; use the standard MQTT integration with your broker.
+- **Modbus RTU / TCP:** RS485 and network automation integration.
+
+Local 4VRS interfaces do not require Samsung's cloud. Factory SmartThings retains
+its own connection through the original Wi-Fi module. Display, IR remote and
+SmartThings control have been checked with the bridge on AR24BSFCMWKNER;
+exhaustive validation of every factory function is still pending.
+
+Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus).
 See [bridge wiring and limitations](docs/UART_BRIDGE_RU.md).
+
+Home Assistant is optional: connect the controller to your own MQTT broker and automation server. See [topics, commands, states and the complete Discovery-based inventory](docs/HOME_ASSISTANT.md#own-mqtt-broker-without-home-assistant).
+
+[Complete Modbus register list with Samsung / 4VRS separation](docs/MODBUS.md): the factory indoor-unit range ends at **2449**, and our extensions begin at **2450**.
+
+[Electrical schematic, wiring and PCB component libraries](hardware/README.md).
 
 ## Controls and connections
 
