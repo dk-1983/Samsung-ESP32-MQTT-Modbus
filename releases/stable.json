@@ -1,0 +1,4 @@
+{
+  "payload": "{\"channel\":\"stable\",\"profile\":\"samsung-s3-n16r8-v1\",\"schema\":1,\"sha256\":\"3d818b4e55b9d5390dc11848452ea498c748d5da750c233df35da8b5387e3475\",\"size\":1271904,\"url\":\"https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/download/v0.5.0/samsung-s3-n16r8-v0.5.0-ota.bin\",\"version\":\"0.5.0\"}",
+  "signature": "304602210087556abaa6f6d2f1f871d48f75581ed2a6540fd1ec06f00848a953cfbfea0165022100d78c0dbec5843e23c5ed6065f81452441a983db6027aa56b199a6176c2de89f6"
+}
