@@ -15,7 +15,7 @@ independent of Modbus unit ID (default 1). The factory indoor formula is
 Keep unused factory addresses reserved, including extension slots 82–99 and
 factory MessageSet configuration at 6000/7000.
 
-RTU: **9600 8E1**, GPIO15 TX / GPIO16 RX / GPIO21 DE, active high.
+RTU: **9600 8E1**, GPIO9 TX / GPIO8 RX / GPIO21 DE, active high.
 TCP: port 502. FC03/04 read; FC06/16 write. Coils and FC01/05/15 are removed (01).
 Both read functions expose the same readable words in this implementation.
 FC16 accepts up to 8 words, validates the entire request before submitting one

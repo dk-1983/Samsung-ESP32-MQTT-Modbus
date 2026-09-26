@@ -11,6 +11,8 @@ class Sniffer : public Component {
   void set_rx_b(uart::UARTComponent *v){buses_[1]=v;}
   void set_password(const std::string &v){password_=v.c_str();}
   void set_rx_b_gpio(int v){rx_b_gpio_=v;}
+  void set_factory_rx_gpio(int v){factory_rx_gpio_=v;}
+  void set_factory_tx_gpio(int v){factory_tx_gpio_=v;}
   void set_bridge(bool v){bridge_=v;}
   void set_forwarding(bool v){forwarding_=v&&!monitor_only_;}
   void set_monitor_only(bool v){monitor_only_=v;if(v)forwarding_=false;}
@@ -24,6 +26,7 @@ class Sniffer : public Component {
   bool bridge_=false,forwarding_=true;
   bool monitor_only_=false;
   int rx_b_gpio_=-1;
+  int factory_rx_gpio_=15,factory_tx_gpio_=16;
   int loopback_result_[2]{-1,-1};
   volatile uint32_t rx_edges_[3]{};
   int edge_errors_[3]{-1,-1,-1};
@@ -33,7 +36,7 @@ class Sniffer : public Component {
   uint32_t forwarded_[3]{};
   WebServer web_{80};String password_;bool web_started_=false;
   unsigned bus_count_()const{return buses_[2]?3:2;}
-  int rx_gpio_(unsigned c)const{return c==2?9:(c?(rx_b_gpio_>=0?rx_b_gpio_:(bridge_?8:17)):18);}
+  int rx_gpio_(unsigned c)const{return c==2?9:(c?(rx_b_gpio_>=0?rx_b_gpio_:(bridge_?factory_rx_gpio_:17)):18);}
   void flush_(unsigned channel);
   bool auth_(){if(web_.authenticate("admin",password_.c_str()))return true;web_.requestAuthentication();return false;}
   String capture_();

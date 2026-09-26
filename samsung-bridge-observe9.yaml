@@ -63,6 +63,8 @@ uart:
 uart_sniffer:
   id: inline_bridge
   bridge: true
+  factory_rx_gpio: 8
+  factory_tx_gpio: 9
   monitor_only: true
   rx_b_gpio: 9
   rx_a: sniff_a

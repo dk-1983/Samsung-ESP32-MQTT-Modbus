@@ -3,8 +3,8 @@ substitutions:
   test_update_feed: "false"
   samsung_tx: GPIO17
   samsung_rx: GPIO18
-  rs485_tx: GPIO15
-  rs485_rx: GPIO16
+  rs485_tx: GPIO9
+  rs485_rx: GPIO8
   rs485_de: GPIO21
 
 esphome:
