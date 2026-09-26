@@ -41,6 +41,8 @@ String Portal::system_json_(){
  cJSON_AddBoolToObject(j,"rtu",config_.rtu);cJSON_AddBoolToObject(j,"tcp",config_.tcp);
  cJSON_AddBoolToObject(j,"uart",ac_->tx_enabled());
  cJSON_AddBoolToObject(j,"ac_fresh",ac_->feedback_fresh());
+ cJSON_AddBoolToObject(j,"inline_bridge",ac_->inline_bridge());
+ cJSON_AddStringToObject(j,"bridge",ac_->bridge_diagnostics().c_str());
  cJSON_AddBoolToObject(j,"storage_ok",storage_ok_);
  cJSON_AddBoolToObject(j,"update_busy",updates_busy_());
  cJSON_AddBoolToObject(j,"restarting",restart_);

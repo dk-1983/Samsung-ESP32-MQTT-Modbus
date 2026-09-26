@@ -1,7 +1,7 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.4.7
+# Samsung-ESP32-MQTT-Modbus — 0.5.0
 
 [Русский](README_RU.md)
 
@@ -9,9 +9,9 @@ Local Samsung air conditioner control through ESP32-S3-WROOM-1 N16R8 and the
 stock Wi-Fi module's UART. Target AC: AR24BSFCMWKNER. No Samsung cloud required.
 Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus).
 
-The separate experimental [UART bridge build](docs/UART_BRIDGE_RU.md) forwards
-factory traffic in both directions. It requires different wiring; command
-injection, MQTT and Modbus are not included in this diagnostic build.
+Firmware 0.5.0 includes an inline UART bridge between the main and original
+Wi-Fi/display boards. Web, MQTT and Modbus share one command dispatcher.
+See [bridge wiring and limitations](docs/UART_BRIDGE_RU.md).
 
 ## Controls and connections
 
@@ -75,3 +75,10 @@ Other settings are preserved.
 [Overview, web controls and MQTT power commands (Russian)](docs/CONTROL_RU.md).
 
 Version 0.4.7 automatically restores UART control permission (register 01) after a reset. HVAC commands wait for readback; requested power is never restored automatically.
+
+In inline mode the factory board owns startup and notification ACKs. Own writes
+require fresh permission and feedback, use an idle transaction window and are
+confirmed by own readback, never by ACK alone. No automatic write retries.
+Main RX18/TX17, factory RX15/TX16, RS485 RX8/TX9/DE21. All three hardware
+UARTs are used; serial logging is disabled, web logging remains available.
+Disabling UART transmission also stops factory forwarding.

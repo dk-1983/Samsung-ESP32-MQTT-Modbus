@@ -3,6 +3,8 @@
 #include "esphome/core/log.h"
 #include "esphome/components/wifi/wifi_component.h"
 #include <cmath>
+#include "esphome/components/uart/uart_component_esp_idf.h"
+#include "driver/gpio.h"
 namespace esphome { namespace samsung_uart {
 using namespace samsung_proto;
 using namespace climate;
@@ -14,6 +16,11 @@ static std::string hex(const uint8_t *p,size_t n){
 void SamsungClimate::setup(){
   set_supported_custom_presets({"quiet","legacy_smart","legacy_soft_cool","legacy_wind_1","legacy_wind_2","legacy_wind_3"});
   set_supported_custom_fan_modes({"turbo"});
+  if(factory_){
+    gpio_config_t cfg{};cfg.pin_bit_mask=(1ULL<<18)|(1ULL<<15);cfg.mode=GPIO_MODE_INPUT;
+    cfg.pull_up_en=GPIO_PULLUP_DISABLE;cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
+    if(gpio_config(&cfg)!=ESP_OK){mark_failed();return;}
+  }
   enable_tx(true);current_temperature=NAN;target_temperature=NAN;
   ESP_LOGW(TAG,"Wi-Fi UART D0 profile: core controls tested on AR24BSFCMWKNER; extended features experimental. UART enabled at boot.");
 }
@@ -27,10 +34,42 @@ ClimateTraits SamsungClimate::traits(){
   t.set_visual_min_temperature(16);t.set_visual_max_temperature(30);t.set_visual_temperature_step(1);return t;
 }
 void SamsungClimate::enable_tx(bool value){
-  link_.reset();session.enable(value);if(!value)extended.cancel();acks_.clear();reads_.clear();last_poll_=millis();
+  bridge_.enable(value,millis());link_.reset();session.enable(value);if(!value)extended.cancel();acks_.clear();reads_.clear();last_poll_=millis();
   ESP_LOGW(TAG,"UART transmission %s (not persisted)",value?"ENABLED":"DISABLED: MONITOR ONLY");
 }
+void SamsungClimate::bridge_emit_(unsigned destination,const uint8_t *p,size_t n,bool own){
+  if(!session.enabled)return;
+  (destination?factory_:parent_)->write_array(p,n);
+  if(own){last_tx_ms_=millis();++tx_frames_;last_tx_=hex(p,n);ESP_LOGD(TAG,"TX own %s",last_tx_.c_str());}
+}
+bool SamsungClimate::transmission_ready_(){
+  if(!session.enabled)return false;
+  if(!factory_)return acks_.empty()&&!available()&&!parser_.used&&uint32_t(millis()-last_tx_ms_)>=300&&uint32_t(millis()-last_rx_ms_)>=30;
+  if(!bridge_.ready(millis())||available()||factory_->available())return false;
+  for(auto *b:{parent_,factory_}){
+    auto *u=static_cast<uart::IDFUARTComponent *>(b);
+    if(u->is_failed()||uart_wait_tx_done(static_cast<uart_port_t>(u->get_hw_serial_number()),0)!=ESP_OK)return false;
+  }
+  return true;
+}
+std::string SamsungClimate::bridge_diagnostics()const{
+  if(!factory_)return "direct";
+  char b[420];snprintf(b,sizeof(b),"inline RX18/TX17 RX15/TX16 | frames=%lu/%lu forwarded=%lu/%lu stock=%lu pending=%u held=%u errors=%lu expired=%lu own=%lu replies=%lu timeouts=%lu overflow=%lu",
+    (unsigned long)bridge_.frames[0],(unsigned long)bridge_.frames[1],(unsigned long)bridge_.forwarded[0],(unsigned long)bridge_.forwarded[1],
+    (unsigned long)bridge_.completed,unsigned(bridge_.pending_count()),unsigned(bridge_.held_count),(unsigned long)bridge_.errors,(unsigned long)bridge_.expired,
+    (unsigned long)bridge_.own_sent,(unsigned long)bridge_.own_replies,(unsigned long)bridge_.own_timeouts,(unsigned long)bridge_.overflows);
+  std::string out=b;
+  for(auto *bus:{parent_,factory_,rs485_}){
+    auto *u=static_cast<uart::IDFUARTComponent *>(bus);auto port=static_cast<uart_port_t>(u->get_hw_serial_number());uint32_t baud=0;
+    int error=uart_get_baudrate(port,&baud);char v[80];snprintf(v,sizeof(v)," | UART%d baud=%lu error=%d failed=%d",int(port),(unsigned long)baud,error,int(u->is_failed()));out+=v;
+  }
+  return out;
+}
 bool SamsungClimate::send_(uint16_t type,const Bytes &payload,uint8_t counter){
+  if(factory_){
+    if(!transmission_ready_()||!bridge_.choose_counter(millis(),counter_))return false;
+    return bridge_.send(type,payload,counter_,millis(),[this](unsigned d,const uint8_t *p,size_t n,bool own){bridge_emit_(d,p,n,own);});
+  }
   if(!session.enabled || available() || parser_.used || uint32_t(millis()-last_tx_ms_)<300 || uint32_t(millis()-last_rx_ms_)<30)return false;
   Bytes b=frame(type,counter,payload);if(b.empty())return false;
   write_array(b.data(),b.size());last_tx_ms_=millis();++tx_frames_;last_tx_=hex(b.data(),b.size());
@@ -40,6 +79,7 @@ void SamsungClimate::query(){
   if(send_(0x1202,query_payload(),counter_)){++counter_;last_poll_=millis();}
 }
 void SamsungClimate::initialize_link(){
+  if(factory_){ESP_LOGW(TAG,"Initialization belongs to the original Wi-Fi module in bridge mode");return;}
   // Deliberate separate operator action: known older Wi-Fi module initialization only.
   if(session.pending||extended.pending){ESP_LOGW(TAG,"Initialization rejected: command pending");return;}
   if(send_(0x1204,{0x01,1,0x0f,0x74,1,0xf0},counter_))++counter_;
@@ -49,7 +89,7 @@ bool SamsungClimate::submit(const Command &c){
   now=millis();
   if(extended.pending||!control_ready())return false;
   // Reserve session only when UART can transmit immediately; no stale command queue.
-  if(!acks_.empty() || available() || parser_.used || uint32_t(now-last_tx_ms_)<300 || uint32_t(now-last_rx_ms_)<30)return false;
+  if(!transmission_ready_())return false;
   if(!session.accept(c,now))return false;
   if(!send_(0x1204,command_payload(c),counter_)){session.pending=false;session.result=4;return false;}
   ++counter_;last_poll_=now-4500;return true;
@@ -57,7 +97,8 @@ bool SamsungClimate::submit(const Command &c){
 bool SamsungClimate::submit_extra(size_t index,uint16_t value){
   now=millis();
   if(!session.enabled||!control_ready()||session.pending||extended.pending||!safely_fresh()||!extra_allowed(index,value))return false;
-  if(!acks_.empty()||available()||parser_.used||uint32_t(now-last_tx_ms_)<300||uint32_t(now-last_rx_ms_)<30)return false;
+  if(!transmission_ready_())return false;
+  if(factory_&&!bridge_.choose_counter(now,counter_))return false;
   if(!extended.accept(index,value,counter_,now))return false;
   auto &d=EXTRA[index];
   if(!send_(uint16_t(d.group)<<8|4,{d.id,1,uint8_t(value)},counter_)){extended.cancel();return false;}
@@ -113,16 +154,20 @@ void SamsungClimate::control(const ClimateCall &call){
   if(!submit(c))ESP_LOGW(TAG,"Command rejected: monitor mode, stale/unknown field, pending command or UART busy");
   // Never publish requested values optimistically; only received feedback is state.
 }
-void SamsungClimate::received_(const uint8_t *p,size_t n){
+void SamsungClimate::received_(const uint8_t *p,size_t n,bool own){
   last_rx_=hex(p,n);ESP_LOGD(TAG,"RX valid %s",last_rx_.c_str());
   if(p[10]!=0xfe){++other_frames_;return;} // Observed FC service frames: capture only, no guessed ACK.
-  now=millis();link_.receive(p,n,now);session.receive(p,n,now);extended.receive(p,n,now);
-  if(p[12]==5)last_write_reply_=last_rx_;
+  now=millis();link_.receive(p,n,now);
+  if(factory_&&!own){
+    session.state.update(p,n,now);
+    bool pending=extended.pending;extended.pending=false;extended.receive(p,n,now);extended.pending=pending;
+  }else {session.receive(p,n,now);extended.receive(p,n,now);}
+  if(p[12]==5){last_write_reply_=last_rx_;if(factory_&&own){last_poll_=now-5000;last_extra_poll_=now-800;}}
   if(p[11]==0x12 && (p[12]==3||p[12]==6)){
     ++status_count;seen_status=true;last_status=now;publish_feedback_();
   }
   // ACK unsolicited status only. Read responses and write ACKs must never be ACKed.
-  if(session.enabled && p[11]>=0x12 && p[11]<=0x14 && p[12]==6 && acks_.size()<4)
+  if(!factory_ && session.enabled && p[11]>=0x12 && p[11]<=0x14 && p[12]==6 && acks_.size()<4)
     acks_.push_back({Bytes(p+14,p+n-2),p[9],uint16_t(uint16_t(p[11])<<8|7)});
 }
 void SamsungClimate::publish_feedback_(){
@@ -152,11 +197,21 @@ std::string SamsungClimate::command_status()const{
 }
 std::string SamsungClimate::diagnostics()const{
   char b[240];snprintf(b,sizeof(b),"%s | RX bytes=%lu valid=%lu invalid=%lu TX=%lu | feedback=%s | cmd=%s | service=%lu",
-    session.enabled?"ACTIVE D0 profile":"MONITOR ONLY",(unsigned long)rx_bytes_,(unsigned long)parser_.frames,
-    (unsigned long)parser_.bad,(unsigned long)tx_frames_,feedback_fresh()?"fresh":"unknown/stale",command_status().c_str(),(unsigned long)other_frames_);return b;
+    session.enabled?"ACTIVE D0 profile":"MONITOR ONLY",(unsigned long)rx_bytes_,(unsigned long)(factory_?bridge_.frames[0]:parser_.frames),
+    (unsigned long)(factory_?bridge_.errors:parser_.bad),(unsigned long)tx_frames_,feedback_fresh()?"fresh":"unknown/stale",command_status().c_str(),(unsigned long)other_frames_);return b;
 }
 void SamsungClimate::loop(){
   now=millis();session.tick(now);extended.tick(now);
+  if(factory_){
+    auto emit=[this](unsigned d,const uint8_t *p,size_t n,bool own){bridge_emit_(d,p,n,own);};
+    for(unsigned c=0;c<2;++c){auto *bus=c?factory_:parent_;
+      for(unsigned budget=0;budget<48&&bus->available();++budget){uint8_t v;if(!bus->read_byte(&v))break;
+        if(c==0){++rx_bytes_;last_rx_ms_=millis();}
+        bridge_.feed(c,v,millis(),emit,[this](const uint8_t *p,size_t n,bool own){received_(p,n,own);});
+      }
+    }
+    bridge_.tick(millis(),emit);
+  }else {
   if(parser_.used && uint32_t(now-last_rx_ms_)>200){parser_.clear();++parser_.bad;}
   if(raw_used_ && uint32_t(now-last_rx_ms_)>200){last_rx_=hex(raw_,raw_used_);ESP_LOGD(TAG,"RX bytes %s",last_rx_.c_str());raw_used_=0;}
   for(unsigned budget=0;budget<512 && available();++budget){
@@ -164,10 +219,11 @@ void SamsungClimate::loop(){
     if(raw_used_==sizeof(raw_)){last_rx_=hex(raw_,raw_used_);ESP_LOGD(TAG,"RX bytes %s",last_rx_.c_str());raw_used_=0;}
     parser_.push(v,[this](const uint8_t *p,size_t n){received_(p,n);});
   }
+  }
   if(session.enabled){
     if(!acks_.empty()){
       if(send_(acks_.front().type,acks_.front().payload,acks_.front().counter))acks_.pop_front();
-    }else if(!session.pending&&!extended.pending&&link_.needs_enable(now)){
+    }else if(!factory_&&!session.pending&&!extended.pending&&link_.needs_enable(now)){
       // Restore only control permission; leave beep and HVAC settings untouched.
       if(send_(0x1204,{0x01,1,0x0f},counter_)){
         ++counter_;link_.sent(now);last_poll_=now-4500;

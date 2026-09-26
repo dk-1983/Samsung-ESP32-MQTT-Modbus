@@ -7,7 +7,7 @@ out = root / 'work'
 out.mkdir(exist_ok=True)
 os.environ['ZIG_GLOBAL_CACHE_DIR'] = str(out / 'zig-global-cache')
 os.environ['ZIG_LOCAL_CACHE_DIR'] = str(out / 'zig-local-cache')
-for name in ('test_protocol', 'test_bridge'):
+for name in ('test_protocol', 'test_bridge', 'test_inline'):
     binary = out / (name + ('.exe' if os.name == 'nt' else ''))
     log_path = out / (name + '-compile.log')
     with log_path.open('w', encoding='utf-8') as log:

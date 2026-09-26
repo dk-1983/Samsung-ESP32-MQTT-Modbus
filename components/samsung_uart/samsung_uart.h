@@ -5,12 +5,16 @@
 #include "esphome/components/uart/uart.h"
 #include "bridge.h"
 #include "control_link.h"
+#include "inline_bridge.h"
 #include <WiFi.h>
 #include <deque>
 namespace esphome { namespace samsung_uart {
 class SamsungClimate : public Component, public climate::Climate, public uart::UARTDevice, public samsung_proto::Bridge {
  public:
   void set_rs485(uart::UARTComponent *v){rs485_=v;}
+  void set_factory_uart(uart::UARTComponent *v){factory_=v;}
+  bool inline_bridge()const{return factory_!=nullptr;}
+  std::string bridge_diagnostics()const;
   void set_unit(uint8_t v){unit_=v;}
   void configure_modbus(bool rtu,bool tcp,uint8_t unit,uint32_t baud);
   uint32_t rtu_gap_us_=4100;
@@ -40,11 +44,15 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
  protected:
   climate::ClimateTraits traits()override;
   void control(const climate::ClimateCall &call)override;
-  void received_(const uint8_t *p,size_t n);
+  void received_(const uint8_t *p,size_t n,bool own=false);
+  bool transmission_ready_();
+  void bridge_emit_(unsigned destination,const uint8_t *p,size_t n,bool own);
   void publish_feedback_();
   void transports_();
   bool send_(uint16_t type,const samsung_proto::Bytes &payload,uint8_t counter);
   uart::UARTComponent *rs485_=nullptr;
+  uart::UARTComponent *factory_=nullptr;
+  samsung_proto::InlineBridge bridge_;
   samsung_proto::Parser parser_;
   samsung_proto::ControlLink link_;
   uint32_t rx_bytes_=0,tx_frames_=0,last_rx_ms_=0,last_tx_ms_=0,last_poll_=0,last_publish_=0;

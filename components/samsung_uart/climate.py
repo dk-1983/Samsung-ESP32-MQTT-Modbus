@@ -8,6 +8,7 @@ ns = cg.esphome_ns.namespace("samsung_uart")
 SamsungClimate = ns.class_("SamsungClimate", climate.Climate, cg.Component, uart.UARTDevice)
 CONFIG_SCHEMA = climate.climate_schema(SamsungClimate).extend({
     cv.Required("rs485_uart_id"): cv.use_id(uart.UARTComponent),
+    cv.Optional("factory_uart_id"): cv.use_id(uart.UARTComponent),
     cv.Optional("modbus_unit", default=1): cv.int_range(min=1, max=247),
 }).extend(cv.COMPONENT_SCHEMA).extend(uart.UART_DEVICE_SCHEMA)
 
@@ -20,4 +21,7 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
     rs485 = await cg.get_variable(config["rs485_uart_id"])
     cg.add(var.set_rs485(rs485))
+    if "factory_uart_id" in config:
+        factory = await cg.get_variable(config["factory_uart_id"])
+        cg.add(var.set_factory_uart(factory))
     cg.add(var.set_unit(config["modbus_unit"]))

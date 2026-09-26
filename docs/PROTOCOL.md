@@ -61,3 +61,14 @@ Extended ordinary writes confirm only matching subsequent feedback; action ACKs 
 Raw values expire after 30 seconds; no guessed physical units or universal sentinel meanings.
 The observed FC envelope is structurally validated and counted separately; never interpreted as FE climate
 feedback and never acknowledged without a protocol reference. See FUNCTIONS_RU.md for the exact catalogue.
+
+## Inline operation (0.5.0)
+
+The optional factory UART changes ownership: original notifications/ACKs and
+startup frames are forwarded, not regenerated. Automatic permission recovery
+and manual legacy initialization are disabled in inline mode. Commands require
+fresh 01=0F feedback. Own reads and writes share a dispatcher with the factory
+traffic; their replies are isolated by FE envelope, group, reply type and counter.
+Core commands are confirmed only by own read responses after transmission;
+forwarded notifications still update displayed state. No write retry is automatic.
+The direct, single-UART profile retains the older behavior described above.

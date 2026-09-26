@@ -13,7 +13,7 @@ esphome:
   build_path: ../work/build
   project:
     name: fourvrs.samsung_uart_prototype
-    version: 0.4.7
+    version: 0.5.0
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -32,8 +32,7 @@ external_components:
 
 logger:
   level: DEBUG
-  hardware_uart: UART0
-  baud_rate: 115200
+  baud_rate: 0 # All three hardware UARTs serve bridge and Modbus; logs remain on web.
 
 wifi:
   reboot_timeout: 0s
@@ -73,12 +72,32 @@ mqtt:
 uart:
   - id: samsung_bus
     tx_pin: ${samsung_tx}
-    rx_pin: ${samsung_rx}
+    rx_pin:
+      number: ${samsung_rx}
+      mode:
+        input: true
+        pullup: false
+        pulldown: false
     baud_rate: 9600
     data_bits: 8
     parity: NONE
     stop_bits: 1
-    rx_buffer_size: 512
+    rx_buffer_size: 4096
+    rx_full_threshold: 1
+    rx_timeout: 2
+  - id: factory_bus
+    tx_pin: GPIO16
+    rx_pin:
+      number: GPIO15
+      mode:
+        input: true
+        pullup: false
+        pulldown: false
+    baud_rate: 9600
+    data_bits: 8
+    parity: NONE
+    stop_bits: 1
+    rx_buffer_size: 4096
     rx_full_threshold: 1
     rx_timeout: 2
   - id: rs485_bus
@@ -99,6 +118,7 @@ climate:
     name: Air conditioner
     uart_id: samsung_bus
     rs485_uart_id: rs485_bus
+    factory_uart_id: factory_bus
     modbus_unit: 1
 
 switch:
