@@ -22,6 +22,14 @@ String Sniffer::capture_(){
  }out+="]}";return out;
 }
 void Sniffer::setup(){
+ // UART pin routing alone does not fully initialize RTC-capable GPIO inputs.
+ // Explicit digital input setup clears RTC mux and leaves input matrix routes intact.
+ gpio_config_t rx_cfg{};
+ rx_cfg.pin_bit_mask=(1ULL<<18)|(1ULL<<(bridge_?8:17));
+ rx_cfg.mode=GPIO_MODE_INPUT;
+ rx_cfg.pull_up_en=GPIO_PULLUP_DISABLE;rx_cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
+ const auto rx_setup_error=gpio_config(&rx_cfg);
+ if(rx_setup_error!=ESP_OK){this->mark_failed();return;}
  if(bridge_&&monitor_only_){
   gpio_config_t cfg{};cfg.pin_bit_mask=(1ULL<<17)|(1ULL<<9);cfg.mode=GPIO_MODE_INPUT;
   cfg.pull_up_en=GPIO_PULLUP_DISABLE;cfg.pull_down_en=GPIO_PULLDOWN_DISABLE;
@@ -44,6 +52,7 @@ void Sniffer::setup(){
   }
  }
  boot_=esp_random();
+ const char *headers[]={"X-Samsung-Probe"};web_.collectHeaders(headers,1);
  // Observe RX edges independently of UART framing without changing pin mux/pulls.
  auto service=gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
  for(unsigned c=0;c<2;++c){
@@ -58,9 +67,21 @@ void Sniffer::setup(){
  }
  web_.on("/",HTTP_GET,[this](){if(!auth_())return;web_.send(200,"text/html; charset=utf-8",R"HTML(<!doctype html><meta charset="utf-8"><title>Samsung UART sniffer</title><h1>Samsung UART diagnostic capture</h1><p>A: main board RX18. B: factory board RX17 (sniffer) / RX8 (bridge). 9600 8N1. See /capture for active mode. Bridge forwards traffic; sniffer never transmits. <a href="/capture">Raw JSON capture</a></p><pre id="out"></pre><script>let cursor=0,boot=null;async function poll(){try{let r=await fetch('/capture?after='+cursor);if(!r.ok)throw Error(r.status);let j=await r.json();if(boot!==j.boot_id){boot=j.boot_id;cursor=0;document.querySelector('pre').textContent='New boot '+boot+'\n';if(j.last_seq) {setTimeout(poll,100);return;}}let p=document.querySelector('pre');for(let c of j.chunks)p.textContent+=JSON.stringify(c)+'\n';cursor=j.last_seq;if(p.textContent.length>40000)p.textContent=p.textContent.slice(-30000);}catch(e){document.querySelector('pre').textContent+='Error '+e+'\n';}setTimeout(poll,1000);}poll();</script>)HTML");});
  web_.on("/capture",HTTP_GET,[this](){if(!auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",capture_());});
+ // Deliberate one-shot read for a silent bridge, never automatic initialization.
+ web_.on("/probe/main-power",HTTP_POST,[this](){
+  if(!auth_())return;
+  if(web_.header("X-Samsung-Probe")!="read-only"){web_.send(403,"text/plain","Missing probe header");return;}
+  if(!bridge_||monitor_only_||!forwarding_||probe_sent_||millis()<20000||bytes_[0]!=0||bytes_[1]>1||rx_edges_[0]||rx_edges_[1]||buses_[0]->available()||buses_[1]->available()){
+   web_.send(409,"text/plain","Probe requires silent active bridge, once per boot");return;
+  }
+  uint8_t frame[]={0xD0,0xC0,0x02,0x0E,0,0,0,0,0,0xE1,0xFE,0x12,0x02,0x02,0x02,0x00,0,0xE0};
+  for(unsigned i=0;i<sizeof(frame)-2;++i)frame[sizeof(frame)-2]^=frame[i];
+  probe_sent_=true;probe_at_=millis();buses_[0]->write_array(frame,sizeof(frame));
+  web_.send(200,"application/json","{\"submitted\":true,\"type\":\"FE1202\",\"field\":\"02\",\"counter\":225}");
+ });
  web_.on("/diagnostics",HTTP_GET,[this](){
   if(!auth_())return;
-  String out="{\"monitor_only\":"+String(monitor_only_?"true":"false")+",\"loopback\":["+String(loopback_result_[0])+","+String(loopback_result_[1])+"],\"uart\":[";
+  String out="{\"probe_sent\":"+String(probe_sent_?"true":"false")+",\"probe_at_ms\":"+String(probe_at_)+",\"monitor_only\":"+String(monitor_only_?"true":"false")+",\"loopback\":["+String(loopback_result_[0])+","+String(loopback_result_[1])+"],\"uart\":[";
   for(unsigned c=0;c<2;++c){
    auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);
    auto port=static_cast<uart_port_t>(bus->get_hw_serial_number());

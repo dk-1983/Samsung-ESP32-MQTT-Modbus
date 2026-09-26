@@ -24,6 +24,8 @@ class Sniffer : public Component {
   int loopback_result_[2]{-1,-1};
   volatile uint32_t rx_edges_[2]{};
   int edge_errors_[2]{-1,-1};
+  bool probe_sent_=false;
+  uint32_t probe_at_=0;
   static void IRAM_ATTR on_edge_(void *arg);
   uint32_t forwarded_[2]{};
   WebServer web_{80};String password_;bool web_started_=false;
