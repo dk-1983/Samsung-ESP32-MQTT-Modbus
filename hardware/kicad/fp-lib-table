@@ -1,0 +1,3 @@
+(fp_lib_table
+ (lib (name "4vrs_Samsung")(type "KiCad")(uri "${KIPRJMOD}/4vrs_Samsung.pretty")(options "")(descr "Vendor footprints; see footprint_sources.json"))
+)

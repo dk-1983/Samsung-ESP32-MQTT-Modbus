@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297"><rect width="420" height="297" fill="white"/>
+<rect x="7" y="7" width="406" height="283" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="15" y="20" font-family="Arial, sans-serif" font-size="6" font-weight="700" text-anchor="start" fill="#17212b">4VRS</text>
+<text x="46" y="20" font-family="Arial, sans-serif" font-size="5" font-weight="700" text-anchor="start" fill="#17212b">Samsung-ESP32-MQTT-Modbus</text>
+<text x="405" y="18" font-family="Arial, sans-serif" font-size="3" font-weight="700" text-anchor="end" fill="#a25a00">REV A / ЭЛЕКТРИЧЕСКАЯ СХЕМА</text>
+<text x="405" y="25" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="end" fill="#17212b">26.09.2026</text>
+<line x1="15" y1="29" x2="405" y2="29" stroke="#17212b" stroke-width="0.32"/>
+<text x="15" y="37" font-family="Arial, sans-serif" font-size="3.8" font-weight="700" text-anchor="start" fill="#17212b">Таблица соединений и база компонентов / подготовка к PCB</text>
+<rect x="15" y="270" width="390" height="15" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<line x1="285" y1="270" x2="285" y2="285" stroke="#17212b" stroke-width="0.32"/>
+<line x1="360" y1="270" x2="360" y2="285" stroke="#17212b" stroke-width="0.32"/>
+<text x="19" y="276" font-family="Arial, sans-serif" font-size="3.2" font-weight="700" text-anchor="start" fill="#17212b">Samsung UART bridge + Modbus RS485</text>
+<text x="19" y="282" font-family="Arial, sans-serif" font-size="2.6" font-weight="400" text-anchor="start" fill="#17212b">Схема электрическая принципиальная · Samsung UART bridge</text>
+<text x="289" y="276" font-family="Arial, sans-serif" font-size="3" font-weight="700" text-anchor="start" fill="#17212b">4VRS-SAM-001 / Э3</text>
+<text x="289" y="282" font-family="Arial, sans-serif" font-size="2.6" font-weight="400" text-anchor="start" fill="#17212b">A3 • Масштаб: условно</text>
+<text x="364" y="276" font-family="Arial, sans-serif" font-size="3" font-weight="700" text-anchor="start" fill="#17212b">Лист 2 / 2</text>
+<text x="364" y="282" font-family="Arial, sans-serif" font-size="2.6" font-weight="400" text-anchor="start" fill="#17212b">Rev A</text>
+<text x="16" y="48" font-family="Arial, sans-serif" font-size="3.5" font-weight="700" text-anchor="start" fill="#17212b">СОЕДИНЕНИЯ ESP32 И КОНДИЦИОНЕРА</text>
+<rect x="16" y="53" width="50" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="58.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Сеть / назначение</text>
+<rect x="66" y="53" width="18" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="58.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">GPIO</text>
+<rect x="84" y="53" width="28" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="58.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Контакт U1</text>
+<rect x="112" y="53" width="292" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="58.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Соединение</text>
+<rect x="16" y="61" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="66.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MAIN_RX</text>
+<rect x="66" y="61" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="66.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">18</text>
+<rect x="84" y="61" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="66.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">11</text>
+<rect x="112" y="61" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="66.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">Основная плата CN1 №10 → R4 → GPIO18; R5 → GND</text>
+<rect x="16" y="69" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="74.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MAIN_TX</text>
+<rect x="66" y="69" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="74.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">17</text>
+<rect x="84" y="69" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="74.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">10</text>
+<rect x="112" y="69" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="74.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">GPIO17 → основная плата CN1 №9</text>
+<rect x="16" y="77" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="82.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">FACTORY_RX</text>
+<rect x="66" y="77" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="82.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">15</text>
+<rect x="84" y="77" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="82.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">8</text>
+<rect x="112" y="77" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="82.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">Плата дисплея CN1 №9 → R3 → GPIO15; R2 → GND</text>
+<rect x="16" y="85" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="90.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">FACTORY_TX</text>
+<rect x="66" y="85" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="90.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">16</text>
+<rect x="84" y="85" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="90.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">9</text>
+<rect x="112" y="85" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="90.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">GPIO16 → плата дисплея CN1 №10</text>
+<rect x="16" y="93" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="98.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MB_RX</text>
+<rect x="66" y="93" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="98.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">8</text>
+<rect x="84" y="93" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="98.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">12</text>
+<rect x="112" y="93" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="98.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MAX485 RO (1) → R7 → GPIO8; R6 → GND</text>
+<rect x="16" y="101" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="106.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MB_TX</text>
+<rect x="66" y="101" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="106.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">9</text>
+<rect x="84" y="101" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="106.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">17</text>
+<rect x="112" y="101" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="106.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">GPIO9 → MAX485 DI (4)</text>
+<rect x="16" y="109" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="114.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MB_DE</text>
+<rect x="66" y="109" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="114.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">21</text>
+<rect x="84" y="109" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="114.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">23</text>
+<rect x="112" y="109" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="114.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">GPIO21 → MAX485 /RE (2) и DE (3); R8 → GND</text>
+<rect x="16" y="117" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="122.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">PROG_TX / RX</text>
+<rect x="66" y="117" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="122.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">43 / 44</text>
+<rect x="84" y="117" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="122.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">37 / 36</text>
+<rect x="112" y="117" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="122.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">GPIO43 → RX адаптера; GPIO44 ← TX адаптера; GND общий</text>
+<rect x="16" y="125" width="50" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="130.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">+3V3 / EN / GND</text>
+<rect x="66" y="125" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="68" y="130.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">—</text>
+<rect x="84" y="125" width="28" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="86" y="130.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">2 / 3 / 1,40,41</text>
+<rect x="112" y="125" width="292" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="114" y="130.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">3,3 В / разрешение / земля; EP41 → GND</text>
+<text x="16" y="145" font-family="Arial, sans-serif" font-size="3.5" font-weight="700" text-anchor="start" fill="#17212b">ПЕРЕЧЕНЬ ЭЛЕМЕНТОВ</text>
+<rect x="16" y="150" width="47" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="155.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Поз.</text>
+<rect x="63" y="150" width="93" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="155.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Номинал / модель</text>
+<rect x="156" y="150" width="18" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="155.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Кол.</text>
+<rect x="174" y="150" width="230" height="8" fill="#eef3f6" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="155.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="700" text-anchor="start" fill="#17212b">Корпус / статус</text>
+<rect x="16" y="158" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="163.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">U1</text>
+<rect x="63" y="158" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="163.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">ESP32-S3-WROOM-1-N16R8</text>
+<rect x="156" y="158" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="163.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">1</text>
+<rect x="174" y="158" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="163.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">Модуль Espressif; GPIO и pad сверены с datasheet</text>
+<rect x="16" y="166" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="171.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">U2</text>
+<rect x="63" y="166" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="171.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">AMS1117-3.3</text>
+<rect x="156" y="166" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="171.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">1</text>
+<rect x="174" y="166" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="171.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">SOT-223 / tab = OUT; корпус предложен для PCB</text>
+<rect x="16" y="174" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="179.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">U3</text>
+<rect x="63" y="174" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="179.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">MAX485</text>
+<rect x="156" y="174" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="179.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">1</text>
+<rect x="174" y="174" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="179.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">SOIC-8, 3,9 × 4,9 мм, шаг 1,27 мм</text>
+<rect x="16" y="182" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="187.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">R1, R3, R4, R7, R8</text>
+<rect x="63" y="182" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="187.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">10 кОм</text>
+<rect x="156" y="182" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="187.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">5</text>
+<rect x="174" y="182" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="187.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">0805; допуск и мощность выбрать при закупке</text>
+<rect x="16" y="190" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="195.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">R2, R5, R6</text>
+<rect x="63" y="190" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="195.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">20 кОм</text>
+<rect x="156" y="190" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="195.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">3</text>
+<rect x="174" y="190" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="195.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">0805; допуск и мощность выбрать при закупке</text>
+<rect x="16" y="198" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="203.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">C1, C3, C4</text>
+<rect x="63" y="198" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="203.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">0,1 мкФ</text>
+<rect x="156" y="198" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="203.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">3</text>
+<rect x="174" y="198" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="203.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">0805; рабочее напряжение выбрать при закупке</text>
+<rect x="16" y="206" width="47" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="18" y="211.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">C2</text>
+<rect x="63" y="206" width="93" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="65" y="211.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">47 мкФ / 6,3 В</text>
+<rect x="156" y="206" width="18" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="158" y="211.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">1</text>
+<rect x="174" y="206" width="230" height="8" fill="none" stroke="#17212b" stroke-width="0.3"/>
+<text x="176" y="211.28" font-family="Arial, sans-serif" font-size="2.7" font-weight="400" text-anchor="start" fill="#17212b">Полярный; посадочное место требует размеров корпуса</text>
+<text x="16" y="224" font-family="Arial, sans-serif" font-size="3.1" font-weight="700" text-anchor="start" fill="#17212b">ПРАВКИ ОБОЗНАЧЕНИЙ</text>
+<text x="16" y="231" font-family="Arial, sans-serif" font-size="2.8" font-weight="400" text-anchor="start" fill="#17212b">Второй «R6» на исходном рисунке (10 кОм на линии DE) переименован в R8.</text>
+<text x="16" y="240" font-family="Arial, sans-serif" font-size="3.1" font-weight="700" text-anchor="start" fill="#17212b">ГРАНИЦЫ ЭТОЙ РЕВИЗИИ</text>
+<text x="16" y="247" font-family="Arial, sans-serif" font-size="2.8" font-weight="400" text-anchor="start" fill="#17212b">Основа PCB: символы, посадочные места, BOM и сети. Корпус C2 и разъёмы ещё не выбраны; разводки / Gerber нет.</text>
+<text x="16" y="253" font-family="Arial, sans-serif" font-size="2.8" font-weight="400" text-anchor="start" fill="#17212b">Программатор: UART 3,3 В + GND; для загрузчика нужны GPIO0 и сброс EN. Автосброс не добавлен.</text>
+<text x="16" y="261" font-family="Arial, sans-serif" font-size="2.6" font-weight="400" text-anchor="start" fill="#17212b">Источники распиновок: Espressif ESP32-S3-WROOM-1; Analog Devices MAX485; AMS1117 datasheet. Ссылки в README.</text>
+</svg>

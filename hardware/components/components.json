@@ -1,0 +1,122 @@
+[
+  {
+    "reference": "U1",
+    "value": "ESP32-S3-WROOM-1-N16R8",
+    "symbol": "4vrs_Samsung:ESP32-S3-WROOM-1-N16R8",
+    "footprint": "4vrs_Samsung:ESP32-S3-WROOM-1",
+    "status": "selected",
+    "note": ""
+  },
+  {
+    "reference": "U2",
+    "value": "AMS1117-3.3",
+    "symbol": "4vrs_Samsung:AMS1117-3.3",
+    "footprint": "4vrs_Samsung:SOT-223-3_TabPin2",
+    "status": "proposed_package",
+    "note": "SOT-223 proposed; tab is VOUT, pad 2. Confirm regulator package."
+  },
+  {
+    "reference": "U3",
+    "value": "MAX485",
+    "symbol": "4vrs_Samsung:MAX485",
+    "footprint": "4vrs_Samsung:SOIC-8_3.9x4.9mm_P1.27mm",
+    "status": "selected",
+    "note": "SOIC-8 confirmed; exact ordering suffix/manufacturer to select."
+  },
+  {
+    "reference": "R1",
+    "value": "10k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R2",
+    "value": "20k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R3",
+    "value": "10k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R4",
+    "value": "10k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R5",
+    "value": "20k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R6",
+    "value": "20k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R7",
+    "value": "10k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "R8",
+    "value": "10k",
+    "symbol": "4vrs_Samsung:R",
+    "footprint": "4vrs_Samsung:R_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Tolerance/power not specified."
+  },
+  {
+    "reference": "C1",
+    "value": "100nF",
+    "symbol": "4vrs_Samsung:C",
+    "footprint": "4vrs_Samsung:C_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Dielectric and voltage rating to select."
+  },
+  {
+    "reference": "C3",
+    "value": "100nF",
+    "symbol": "4vrs_Samsung:C",
+    "footprint": "4vrs_Samsung:C_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Dielectric and voltage rating to select."
+  },
+  {
+    "reference": "C4",
+    "value": "100nF",
+    "symbol": "4vrs_Samsung:C",
+    "footprint": "4vrs_Samsung:C_0805_2012Metric",
+    "status": "selected",
+    "note": "0805 confirmed. Dielectric and voltage rating to select."
+  },
+  {
+    "reference": "C2",
+    "value": "47uF 6.3V",
+    "symbol": "4vrs_Samsung:CP",
+    "footprint": "",
+    "status": "footprint_pending",
+    "note": "Polarized. Body diameter/height and lead or pad spacing required."
+  }
+]

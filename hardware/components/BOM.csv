@@ -1,0 +1,16 @@
+﻿reference,value,symbol,footprint,status,note
+U1,ESP32-S3-WROOM-1-N16R8,4vrs_Samsung:ESP32-S3-WROOM-1-N16R8,4vrs_Samsung:ESP32-S3-WROOM-1,selected,
+U2,AMS1117-3.3,4vrs_Samsung:AMS1117-3.3,4vrs_Samsung:SOT-223-3_TabPin2,proposed_package,"SOT-223 proposed; tab is VOUT, pad 2. Confirm regulator package."
+U3,MAX485,4vrs_Samsung:MAX485,4vrs_Samsung:SOIC-8_3.9x4.9mm_P1.27mm,selected,SOIC-8 confirmed; exact ordering suffix/manufacturer to select.
+R1,10k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R2,20k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R3,10k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R4,10k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R5,20k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R6,20k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R7,10k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+R8,10k,4vrs_Samsung:R,4vrs_Samsung:R_0805_2012Metric,selected,0805 confirmed. Tolerance/power not specified.
+C1,100nF,4vrs_Samsung:C,4vrs_Samsung:C_0805_2012Metric,selected,0805 confirmed. Dielectric and voltage rating to select.
+C3,100nF,4vrs_Samsung:C,4vrs_Samsung:C_0805_2012Metric,selected,0805 confirmed. Dielectric and voltage rating to select.
+C4,100nF,4vrs_Samsung:C,4vrs_Samsung:C_0805_2012Metric,selected,0805 confirmed. Dielectric and voltage rating to select.
+C2,47uF 6.3V,4vrs_Samsung:CP,,footprint_pending,Polarized. Body diameter/height and lead or pad spacing required.

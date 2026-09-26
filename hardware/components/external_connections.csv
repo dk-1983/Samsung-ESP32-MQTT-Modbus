@@ -1,0 +1,12 @@
+﻿net,external_connection
++5V,"+5V (controller mb); +5V (display CN1), контакт 6"
+GND,"GND (controller mb); GND (display CN1), контакт 5"
+MAIN_TX_5V,TX (controller mb): провод 10 → R4 → GPIO18
+MAIN_RX_INPUT,RX (controller mb): провод 9 ← GPIO17
+FACTORY_TX_5V,TX (display CN1): контакт 9 → R3 → GPIO15
+FACTORY_RX_INPUT,RX (display CN1): контакт 10 ← GPIO16
+PROG_TX,"GPIO43 / pad37 → RX программатора (логика 3,3 В)"
+PROG_RX,"GPIO44 / pad36 ← TX программатора (логика 3,3 В)"
+GND,GND программатора; общая земля
+RS485_A,Линия A RS485
+RS485_B,Линия B RS485

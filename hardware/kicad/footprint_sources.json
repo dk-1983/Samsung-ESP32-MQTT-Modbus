@@ -1,0 +1,27 @@
+[
+  {
+    "file": "ESP32-S3-WROOM-1.kicad_mod",
+    "source": "https://raw.githubusercontent.com/espressif/kicad-libraries/main/footprints/Espressif.pretty/ESP32-S3-WROOM-1.kicad_mod",
+    "sha256": "a99796419aec905e6b0a12ddf266a63d546754070c587acf10585d70a161dddc"
+  },
+  {
+    "file": "SOIC-8_3.9x4.9mm_P1.27mm.kicad_mod",
+    "source": "https://raw.githubusercontent.com/KiCad/kicad-footprints/master/Package_SO.pretty/SOIC-8_3.9x4.9mm_P1.27mm.kicad_mod",
+    "sha256": "c11287038ffba034da8faed0c90c4ef9d7d34bb728d370c841215c275677dcaf"
+  },
+  {
+    "file": "SOT-223-3_TabPin2.kicad_mod",
+    "source": "https://raw.githubusercontent.com/KiCad/kicad-footprints/master/Package_TO_SOT_SMD.pretty/SOT-223-3_TabPin2.kicad_mod",
+    "sha256": "d0c42456d9abf96fbcc106d1cf570472c20d51a2194243ae7696d4772d3c6a64"
+  },
+  {
+    "file": "R_0805_2012Metric.kicad_mod",
+    "source": "https://raw.githubusercontent.com/KiCad/kicad-footprints/master/Resistor_SMD.pretty/R_0805_2012Metric.kicad_mod",
+    "sha256": "34ef5a7238e8aa2622071b1ded0ce1aaaf9fd5fd2fa2d5e9914f8ee250ac3f7c"
+  },
+  {
+    "file": "C_0805_2012Metric.kicad_mod",
+    "source": "https://raw.githubusercontent.com/KiCad/kicad-footprints/master/Capacitor_SMD.pretty/C_0805_2012Metric.kicad_mod",
+    "sha256": "99fff2e6692af4126feb9f9ebdfd454834bf414b13d04be0d075dffc23cfbd02"
+  }
+]
