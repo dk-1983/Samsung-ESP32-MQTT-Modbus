@@ -112,9 +112,6 @@ signed download, installation, preserved settings/credentials and trial boot con
    The tool requires the key matching the firmware trust anchor.
 5. Publish `v<version>` and its OTA asset, then the signed stable.json to main.
 
-The v0.4.1 prerelease was tested using the signed testing feed. The stable feed is
-not published yet, so normal stable checks currently return HTTP404; this does not
-invalidate the installed firmware. The supplied README banner is
-stored unchanged at `docs/assets/banner-Samsung-ESP32.png`.
+Stable release 0.5.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
 
 [Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).

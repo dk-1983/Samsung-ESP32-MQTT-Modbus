@@ -2,7 +2,7 @@
 
 Target electrical layer: direct Wi-Fi-module UART, configured **9600 8N1**.
 This is distinct from NASA RS485 **9600 8E1** (32…34). No automatic protocol detection/transmit fallback.
-Core control verified on AR24BSFCMWKNER; electrical levels/isolation remain unresolved.
+Core control verified on AR24BSFCMWKNER. See hardware/README.md for level conversion.
 
 Frame: `D0 C0 02 LEN 00 00 00 00 00 COUNTER FE TYPE_H TYPE_L PAYLOAD_LEN [ID LEN VALUE...] XOR E0`.
 Total length = LEN+4 = PAYLOAD_LEN+16. LEN is one byte, so payload maximum 243 bytes.
@@ -20,14 +20,12 @@ with `01 01 0F` only, at most once per 30 seconds. Writes are gated until a
 Automatic recovery does not change beep, power, mode or replay failed commands.
 All recovery traffic respects the local UART disable switch and bus idle checks.
 The optional manual initialization still writes `01 01 0F 74 01 F0`.
-Bench diagnosis: both power and fan writes returned FC while 01=F0; enabling 01
-restored both commands. Upstream getInitData() supplies the original enable sequence.
 
 | ID | Meaning | Known values |
 |---|---|---|
 | 02 | Power | 0F on / F0 off |
 | 43 | Mode | 12 cool / 22 dry / 32 fan / 42 heat / E2 auto |
-| 5A | Target | whole °C, prototype permits 16–30 |
+| 5A | Target | whole °C, firmware permits 16–30 |
 | 5C | Room | signed whole °C |
 | 62 | Fan | 00 auto / 12 low / 14 medium / 16 high / 18 turbo |
 | 63 | Swing | C2 stop (verified target); 12 legacy stop read / 92 vertical / A2 horizontal / B2 both |
@@ -49,7 +47,7 @@ Sources:
   not used as the direct Wi-Fi UART driver.
 
 The checksum condition and unchecked parsing in the referenced Wi-Fi implementation were not reused.
-This prototype uses strict equality and bounded parsing, with independent regression tests.
+The implementation uses strict equality and bounded parsing, with independent regression tests.
 
 ## Extended profile 0.2.0
 

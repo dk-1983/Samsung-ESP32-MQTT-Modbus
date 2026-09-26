@@ -68,7 +68,7 @@ opens `/control`; advanced ESPHome controls remain on port8080. Both use `admin`
 [Management and releases](docs/MANAGEMENT.md) · [Full device register map](docs/MODBUS.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT.md)
 · [Modbus register reference (Russian)](docs/MODBUS_REGISTERS_RU.md)
-· [UART catalog and test sequence](docs/FUNCTIONS_RU.md)
+· [UART function reference](docs/FUNCTIONS_RU.md)
 
 UART TX/RX GPIO17/18 uses9600 8N1. RS485 TX/RX/DE uses9/8/21.
 The AC uses D0 UART, not native Modbus; ESP32 implements the external register map.

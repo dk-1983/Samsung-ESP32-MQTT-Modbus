@@ -129,10 +129,6 @@ GitHub операции не изменяются; запрет обновлен
 5. При публикации создать тег/Release `v<version>`, загрузить OTA-файл из artifact,
    затем опубликовать подписанный `releases/stable.json` в main.
 
-Предрелиз v0.4.1 установлен через подписанный тестовый канал GitHub поверх 0.4.0.
-Проверены загрузка, установка, сохранение настроек/паролей и подтверждение загрузки.
-Стабильный канал ещё не опубликован: отсутствие stable.json даёт HTTP404 при
-обычной проверке обновления, но не отменяет успешную установку прошивки.
-Баннер для README сохранён в `docs/assets/banner-Samsung-ESP32.png`.
+Stable release 0.5.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
 
 [Подключение Home Assistant через MQTT Discovery и статус проверки](HOME_ASSISTANT_RU.md).

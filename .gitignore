@@ -9,3 +9,9 @@ __pycache__/
 private/
 *.pem
 reference/
+
+# Local development notes, captures and agent instructions
+.local-notes/
+AGENTS.md
+captures/
+bench-results/

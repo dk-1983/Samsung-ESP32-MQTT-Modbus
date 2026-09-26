@@ -66,7 +66,7 @@ Modbus RS485: **RX8 / TX9 / DE21**. Это номера GPIO ESP32, не кон�
 - Локальное ESPHome OTA сохранено. Оно и GitHub-обновление не должны писать flash одновременно.
 
 [Настройки и обновления](docs/MANAGEMENT_RU.md) · [Полная карта Modbus 4vrs → Samsung-ESP32](docs/MODBUS.md)
-· [UART-функции и порядок испытаний](docs/FUNCTIONS_RU.md)
+· [Каталог UART-функций](docs/FUNCTIONS_RU.md)
 
 ## UART и Modbus
 
@@ -107,7 +107,7 @@ RTU: 9600 8E1 по умолчанию; TCP: порт 502. UART кондицио�
 Подключение MQTT с авторизацией проверено. Физический RS485 и принудительный откат ещё требуют проверки.
 Программное наличие legacy-команды не означает проверку её действия на этой модели.
 
-[Протокол](docs/PROTOCOL.md) · [Стенд](docs/BENCH_RU.md) · [Происхождение кода](THIRD_PARTY.md)
+[Протокол](docs/PROTOCOL.md) · [Происхождение кода](THIRD_PARTY.md)
 · [Home Assistant MQTT Discovery](docs/HOME_ASSISTANT_RU.md)
 · [Информационный лист регистров Modbus](docs/MODBUS_REGISTERS_RU.md)
 
