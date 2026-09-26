@@ -42,6 +42,25 @@ Home Assistant is optional: connect the controller to your own MQTT broker and a
 
 [Electrical schematic, wiring and PCB component libraries](hardware/README.md).
 
+## Home Assistant via Modbus Devices
+
+**[Modbus Devices](https://github.com/dk-1983/Modbus_Devices#4vrs) includes a dedicated profile for this controller: manufacturer `4VRS`, model `Samsung-ESP32-Modbus`.**
+
+Connect through Modbus TCP over Wi-Fi or Modbus RTU over RS485 to get climate
+control, the full fan/swing/preset controls, confirmed writes, and link and command
+diagnostics in Home Assistant. The profile uses our extended register map;
+you do not need to enter each register manually. MQTT is not required for this option.
+
+1. Install [Modbus Devices](https://github.com/dk-1983/Modbus_Devices#installation) in Home Assistant.
+2. Open `/modbus` on the controller and enable TCP or RTU.
+3. Add the device using **4VRS → Samsung-ESP32-Modbus** and your connection settings.
+   For direct TCP, use the controller IP, port **502** and configured Unit ID (default **1**).
+   For RTU, match the controller's serial settings (default **9600 8E1**).
+
+Select the **4VRS** profile for this device; the Samsung **MIM-B19N(T)** profile
+is for the factory adapter. For MQTT-based setup, use Home Assistant's standard
+MQTT integration with Discovery as described above.
+
 ## Electrical schematic
 
 ![Samsung ESP32-S3 inline UART bridge and Modbus RS485 schematic](hardware/drawings/preview-1.png)
