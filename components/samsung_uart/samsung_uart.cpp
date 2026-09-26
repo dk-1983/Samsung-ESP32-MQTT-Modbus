@@ -5,6 +5,9 @@
 #include <cmath>
 #include "esphome/components/uart/uart_component_esp_idf.h"
 #include "driver/gpio.h"
+#include "hal/uart_ll.h"
+#include "soc/system_struct.h"
+#include "esp_clk_tree.h"
 namespace esphome { namespace samsung_uart {
 using namespace samsung_proto;
 using namespace climate;
@@ -61,7 +64,25 @@ std::string SamsungClimate::bridge_diagnostics()const{
   std::string out=b;
   for(auto *bus:{parent_,factory_,rs485_}){
     auto *u=static_cast<uart::IDFUARTComponent *>(bus);auto port=static_cast<uart_port_t>(u->get_hw_serial_number());uint32_t baud=0;
-    int error=uart_get_baudrate(port,&baud);char v[80];snprintf(v,sizeof(v)," | UART%d baud=%lu error=%d failed=%d",int(port),(unsigned long)baud,error,int(u->is_failed()));out+=v;
+    int error;bool workaround=false;
+#if CONFIG_IDF_TARGET_ESP32S3
+    if(port==UART_NUM_2){
+      // IDF 5.5.4 uart_ll_is_enabled() tests EN0/RST0 for UART2, but its bits
+      // are in EN1/RST1. Read the real clock gate and divider; never alter them.
+      workaround=true;error=ESP_ERR_INVALID_STATE;
+      if(uart_is_driver_installed(port)&&SYSTEM.perip_clk_en1.uart2_clk_en&&!SYSTEM.perip_rst_en1.uart2_rst){
+        auto *hw=UART_LL_GET_HW(port);soc_module_clk_t source;uint32_t frequency=0;
+        uart_ll_get_sclk(hw,&source);
+        error=esp_clk_tree_src_get_freq_hz(source,ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED,&frequency);
+        if(error==ESP_OK){
+          if(frequency&&(hw->clkdiv.clkdiv||hw->clkdiv.clkdiv_frag))baud=uart_ll_get_baudrate(hw,frequency);
+          else error=ESP_ERR_INVALID_STATE;
+        }
+      }
+    }else
+#endif
+      error=uart_get_baudrate(port,&baud);
+    char v[100];snprintf(v,sizeof(v)," | UART%d baud=%lu error=%d failed=%d sdk_readback_workaround=%d",int(port),(unsigned long)baud,error,int(u->is_failed()),int(workaround));out+=v;
   }
   return out;
 }
