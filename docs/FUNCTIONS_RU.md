@@ -1,4 +1,4 @@
-# UART function reference
+# Справочник функций UART
 
 Цель: Samsung AR24BSFCMWKNER, прямой UART штатного Wi-Fi-модуля, 9600 8N1.
 Это реализация найденной карты команд, а не заявление о поддержке всех функций модели.
@@ -92,11 +92,11 @@ Input 2481: результат расширенной команды; 2482: ин
 помечается acknowledged_unverified: факт сброса нужно сверить отдельным чтением счётчика.
 Last write reply сохраняет полный ответ для анализа.
 
-UART starts enabled after boot. In inline mode, the factory board owns initialization
-and notification acknowledgements. The controller forwards that traffic without
-duplicating it. Local commands require fresh permission and state feedback;
-rejected commands are not replayed automatically. Service frames do not become
-climate feedback. See [bridge behavior](UART_BRIDGE_RU.md).
+UART включён после загрузки. В режиме моста инициализацию и подтверждение
+уведомлений выполняет заводская плата; контроллер пересылает их без дублирования.
+Для локальных команд нужны свежие разрешение управления и обратная связь.
+Отклонённые команды не повторяются автоматически. Служебные кадры не используются
+как состояние климата. См. [описание моста](UART_BRIDGE_RU.md).
 
 ## Пока не расшифровано
 

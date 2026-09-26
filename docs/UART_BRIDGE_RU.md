@@ -1,61 +1,68 @@
-# Inline UART bridge and 4VRS dispatcher
+# Прозрачный UART-мост и диспетчер 4VRS
 
-The ESP32 sits between the Samsung motherboard and the original display/Wi-Fi
-board. Factory traffic is forwarded while local web, MQTT and Modbus control
-share the 4VRS polling and command dispatcher.
+[English](UART_BRIDGE.md)
 
-## Wiring
+ESP32 включается между основной платой Samsung и штатной платой дисплея/Wi-Fi.
+Заводской обмен пересылается через мост, а локальный веб-пульт, MQTT и Modbus
+используют общий диспетчер опроса и команд 4VRS.
 
-| Connection | ESP32 GPIO | Module pad |
+## Подключение
+
+| Соединение | GPIO ESP32 | Контакт модуля |
 |---|---|---|
-| Motherboard TX → ESP32 RX, through level conversion | 18 | 11 |
-| ESP32 TX → motherboard RX | 17 | 10 |
-| Display CN1 TX → ESP32 RX, through level conversion | 15 | 8 |
-| ESP32 TX → display CN1 RX | 16 | 9 |
-| Modbus receiver RO → ESP32 RX, through level conversion | 8 | 12 |
-| ESP32 TX → Modbus DI | 9 | 17 |
-| Modbus DE and /RE | 21 | 23 |
+| TX основной платы → RX ESP32 через согласование уровней | 18 | 11 |
+| TX ESP32 → RX основной платы | 17 | 10 |
+| TX display CN1 → RX ESP32 через согласование уровней | 15 | 8 |
+| TX ESP32 → RX display CN1 | 16 | 9 |
+| RO приёмника Modbus → RX ESP32 через согласование уровней | 8 | 12 |
+| TX ESP32 → DI Modbus | 9 | 17 |
+| DE и /RE Modbus | 21 | 23 |
 
-Retain display-board +5 V, common ground and other original connections.
-TX/RX labels refer to the respective device. Follow the
-[electrical schematic](../hardware/README.md); do not join TX outputs.
-Both Samsung UARTs use 9600 8N1. Modbus RTU defaults to 9600 8E1.
+Сохраните +5 В платы дисплея, общую землю и остальные заводские соединения.
+TX/RX обозначены относительно соответствующего устройства. Следуйте
+[принципиальной схеме](../hardware/README.md); не объединяйте выходы TX.
+Оба UART Samsung работают на 9600 8N1. Modbus RTU по умолчанию — 9600 8E1.
 
-## Factory functionality
+## Заводской функционал
 
-The bridge is designed to preserve factory functionality, including the display,
-IR remote and Samsung SmartThings, while adding local 4VRS interfaces. These
-three factory functions have been checked on AR24BSFCMWKNER; every possible
-factory feature and other AC models have not been exhaustively validated.
-Unknown or damaged factory data is forwarded unchanged. Frame buffering can
-introduce latency; the bridge does not guarantee original inter-byte timing.
+Мост предназначен для сохранения заводского функционала, включая дисплей,
+ИК-пульт и Samsung SmartThings, с добавлением локальных интерфейсов 4VRS.
+Эти три функции проверены на AR24BSFCMWKNER; исчерпывающая проверка всех
+заводских возможностей и других моделей кондиционеров ещё не выполнена.
+Неизвестные или повреждённые заводские данные пересылаются без изменения.
+Буферизация кадров может добавлять задержки; сохранение исходных межбайтовых
+интервалов не гарантируется.
 
-## Polling and command dispatch
+## Опрос и отправка команд
 
-The dispatcher tracks factory transactions and inserts own requests in an idle
-window. During an own transaction, factory requests can be held in a bounded
-queue; notifications and acknowledgements continue through the bridge.
-Local commands require current feedback, control permission and an available
-transaction window. Busy commands are rejected, not queued for later execution.
+Диспетчер отслеживает заводские транзакции и отправляет собственные запросы
+в свободное окно. Во время собственной транзакции заводские запросы могут
+временно помещаться в ограниченную очередь; уведомления и подтверждения
+продолжают проходить через мост.
+Для локальной команды нужны свежая обратная связь, разрешение управления
+и доступное окно передачи. При занятости команда отклоняется, а не ставится
+в очередь для отложенного исполнения.
 
-Own replies are separated from factory traffic by envelope, group, response type
-and counter. A command is confirmed by own readback of the requested state;
-a write acknowledgement alone is not sufficient. No automatic write retries occur.
-Factory notifications continue updating the displayed AC state.
+Собственные ответы отделяются от заводского обмена по заголовку, группе,
+типу ответа и счётчику. Команда подтверждается собственным чтением фактического
+состояния; одного ACK записи недостаточно. Автоматических повторов записи нет.
+Заводские уведомления продолжают обновлять отображаемое состояние кондиционера.
 
-Factory initialization and notification acknowledgements remain the responsibility
-of the original board. The ESP32 does not duplicate them in inline mode.
+Инициализацию и подтверждение заводских уведомлений выполняет штатная плата.
+В режиме моста ESP32 не дублирует эти действия.
 
-## Diagnostics and availability
+## Диагностика и доступность
 
-Use About and `/system/status` for `inline_bridge` and bridge diagnostics:
-traffic counts, pending transactions, queue use, parse errors, timeouts and UART
-configuration. Three hardware UARTs are used; logs are available through the web.
+На странице «О системе» и в `/system/status` доступны `inline_bridge` и
+диагностика моста: счётчики обмена, ожидающие транзакции, использование очереди,
+ошибки разбора, тайм-ауты и параметры UART. Заняты три аппаратных UART;
+журнал доступен через веб-интерфейс.
 
-UART forwarding starts enabled after boot. Disabling UART transmission stops
-both local commands and factory forwarding, discarding pending queues. It does
-not record traffic for later replay. There is no hardware bypass: loss of ESP32
-power or stopped forwarding interrupts communication between the factory boards.
+После загрузки пересылка включена. Отключение передачи UART останавливает
+и собственные команды, и заводскую пересылку, очищая ожидающие очереди.
+Данные не записываются для последующего воспроизведения. Аппаратного обхода нет:
+отключение питания ESP32 или остановка пересылки прерывает связь заводских плат.
 
-Very late replies after transaction-counter reuse remain a protocol limitation.
-Physical RS485 and forced OTA rollback still require validation.
+Очень поздние ответы после повторного использования счётчика транзакции
+остаются ограничением протокола. Физический RS485 и принудительный откат OTA
+ещё требуют проверки.

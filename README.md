@@ -34,7 +34,7 @@ SmartThings control have been checked with the bridge on AR24BSFCMWKNER;
 exhaustive validation of every factory function is still pending.
 
 Repository: [dk-1983/Samsung-ESP32-MQTT-Modbus](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus).
-See [bridge wiring and limitations](docs/UART_BRIDGE_RU.md).
+See [bridge wiring and limitations](docs/UART_BRIDGE.md).
 
 Home Assistant is optional: connect the controller to your own MQTT broker and automation server. See [topics, commands, states and the complete Discovery-based inventory](docs/HOME_ASSISTANT.md#own-mqtt-broker-without-home-assistant).
 

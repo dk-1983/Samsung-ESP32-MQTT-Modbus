@@ -129,6 +129,6 @@ GitHub операции не изменяются; запрет обновлен
 5. При публикации создать тег/Release `v<version>`, загрузить OTA-файл из artifact,
    затем опубликовать подписанный `releases/stable.json` в main.
 
-Stable release 0.5.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
+Стабильный релиз 0.5.0 содержит готовый OTA-бинарник и подписанный манифест обновления. Публичный бинарник предназначен для уже настроенного контроллера.
 
 [Подключение Home Assistant через MQTT Discovery и статус проверки](HOME_ASSISTANT_RU.md).

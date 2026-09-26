@@ -5,7 +5,7 @@
 
 [English](README.md)
 
-**[Download v0.5.0](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v0.5.0)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
+**[Скачать v0.5.0](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v0.5.0)** — готовый OTA-бинарник для уже настроенных контроллеров ESP32-S3 N16R8. Не предназначен для первой прошивки пустой платы.
 
 **Заводские возможности Samsung сохраняются, управление 4VRS добавляется.**
 
@@ -43,24 +43,25 @@ Home Assistant не обязателен: контроллер можно под
 
 [Принципиальная схема, подключения и база компонентов PCB](hardware/README.md).
 
-## Home Assistant via Modbus Devices
+## Home Assistant через Modbus Devices
 
-**[Modbus Devices](https://github.com/dk-1983/Modbus_Devices#4vrs) includes a dedicated profile for this controller: manufacturer `4VRS`, model `Samsung-ESP32-Modbus`.**
+**В [Modbus Devices](https://github.com/dk-1983/Modbus_Devices#4vrs) есть отдельный профиль нашего контроллера: производитель `4VRS`, модель `Samsung-ESP32-Modbus`.**
 
-Connect through Modbus TCP over Wi-Fi or Modbus RTU over RS485 to get climate
-control, the full fan/swing/preset controls, confirmed writes, and link and command
-diagnostics in Home Assistant. The profile uses our extended register map;
-you do not need to enter each register manually. MQTT is not required for this option.
+Подключение через Modbus TCP по Wi-Fi или Modbus RTU по RS485 предоставляет
+в Home Assistant управление климатом, полный набор скоростей, качаний и пресетов,
+подтверждение команд, диагностику связи и результатов управления. Профиль использует
+нашу расширенную карту регистров — вводить каждый регистр вручную не требуется.
+Для этого варианта MQTT не нужен.
 
-1. Install [Modbus Devices](https://github.com/dk-1983/Modbus_Devices#installation) in Home Assistant.
-2. Open `/modbus` on the controller and enable TCP or RTU.
-3. Add the device using **4VRS → Samsung-ESP32-Modbus** and your connection settings.
-   For direct TCP, use the controller IP, port **502** and configured Unit ID (default **1**).
-   For RTU, match the controller's serial settings (default **9600 8E1**).
+1. Установите [Modbus Devices](https://github.com/dk-1983/Modbus_Devices#installation) в Home Assistant.
+2. Откройте `/modbus` на контроллере и включите TCP или RTU.
+3. Добавьте устройство **4VRS → Samsung-ESP32-Modbus** и задайте параметры подключения.
+   Для прямого TCP: IP контроллера, порт **502**, настроенный Unit ID (по умолчанию **1**).
+   Для RTU: параметры последовательного порта контроллера (по умолчанию **9600 8E1**).
 
-Select the **4VRS** profile for this device; the Samsung **MIM-B19N(T)** profile
-is for the factory adapter. For MQTT-based setup, use Home Assistant's standard
-MQTT integration with Discovery as described above.
+Для нашего устройства выбирайте профиль **4VRS**; профиль Samsung **MIM-B19N(T)**
+предназначен для заводского адаптера. Для подключения по MQTT используется штатная
+интеграция MQTT Home Assistant с Discovery, описанная выше.
 
 ## Принципиальная схема
 
