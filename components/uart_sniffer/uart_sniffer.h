@@ -3,6 +3,7 @@
 #include "esphome/components/uart/uart.h"
 #include <WebServer.h>
 #include <esp_attr.h>
+#include "bridge_scheduler.h"
 namespace esphome::uart_sniffer {
 class Sniffer : public Component {
  public:
@@ -14,7 +15,7 @@ class Sniffer : public Component {
   void set_factory_rx_gpio(int v){factory_rx_gpio_=v;}
   void set_factory_tx_gpio(int v){factory_tx_gpio_=v;}
   void set_bridge(bool v){bridge_=v;}
-  void set_forwarding(bool v){forwarding_=v&&!monitor_only_;}
+  void set_forwarding(bool v){forwarding_=v&&!monitor_only_;if(!forwarding_)scheduler_.cancel(millis());}
   void set_monitor_only(bool v){monitor_only_=v;if(v)forwarding_=false;}
   void setup()override;
   void loop()override;
@@ -34,6 +35,10 @@ class Sniffer : public Component {
   uint32_t probe_at_=0;
   static void IRAM_ATTR on_edge_(void *arg);
   uint32_t forwarded_[3]{};
+  samsung_bridge::Scheduler scheduler_;
+  uint32_t injected_bytes_=0;
+  void emit_(unsigned destination,const uint8_t *p,size_t n,bool own);
+  String scheduler_status_();
   WebServer web_{80};String password_;bool web_started_=false;
   unsigned bus_count_()const{return buses_[2]?3:2;}
   int rx_gpio_(unsigned c)const{return c==2?9:(c?(rx_b_gpio_>=0?rx_b_gpio_:(bridge_?factory_rx_gpio_:17)):18);}

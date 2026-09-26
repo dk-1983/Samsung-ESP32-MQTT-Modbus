@@ -7,6 +7,18 @@
 #include "soc/gpio_sig_map.h"
 #include "esphome/components/wifi/wifi_component.h"
 namespace esphome::uart_sniffer {
+void Sniffer::emit_(unsigned destination,const uint8_t *p,size_t n,bool own){
+ if(!bridge_||monitor_only_||!forwarding_)return;
+ buses_[destination]->write_array(p,n);
+ if(own)injected_bytes_+=n;else forwarded_[1-destination]+=n;
+}
+String Sniffer::scheduler_status_(){
+ auto &s=scheduler_;
+ String out="{\"status\":\""+String(s.status())+"\",\"counter\":"+String(s.counter)+",\"sent_at_ms\":"+String(s.sent_at)+",\"injected_bytes\":"+String(injected_bytes_)+",\"stock_pending\":"+String(unsigned(s.pending()))+",\"held_requests\":"+String(unsigned(s.held_count))+",\"completed\":"+String(s.completed)+",\"expired\":"+String(s.expired)+",\"framing_errors\":"+String(s.errors)+",\"suppressed_responses\":"+String(s.suppressed)+",\"frames_main\":"+String(s.valid[0])+",\"frames_factory\":"+String(s.valid[1]);
+ out+=",\"power\":";
+ if(s.result==samsung_bridge::Scheduler::Result::CONFIRMED)out+=s.power==0x0F?"true":"false";else out+="null";
+ return out+"}";
+}
 void IRAM_ATTR Sniffer::on_edge_(void *arg){
  auto *count=static_cast<volatile uint32_t *>(arg);*count=*count+1;
 }
@@ -14,7 +26,7 @@ void Sniffer::flush_(unsigned c){auto &p=pending_[c];if(!p.size)return;p.seq=++s
 String Sniffer::capture_(){
  uint32_t after=strtoul(web_.arg("after").c_str(),nullptr,10),first=seq_>128?seq_-127:1;
  String out;out.reserve(22000);
- out="{\"version\":\""+String(bridge_?"0.4.7-bridge":"0.4.7-sniffer")+"\",\"passive\":"+String(bridge_?"false":"true")+",\"bridge\":"+String(bridge_?"true":"false")+",\"forwarding\":"+String(bridge_&&forwarding_?"true":"false")+",\"forwarded_a\":"+String(forwarded_[0])+",\"forwarded_b\":"+String(forwarded_[1])+",\"boot_id\":"+String(boot_)+",\"uptime_ms\":"+String(millis())+",\"rx18_bytes\":"+String(bytes_[0])+",\"rx17_bytes\":"+String(bytes_[1])+",\"last_seq\":"+String(seq_)+",\"oldest_seq\":"+String(first)+",\"chunks\":[";
+ out="{\"version\":\""+String(bridge_?"0.4.8-bridge-read":"0.4.7-sniffer")+"\",\"passive\":"+String(bridge_?"false":"true")+",\"bridge\":"+String(bridge_?"true":"false")+",\"forwarding\":"+String(bridge_&&forwarding_?"true":"false")+",\"forwarded_a\":"+String(forwarded_[0])+",\"forwarded_b\":"+String(forwarded_[1])+",\"boot_id\":"+String(boot_)+",\"uptime_ms\":"+String(millis())+",\"rx18_bytes\":"+String(bytes_[0])+",\"rx17_bytes\":"+String(bytes_[1])+",\"last_seq\":"+String(seq_)+",\"oldest_seq\":"+String(first)+",\"chunks\":[";
  bool comma=false;
  for(uint32_t i=first;i<=seq_&&i!=0;++i){if(i<=after)continue;auto &p=ring_[(i-1)%128];if(comma)out+=",";comma=true;
  out+="{\"seq\":"+String(p.seq)+",\"gpio\":"+String(rx_gpio_(p.channel))+",\"start_ms\":"+String(p.at)+",\"end_ms\":"+String(p.end)+",\"hex\":\"";
@@ -67,17 +79,12 @@ void Sniffer::setup(){
  }
  web_.on("/",HTTP_GET,[this](){if(!auth_())return;web_.send(200,"text/html; charset=utf-8",R"HTML(<!doctype html><meta charset="utf-8"><title>Samsung UART sniffer</title><h1>Samsung UART diagnostic capture</h1><p>A: main board RX18. Factory-side GPIO numbers are shown in /diagnostics. 9600 8N1. See /capture for active mode. Bridge forwards traffic; sniffer never transmits. <a href="/capture">Raw JSON capture</a></p><pre id="out"></pre><script>let cursor=0,boot=null;async function poll(){try{let r=await fetch('/capture?after='+cursor);if(!r.ok)throw Error(r.status);let j=await r.json();if(boot!==j.boot_id){boot=j.boot_id;cursor=0;document.querySelector('pre').textContent='New boot '+boot+'\n';if(j.last_seq) {setTimeout(poll,100);return;}}let p=document.querySelector('pre');for(let c of j.chunks)p.textContent+=JSON.stringify(c)+'\n';cursor=j.last_seq;if(p.textContent.length>40000)p.textContent=p.textContent.slice(-30000);}catch(e){document.querySelector('pre').textContent+='Error '+e+'\n';}setTimeout(poll,1000);}poll();</script>)HTML");});
  web_.on("/capture",HTTP_GET,[this](){if(!auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",capture_());});
- // Deliberate one-shot read for a silent bridge, never automatic initialization.
- web_.on("/probe/main-power",HTTP_POST,[this](){
+ web_.on("/bridge/request",HTTP_GET,[this](){if(!auth_())return;web_.sendHeader("Cache-Control","no-store");web_.send(200,"application/json",scheduler_status_());});
+ web_.on("/bridge/read-power",HTTP_POST,[this](){
   if(!auth_())return;
   if(web_.header("X-Samsung-Probe")!="read-only"){web_.send(403,"text/plain","Missing probe header");return;}
-  if(!bridge_||monitor_only_||!forwarding_||probe_sent_||millis()<20000||bytes_[0]!=0||bytes_[1]>1||rx_edges_[0]||rx_edges_[1]||buses_[0]->available()||buses_[1]->available()){
-   web_.send(409,"text/plain","Probe requires silent active bridge, once per boot");return;
-  }
-  uint8_t frame[]={0xD0,0xC0,0x02,0x0E,0,0,0,0,0,0xE1,0xFE,0x12,0x02,0x02,0x02,0x00,0,0xE0};
-  for(unsigned i=0;i<sizeof(frame)-2;++i)frame[sizeof(frame)-2]^=frame[i];
-  probe_sent_=true;probe_at_=millis();buses_[0]->write_array(frame,sizeof(frame));
-  web_.send(200,"application/json","{\"submitted\":true,\"type\":\"FE1202\",\"field\":\"02\",\"counter\":225}");
+  if(!bridge_||monitor_only_||!forwarding_||!scheduler_.request(millis())){web_.send(409,"text/plain","Requires active bridge; one read per boot");return;}
+  web_.send(202,"application/json",scheduler_status_());
  });
  web_.on("/diagnostics",HTTP_GET,[this](){
   if(!auth_())return;
@@ -104,8 +111,14 @@ void Sniffer::setup(){
 
 }
 void Sniffer::loop(){
+ auto emit=[this](unsigned d,const uint8_t *p,size_t n,bool own){emit_(d,p,n,own);};
  for(unsigned c=0;c<bus_count_();++c){auto &p=pending_[c];uint32_t t=millis();if(p.size&&uint32_t(t-p.end)>=20)flush_(c);
-  for(unsigned budget=0;budget<48&&buses_[c]->available();++budget){uint8_t v;if(!buses_[c]->read_byte(&v))break;if(c<2&&bridge_&&forwarding_){buses_[1-c]->write_byte(v);++forwarded_[c];}t=millis();if(!p.size)p.at=t;p.end=t;p.data[p.size++]=v;++bytes_[c];if(p.size==48)flush_(c);}
+  for(unsigned budget=0;budget<48&&buses_[c]->available();++budget){uint8_t v;if(!buses_[c]->read_byte(&v))break;t=millis();if(c<2&&bridge_&&forwarding_)scheduler_.feed(c,v,t,emit);if(!p.size)p.at=t;p.end=t;p.data[p.size++]=v;++bytes_[c];if(p.size==48)flush_(c);}
+ }
+ if(bridge_&&forwarding_&&!monitor_only_){
+  bool idle=!buses_[0]->available()&&!buses_[1]->available();
+  for(unsigned c=0;c<2&&idle;++c){auto *bus=static_cast<uart::IDFUARTComponent *>(buses_[c]);idle=uart_wait_tx_done(static_cast<uart_port_t>(bus->get_hw_serial_number()),0)==ESP_OK;}
+  scheduler_.tick(millis(),idle,emit);
  }
  auto *w=wifi::global_wifi_component;
  if(!web_started_&&w&&(w->is_connected()||w->is_ap_active())){web_.begin();web_started_=true;}
