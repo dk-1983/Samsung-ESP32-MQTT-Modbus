@@ -41,6 +41,16 @@ Home Assistant не обязателен: контроллер можно под
 
 [Принципиальная схема, подключения и база компонентов PCB](hardware/README.md).
 
+## Принципиальная схема
+
+![Принципиальная схема Samsung ESP32-S3 UART bridge и Modbus RS485](hardware/drawings/preview-1.png)
+
+Основная плата: **RX18 / TX17**. Штатная плата дисплея/Wi-Fi: **RX15 / TX16**.
+Modbus RS485: **RX8 / TX9 / DE21**. Это номера GPIO ESP32, не контактов модуля.
+Обе платы Samsung подключены к +5 В и общей земле.
+
+[Полное разрешение](hardware/drawings/preview-1.png) · [Векторный PDF](hardware/drawings/Samsung_transparency_bridge_revA-review.pdf) · [База компонентов PCB](hardware/README.md)
+
 ## Управление и подключения
 
 Главная страница на порту 80: веб-пульт, MQTT, Modbus и обновления.

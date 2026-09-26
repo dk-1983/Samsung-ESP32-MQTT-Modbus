@@ -40,6 +40,16 @@ Home Assistant is optional: connect the controller to your own MQTT broker and a
 
 [Electrical schematic, wiring and PCB component libraries](hardware/README.md).
 
+## Electrical schematic
+
+![Samsung ESP32-S3 inline UART bridge and Modbus RS485 schematic](hardware/drawings/preview-1.png)
+
+Motherboard UART: **RX18 / TX17**. Original display/Wi-Fi board: **RX15 / TX16**.
+Modbus RS485: **RX8 / TX9 / DE21**. Numbers are ESP32 GPIOs, not module pad numbers.
+Both Samsung boards retain their +5 V and common ground connections.
+
+[Open full-resolution schematic](hardware/drawings/preview-1.png) · [Vector PDF](hardware/drawings/Samsung_transparency_bridge_revA-review.pdf) · [PCB component libraries](hardware/README.md)
+
 ## Controls and connections
 
 The portal on port80 links to controls, MQTT, Modbus and GitHub updates.
