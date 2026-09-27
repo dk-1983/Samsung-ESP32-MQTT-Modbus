@@ -5,6 +5,7 @@
 #include "esphome/components/samsung_uart/samsung_uart.h"
 #include "settings_model.h"
 #include "credentials_model.h"
+#include "boot_events.h"
 #include <WebServer.h>
 #include "esphome/components/esphome/ota/ota_esphome.h"
 namespace esphome::samsung_portal {
@@ -33,6 +34,9 @@ class Portal:public Component {
  void control_web_();String control_json_();
  uint8_t raw_mqtt_cleanup_=0; uint32_t raw_mqtt_cleanup_at_=0;
  void raw_mqtt_cleanup_loop_();
+ samsung_management::BootEvents boot_events_;
+ uint32_t boot_event_attempt_=0;
+ void boot_events_loop_();
  void settings_web_();String config_json_(bool mqtt);
  void updates_setup_();void updates_web_();void updates_loop_();bool updates_busy_();
 };

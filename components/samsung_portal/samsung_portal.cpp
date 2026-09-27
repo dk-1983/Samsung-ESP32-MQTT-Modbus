@@ -123,6 +123,7 @@ void Portal::loop(){
  if(mqtt_start_&&!restart_){mqtt_start_=false;mqtt::global_mqtt_client->enable();}
  raw_mqtt_cleanup_loop_();
  updates_loop_();
+ boot_events_loop_();
  if(restart_&&int32_t(millis()-restart_at_)>=0&&!updates_busy_())App.safe_reboot();
 }
 }

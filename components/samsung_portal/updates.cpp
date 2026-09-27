@@ -259,6 +259,32 @@ inline String status() {
 #include "esphome/components/wifi/wifi_component.h"
 namespace esphome::samsung_portal {
 void Portal::updates_setup_(){configTime(0,0,"pool.ntp.org","time.cloudflare.com");if(!SamsungUpdate::begin(SAMSUNG_FIRMWARE_VERSION))ESP_LOGE("updates","Update service unavailable");}
+void Portal::boot_events_loop_(){
+ auto *m=mqtt::global_mqtt_client;
+ auto *w=wifi::global_wifi_component;
+ const uint32_t now=millis();
+ const bool healthy=storage_ok_&&credentials_ok_&&web_started_&&!restart_&&
+   w&&w->is_connected()&&SamsungUpdate::serviceReady&&SamsungUpdate::bootConfirmed&&!updates_busy_();
+ const bool ac_ready=ac_&&ac_->tx_enabled()&&ac_->feedback_fresh()&&ac_->control_ready();
+ auto event=boot_events_.poll(now,m&&m->is_connected(),healthy,ac_ready);
+ if(event==samsung_management::BootEvents::NONE||uint32_t(now-boot_event_attempt_)<1000)return;
+ boot_event_attempt_=now;
+ cJSON *j=cJSON_CreateObject();if(!j)return;
+ cJSON_AddStringToObject(j,"event",samsung_management::BootEvents::name(event));
+ cJSON_AddStringToObject(j,"version",SAMSUNG_FIRMWARE_VERSION);
+ cJSON_AddNumberToObject(j,"boot_id",boot_id_);
+ cJSON_AddNumberToObject(j,"uptime_s",now/1000);
+ cJSON_AddBoolToObject(j,"controller_ready",true);
+ cJSON_AddBoolToObject(j,"boot_confirmed",true);
+ cJSON_AddBoolToObject(j,"ac_ready",ac_ready);
+ char *raw=cJSON_PrintUnformatted(j);
+ if(raw&&m->publish(m->get_topic_prefix()+"/diagnostics/boot",raw,1,false)){
+  boot_events_.published(event,ac_ready);
+  ESP_LOGI("boot","%s: version=%s boot_id=%lu AC=%s",samsung_management::BootEvents::name(event),
+    SAMSUNG_FIRMWARE_VERSION,(unsigned long)boot_id_,ac_ready?"ready":"awaiting feedback");
+ }
+ cJSON_free(raw);cJSON_Delete(j);
+}
 bool Portal::updates_busy_(){return SamsungUpdate::busy||SamsungUpdate::restartRequested||SamsungUpdate::manual;}
 void Portal::ota_manual(bool value){SamsungUpdate::manual=value;}
 void Portal::updates_loop_(){

@@ -90,3 +90,37 @@ on MQTT connection. Climate controls, decoded values and other diagnostic entiti
 remain available in Home Assistant. Manually configured raw-frame sensors must be
 removed manually. Home Assistant's 255-character entity state limit no longer
 applies to these logging topics because they are not advertised as entities.
+
+## Startup and recovery logging (0.5.2)
+
+The controller publishes non-retained JSON events to `<prefix>/diagnostics/boot`
+with QoS 1: `boot_ready`, `mqtt_reconnected`, and `ac_connection_restored`.
+Fields: `version`, `boot_id` (same across MQTT reconnects), `uptime_s`,
+`controller_ready`, `boot_confirmed`, and `ac_ready`.
+
+`boot_ready` requires Wi-Fi, MQTT, the web server, healthy settings/credential
+storage, an available update service, and confirmed firmware boot. Conditions
+must remain healthy for 5 seconds. After OTA, boot confirmation first requires
+45 seconds of local health checks. It does not wait indefinitely for AC feedback:
+`ac_ready: false` explicitly means the controller is ready but AC communication
+is not. A subsequent stable AC recovery produces `ac_connection_restored`.
+AC power-off is not itself a communication failure.
+
+Use the [example automation](../examples/home-assistant-boot-log.yaml) in a new
+Home Assistant automation's YAML editor, replacing `samsung-s3` with your MQTT
+prefix. Merge this into `configuration.yaml` (do not duplicate an existing logger):
+
+```yaml
+logger:
+  logs:
+    samsung_controller: info
+```
+
+Reload/restart Home Assistant as required for the logger configuration. The automation
+writes successful startup/recovery to `system_log.write` at INFO. INFO appears in
+full logs, not the condensed warnings/errors list. Events are not retained, so
+restarting Home Assistant does not replay a previous boot. An offline subscriber
+can miss events; QoS 1 can deliver duplicates. These messages supplement MQTT
+availability and AC freshness; they do not suppress unrelated integration warnings.
+
+[Home Assistant System Log](https://www.home-assistant.io/integrations/system_log/).

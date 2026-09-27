@@ -2,8 +2,36 @@
 #include "components/samsung_portal/settings_model.h"
 #include "components/samsung_portal/credentials_model.h"
 #include "components/samsung_portal/update_model.h"
+#include "components/samsung_portal/boot_events.h"
 void test_management(){
  using namespace samsung_management;
+ {
+  BootEvents b;
+  assert(b.poll(0,true,false,false)==BootEvents::NONE);
+  assert(b.poll(10000,true,true,false)==BootEvents::NONE);
+  assert(b.poll(14999,true,true,false)==BootEvents::NONE);
+  assert(b.poll(15000,true,true,false)==BootEvents::BOOT_READY);
+  assert(b.poll(16000,true,true,false)==BootEvents::BOOT_READY); // Retry failed publish.
+  b.published(BootEvents::BOOT_READY,false);
+  assert(b.poll(17000,true,true,true)==BootEvents::NONE);
+  assert(b.poll(22000,true,true,true)==BootEvents::AC_CONNECTION_RESTORED);
+  b.published(BootEvents::AC_CONNECTION_RESTORED,true);
+  assert(b.poll(23000,true,true,true)==BootEvents::NONE);
+  assert(b.poll(24000,false,true,true)==BootEvents::NONE);
+  assert(b.poll(25000,true,true,true)==BootEvents::NONE);
+  assert(b.poll(30000,true,true,true)==BootEvents::MQTT_RECONNECTED);
+  b.published(BootEvents::MQTT_RECONNECTED,true);
+  assert(b.poll(31000,true,true,true)==BootEvents::NONE);
+  BootEvents trial;
+  assert(trial.poll(0,true,true,true)==BootEvents::NONE);
+  assert(trial.poll(4000,true,false,true)==BootEvents::NONE);
+  assert(trial.poll(5000,true,true,true)==BootEvents::NONE);
+  assert(trial.poll(9999,true,true,true)==BootEvents::NONE);
+  assert(trial.poll(10000,true,true,true)==BootEvents::BOOT_READY);
+  BootEvents wrap;
+  assert(wrap.poll(UINT32_MAX-2000,true,true,true)==BootEvents::NONE);
+  assert(wrap.poll(3000,true,true,true)==BootEvents::BOOT_READY);
+ }
  Config c;assert(valid(c)&&!c.mqtt&&!c.rtu&&!c.tcp&&c.baud==9600);
  c.mqtt=1;assert(!valid(c));strcpy(c.host,"broker.local");assert(valid(c));
  assert(!host("mqtt://broker")&&!host("a b")&&!prefix("a/#")&&!prefix("/a")&&!prefix("a//b")&&prefix("samsung/test_1"));

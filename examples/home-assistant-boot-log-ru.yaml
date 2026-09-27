@@ -1,0 +1,28 @@
+# Вставьте в YAML-редактор новой автоматизации Home Assistant.
+# Замените samsung-s3 на префикс MQTT вашего контроллера.
+alias: Samsung — журнал готовности контроллера
+mode: queued
+max: 10
+triggers:
+  - trigger: mqtt
+    topic: samsung-s3/diagnostics/boot
+conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.payload_json is defined
+         and trigger.payload_json.event | default('') in
+           ['boot_ready', 'mqtt_reconnected', 'ac_connection_restored']
+         and trigger.payload_json.controller_ready | default(false) }}
+actions:
+  - action: system_log.write
+    data:
+      level: info
+      logger: samsung_controller
+      message: >-
+        {% set p = trigger.payload_json %}
+        {% if p.event == 'boot_ready' %}Контроллер Samsung успешно загрузился.
+        {% elif p.event == 'mqtt_reconnected' %}Подключение контроллера Samsung к MQTT восстановлено.
+        {% else %}Связь контроллера Samsung с кондиционером восстановлена.{% endif %}
+        Прошивка={{ p.version }}, boot_id={{ p.boot_id }}, время работы={{ p.uptime_s }} с.
+        {% if p.ac_ready %}Обмен с кондиционером готов.
+        {% else %}Контроллер готов; ожидается связь с кондиционером.{% endif %}
