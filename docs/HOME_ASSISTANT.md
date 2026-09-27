@@ -67,3 +67,26 @@ message or receiving a broker acknowledgement does not prove AC execution.
 
 [Power commands and HTTP API (Russian)](CONTROL_RU.md) ·
 [UART function catalog (Russian)](FUNCTIONS_RU.md) · [Separate Modbus register map](MODBUS.md).
+
+## Raw UART logging (0.5.1)
+
+Raw frames are published in full to dedicated MQTT topics, without Home Assistant
+Discovery entities and without retain:
+
+| Topic | Payload |
+|---|---|
+| `<prefix>/diagnostics/uart/rx` | Latest received frame, complete space-separated HEX |
+| `<prefix>/diagnostics/uart/tx` | Latest transmitted frame, complete space-separated HEX |
+| `<prefix>/diagnostics/uart/write_reply` | Latest write reply, complete space-separated HEX |
+
+Subscribe to `<prefix>/diagnostics/uart/#` with your logging client. The configured
+prefix is used, including custom prefixes. RX/TX snapshots update every 2 seconds;
+write-reply snapshots every second. These are latest-frame diagnostics, not a
+lossless bus capture: intermediate frames can be superseded and MQTT disconnections
+are not buffered. Full frames also remain in local diagnostics and web logs.
+
+Firmware removes the three old retained Discovery configurations and state messages
+on MQTT connection. Climate controls, decoded values and other diagnostic entities
+remain available in Home Assistant. Manually configured raw-frame sensors must be
+removed manually. Home Assistant's 255-character entity state limit no longer
+applies to these logging topics because they are not advertised as entities.

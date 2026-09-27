@@ -100,11 +100,28 @@ void Portal::setup(){
  apply_mqtt_();ac_->configure_modbus(config_.rtu,config_.tcp,config_.unit,config_.baud);
  settings_web_();control_web_();credentials_web_();wifi_web_();system_web_();updates_web_();updates_setup_();
 }
+// Retire the three raw-frame HA entities after each MQTT connection. Raw frames
+// now use dedicated non-retained log topics, without Discovery configurations.
+void Portal::raw_mqtt_cleanup_loop_(){
+ auto *m=mqtt::global_mqtt_client;
+ if(!m->is_connected()){raw_mqtt_cleanup_=0;return;}
+ if(raw_mqtt_cleanup_>=6 || int32_t(millis()-raw_mqtt_cleanup_at_)<0)return;
+ static const char *ids[]={"last_rx_bytes","last_tx_frame","last_write_reply"};
+ const char *id=ids[raw_mqtt_cleanup_/2];
+ std::string topic;
+ if(raw_mqtt_cleanup_%2==0)
+  topic="homeassistant/sensor/"+str_sanitize(App.get_name())+"/"+id+"/config";
+ else topic=m->get_topic_prefix()+"/sensor/"+id+"/state";
+ // Empty retained messages delete the previous discovery/config and cached state.
+ if(m->publish(topic,"",1,true))++raw_mqtt_cleanup_;
+ raw_mqtt_cleanup_at_=millis()+1000;
+}
 void Portal::loop(){
  auto *w=wifi::global_wifi_component;bool connected=w&&w->is_connected();
  if((connected||(w&&w->is_ap_active()))&&!web_started_){web_.begin();web_started_=true;}
  if(web_started_)web_.handleClient();
  if(mqtt_start_&&!restart_){mqtt_start_=false;mqtt::global_mqtt_client->enable();}
+ raw_mqtt_cleanup_loop_();
  updates_loop_();
  if(restart_&&int32_t(millis()-restart_at_)>=0&&!updates_busy_())App.safe_reboot();
 }

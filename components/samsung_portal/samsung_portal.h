@@ -31,6 +31,8 @@ class Portal:public Component {
  uint32_t boot_id_=0;void system_web_();String system_json_();
  void wifi_web_();String wifi_json_();
  void control_web_();String control_json_();
+ uint8_t raw_mqtt_cleanup_=0; uint32_t raw_mqtt_cleanup_at_=0;
+ void raw_mqtt_cleanup_loop_();
  void settings_web_();String config_json_(bool mqtt);
  void updates_setup_();void updates_web_();void updates_loop_();bool updates_busy_();
 };

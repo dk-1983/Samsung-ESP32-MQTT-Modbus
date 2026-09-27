@@ -13,7 +13,7 @@ esphome:
   build_path: ../work/build
   project:
     name: fourvrs.samsung_uart_prototype
-    version: 0.5.0
+    version: 0.5.1
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -198,10 +198,18 @@ text_sensor:
   - platform: template
     name: Last RX bytes
     lambda: return id(ac).last_rx();
+    discovery: false
+    retain: false
+    state_topic: !lambda |-
+      return mqtt::global_mqtt_client->get_topic_prefix() + "/diagnostics/uart/rx";
     update_interval: 2s
   - platform: template
     name: Last TX frame
     lambda: return id(ac).last_tx();
+    discovery: false
+    retain: false
+    state_topic: !lambda |-
+      return mqtt::global_mqtt_client->get_topic_prefix() + "/diagnostics/uart/tx";
     update_interval: 2s
   - platform: template
     name: Command result
@@ -214,6 +222,10 @@ text_sensor:
   - platform: template
     name: Last write reply
     lambda: return id(ac).last_write_reply();
+    discovery: false
+    retain: false
+    state_topic: !lambda |-
+      return mqtt::global_mqtt_client->get_topic_prefix() + "/diagnostics/uart/write_reply";
     update_interval: 1s
   - platform: template
     name: Sleep flag raw feedback
