@@ -10,6 +10,7 @@ struct Fake:Bridge{unsigned sent=0;bool submit(const Command &c)override{if(!ses
 #include "test_extended.h"
 #include "test_mim.h"
 #include "test_management.h"
+#include "test_mqtt_state.h"
 int main(){
   {
     ControlLink link;assert(!link.ready(0)&&!link.needs_enable(0));
@@ -27,6 +28,7 @@ int main(){
   test_extended();
   test_mim();
   test_management();
+  test_mqtt_state();
   // Dedicated ON/OFF changes power only; no mode/target/fan/swing/preset writes.
   for(bool on:{false,true}){
     auto cmd=power_command(on);assert(cmd.mask==(1<<POWER));

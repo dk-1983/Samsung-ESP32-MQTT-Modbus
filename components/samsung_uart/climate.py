@@ -1,12 +1,14 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import climate, uart
-from esphome.const import CONF_ID
+from esphome.components import climate, uart, mqtt
+from esphome.const import CONF_ID, CONF_MQTT_ID
 
 DEPENDENCIES = ["uart", "wifi"]
 ns = cg.esphome_ns.namespace("samsung_uart")
 SamsungClimate = ns.class_("SamsungClimate", climate.Climate, cg.Component, uart.UARTDevice)
+SamsungMqttClimate = ns.class_("SamsungMqttClimate", mqtt.MQTTClimateComponent)
 CONFIG_SCHEMA = climate.climate_schema(SamsungClimate).extend({
+    cv.OnlyWith(CONF_MQTT_ID, "mqtt"): cv.declare_id(SamsungMqttClimate),
     cv.Required("rs485_uart_id"): cv.use_id(uart.UARTComponent),
     cv.Optional("factory_uart_id"): cv.use_id(uart.UARTComponent),
     cv.Optional("modbus_unit", default=1): cv.int_range(min=1, max=247),
