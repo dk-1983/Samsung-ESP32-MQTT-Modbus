@@ -2,7 +2,7 @@
 
 Samsung Wi-Fi UART protocol reference: https://github.com/kumy/esphome_samsung_ac,
 commit 2b7c14002c7fe0b2d8bb24f4c8d245fe6888bc5b, GPL-3.0.
-The prototype is provided under GPL-3.0-or-later; LICENSE contains GPL v3.
+The firmware is provided under GPL-3.0-or-later; LICENSE contains GPL v3.
 
 `components/samsung_uart/modbus_core.h` originated in the user's
 Haier-ESP32+Modbus project. Copyright (c) 2026 Krivolap Dmitriy Aleksandrovich.

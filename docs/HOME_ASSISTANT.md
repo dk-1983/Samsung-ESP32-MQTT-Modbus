@@ -13,7 +13,7 @@ Hub, HACS package or manually configured YAML entities are required.
 3. Save. Firmware 0.4.2 reboots after two seconds to apply the connection settings.
    An empty password preserves the saved value; a separate checkbox clears it.
    The saved password is never returned to the browser.
-4. Wait for connection. **Samsung UART Prototype** appears under MQTT with
+4. Wait for connection. **Samsung-ESP32-MQTT-Modbus** appears under MQTT with
    **Air conditioner**, settings and diagnostic entities.
 5. UART starts enabled on every 0.4.2 boot. The **UART transmission experimental**
    switch in web controls can disable it. **AC feedback fresh** reports UART freshness.

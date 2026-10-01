@@ -9,11 +9,11 @@ substitutions:
 
 esphome:
   name: samsung-s3
-  friendly_name: Samsung UART Prototype
+  friendly_name: Samsung-ESP32-MQTT-Modbus
   build_path: ../work/build
   project:
-    name: fourvrs.samsung_uart_prototype
-    version: 0.5.3
+    name: fourvrs.samsung_esp32
+    version: 0.5.4
 
 esp32:
   board: esp32-s3-devkitc-1

@@ -27,7 +27,7 @@ void SamsungClimate::setup(){
   enable_tx(true);current_temperature=NAN;target_temperature=NAN;
   ESP_LOGW(TAG,"Wi-Fi UART D0 profile: core controls tested on AR24BSFCMWKNER; extended features experimental. UART enabled at boot.");
 }
-void SamsungClimate::dump_config(){ESP_LOGCONFIG(TAG,"Samsung Wi-Fi UART prototype; Modbus unit %u, TCP 502, RTU 9600 8E1",unit_);}
+void SamsungClimate::dump_config(){ESP_LOGCONFIG(TAG,"Samsung-ESP32-MQTT-Modbus; Modbus unit %u, TCP 502, RTU 9600 8E1",unit_);}
 ClimateTraits SamsungClimate::traits(){
   ClimateTraits t;t.set_feature_flags(CLIMATE_SUPPORTS_CURRENT_TEMPERATURE);
   t.set_supported_modes({CLIMATE_MODE_OFF,CLIMATE_MODE_COOL,CLIMATE_MODE_HEAT,CLIMATE_MODE_DRY,CLIMATE_MODE_FAN_ONLY,CLIMATE_MODE_HEAT_COOL});
