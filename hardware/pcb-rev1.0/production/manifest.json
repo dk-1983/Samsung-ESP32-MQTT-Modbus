@@ -1,0 +1,26 @@
+{
+  "board": "samsung-rev1.0",
+  "size_mm": [
+    30,
+    48
+  ],
+  "thickness_mm": 1.0,
+  "copper_layers": 2,
+  "plated_holes": 396,
+  "unplated_holes": 0,
+  "drc_violations": 0,
+  "unconnected": 0,
+  "source_sha256": "bc7a2589ba0cf5d736f17b576eb72bd442fadb6a310597b2e0d88a499bef30ed",
+  "zip_sha256": "7862765c117da6a053a81b47e91c1f8acb9df7cbcc077a7cbd80e20e68f4cce7",
+  "files": {
+    "samsung-rev1.0-B_Cu.gbl": "fa172b12d90baac88d95720b82273d3edd8a7c161eb8ef67e2e920160f7e47a6",
+    "samsung-rev1.0-B_Mask.gbs": "d632585fc64739103e0211ee096adc99b4fd2bbdad057a655c16e976bbade315",
+    "samsung-rev1.0-B_Silkscreen.gbo": "6fe779c607ce985937222b3a804195492ed4a6c49ed27e172c47d5c5338508a3",
+    "samsung-rev1.0-Edge_Cuts.gm1": "caae15ddf4f18154f111d98e966cb921db0a46ea972efcb28f2943d8c17e0c95",
+    "samsung-rev1.0-F_Cu.gtl": "79e9e9aac2961c927e4142100da6de34bbf6ebedde279f767bafca32b22402b3",
+    "samsung-rev1.0-F_Mask.gts": "99adca8ef2bc69d98b1d598e9129e713f54d4e48d17b8a66877c0ea0b50e29e5",
+    "samsung-rev1.0-F_Silkscreen.gto": "df37c5219bffd59ef848a0f88ddadead8999fbe7de60d30b0b6e1a01f7b8fa89",
+    "samsung-rev1.0-job.gbrjob": "15c90c251276d0ec23551f6b3b397c8163ef79c950d22d43ce962f94e3f2936b",
+    "samsung-rev1.0-PTH.drl": "0d803b74b12c17be688f39aaeafdab7f2e367ac3946543a3adc65c2163e4bbd9"
+  }
+}

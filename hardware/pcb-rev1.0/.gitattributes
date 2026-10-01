@@ -1,0 +1,3 @@
+# Preserve manufacturing file bytes and manifest checksums on every platform.
+*.kicad_pcb -text
+production/gerber/* -text

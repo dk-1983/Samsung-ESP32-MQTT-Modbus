@@ -1,0 +1,10 @@
+{
+  "assigned_logical_pins": 82,
+  "semiconductor_pins_checked_against_Samsung_schematic": 25,
+  "board_mm": [
+    30,
+    48
+  ],
+  "status": "all specified nets match",
+  "note": "PCB references follow Haier carrier component numbering; Samsung old drawing uses other resistor and capacitor numbers."
+}

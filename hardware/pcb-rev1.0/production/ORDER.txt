@@ -1,0 +1,4 @@
+samsung-rev1.0
+Upload samsung-rev1.0-GERBER.zip. Single board, no panel. Size 30 x 48 mm; 2 copper layers; project thickness 1.0 mm.
+Archive contains 7 Gerber layers, PTH Excellon drill and gbrjob. No NPTH holes. Do not mirror. All layers and drills use the same absolute origin.
+Repeated DRC: zero violations and zero unconnected items. Outline dimensions and ZIP integrity checked. No assembled hardware validation of this revision yet.

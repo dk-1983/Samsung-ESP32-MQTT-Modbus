@@ -1,0 +1,474 @@
+[
+  {
+    "ref": "U1",
+    "value": "ESP32-S3-WROOM-1-N16R8",
+    "symbol": "RF_Module:ESP32-S3-WROOM-1",
+    "footprint": "RF_Module:ESP32-S3-WROOM-1",
+    "pins": {
+      "1": "GND",
+      "2": "+3V3",
+      "3": "EN",
+      "8": "F_RX",
+      "9": "F_TX",
+      "10": "H_TX",
+      "11": "H_RX",
+      "12": "MB_RX",
+      "17": "MB_TX",
+      "23": "DIR",
+      "27": "BOOT",
+      "36": "UART0_RX",
+      "37": "UART0_TX",
+      "40": "GND",
+      "41": "GND"
+    },
+    "mpn": "ESP32-S3-WROOM-1-N16R8",
+    "note": ""
+  },
+  {
+    "ref": "U2",
+    "value": "LM1117-3.3",
+    "symbol": "Regulator_Linear:LM1117MP-3.3",
+    "footprint": "Package_TO_SOT_SMD:SOT-223-3_TabPin2",
+    "pins": {
+      "1": "GND",
+      "2": "+3V3",
+      "3": "+5V"
+    },
+    "mpn": "LM1117MP-3.3",
+    "note": "TAB is +3V3, not GND"
+  },
+  {
+    "ref": "U3",
+    "value": "MAX485",
+    "symbol": "Interface_UART:MAX485E",
+    "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+    "pins": {
+      "1": "RO_5V",
+      "2": "DIR",
+      "3": "DIR",
+      "4": "MB_TX",
+      "5": "GND",
+      "6": "A",
+      "7": "B",
+      "8": "+5V"
+    },
+    "mpn": "MAX485ESA+",
+    "note": ""
+  },
+  {
+    "ref": "R1",
+    "value": "10k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "+3V3",
+      "2": "EN"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R2",
+    "value": "10k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "MAIN_TX_5V",
+      "2": "H_RX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R3",
+    "value": "20k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "H_RX",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R4",
+    "value": "10k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "RO_5V",
+      "2": "MB_RX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R5",
+    "value": "20k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "MB_RX",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R8",
+    "value": "10k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "FACTORY_TX",
+      "2": "F_RX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R9",
+    "value": "20k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "F_RX",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R6",
+    "value": "10k",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "DIR",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "R7",
+    "value": "120",
+    "symbol": "Device:R",
+    "footprint": "Resistor_SMD:R_0805_2012Metric",
+    "pins": {
+      "1": "A",
+      "2": "TERM"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C1",
+    "value": "220u 10V",
+    "symbol": "Device:C_Polarized",
+    "footprint": "Capacitor_Tantalum_SMD:CP_EIA-6032-28_Kemet-C",
+    "pins": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "mpn": "TAJC227M010RNJ",
+    "note": "AVX case C; verify land pattern against AVX, not merely case name"
+  },
+  {
+    "ref": "C3",
+    "value": "100u 10V",
+    "symbol": "Device:C_Polarized",
+    "footprint": "Capacitor_Tantalum_SMD:CP_EIA-6032-28_Kemet-C",
+    "pins": {
+      "1": "+3V3",
+      "2": "GND"
+    },
+    "mpn": "TAJC107M010RNJ",
+    "note": "AVX case C; verify land pattern against AVX, not merely case name"
+  },
+  {
+    "ref": "C2",
+    "value": "100n 50V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C4",
+    "value": "100n 50V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "+3V3",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C5",
+    "value": "100n 50V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "+3V3",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C6",
+    "value": "100n 50V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "+5V",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C7",
+    "value": "1u 16V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "EN",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "C8",
+    "value": "10u 10V",
+    "symbol": "Device:C",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "pins": {
+      "1": "+3V3",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "SB1",
+    "value": "SB1",
+    "symbol": "Switch:SW_Push",
+    "footprint": "Button_Switch_SMD:SW_SPST_TL3342",
+    "pins": {
+      "1": "BOOT",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": "Low-profile switch candidate; mechanical drawing to verify"
+  },
+  {
+    "ref": "SB2",
+    "value": "SB2",
+    "symbol": "Switch:SW_Push",
+    "footprint": "Button_Switch_SMD:SW_SPST_TL3342",
+    "pins": {
+      "1": "EN",
+      "2": "GND"
+    },
+    "mpn": "",
+    "note": "Low-profile switch candidate; mechanical drawing to verify"
+  },
+  {
+    "ref": "JP1",
+    "value": "TERM ENABLE",
+    "symbol": "Jumper:SolderJumper_2_Open",
+    "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_Pad1.0x1.5mm",
+    "pins": {
+      "1": "TERM",
+      "2": "B"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP1",
+    "value": "UART0_TX",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "UART0_TX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP2",
+    "value": "UART0_RX",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "UART0_RX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP3",
+    "value": "GND",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP4",
+    "value": "EN",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "EN"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP5",
+    "value": "BOOT",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "BOOT"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP6",
+    "value": "+3V3",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "+3V3"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP7",
+    "value": "A",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "A"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP8",
+    "value": "B",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "B"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP9",
+    "value": "+5V",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "+5V"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP10",
+    "value": "GND",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP11",
+    "value": "MAIN_TX_5V",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "MAIN_TX_5V"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP12",
+    "value": "H_TX",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "H_TX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP13",
+    "value": "+5V",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "+5V"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP14",
+    "value": "GND",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "GND"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP15",
+    "value": "FACTORY_TX",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "FACTORY_TX"
+    },
+    "mpn": "",
+    "note": ""
+  },
+  {
+    "ref": "TP16",
+    "value": "F_TX",
+    "symbol": "Connector:TestPoint",
+    "footprint": "TestPoint:TestPoint_Pad_D2.0mm",
+    "pins": {
+      "1": "F_TX"
+    },
+    "mpn": "",
+    "note": ""
+  }
+]

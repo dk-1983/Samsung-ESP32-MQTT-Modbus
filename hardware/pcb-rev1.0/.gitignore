@@ -1,0 +1,8 @@
+# KiCad local editor state and reproducible intermediate outputs
+*.kicad_prl
+*.lck
+*-backups/
+samsung-placement.kicad_*
+samsung-routed.kicad_*
+placement-drc.json
+routing-pending.txt
