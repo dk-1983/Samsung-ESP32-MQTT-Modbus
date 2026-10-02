@@ -1,6 +1,40 @@
-# Settings and GitHub OTA — Samsung-ESP32 0.4.2
+# Settings and GitHub OTA — Samsung-ESP32 1.0.1
 
 [Русский](MANAGEMENT_RU.md)
+
+## Portal language (1.0.1)
+
+The port 80 portal defaults to English. Choose English / Русский in the navigation;
+the browser stores a `samsung_ui_lang` cookie for one year (`Path=/`, `SameSite=Lax`).
+A missing or unsupported value selects English. The preference applies to every
+portal page, including Wi-Fi reset. Switching reloads the page and discards unsaved
+form edits. It does not change controller settings or NVS and requires no device
+restart. Clearing cookies or changing browsers or controller addresses restores
+English. This selector does not control the advanced ESPHome UI on port 8080.
+
+### Localization checks
+
+Russian page templates remain the source. `components/samsung_portal/i18n/en.tsv`
+maps their UI text to English. Run `python tools/build_ui_translations.py` after
+editing a template or translation and include the generated `UiEnglish.h`.
+`./Build.ps1 -TestOnly` checks catalog completeness, form contracts, all nine
+language routes and the actual C++ page renderer, as well as protocol/bridge tests.
+
+Browser checks use pinned Playwright from `tests/ui/package.json` and simulated
+API responses, never a controller. After host tests, run:
+
+```text
+npm install --prefix tests/ui --ignore-scripts --no-package-lock
+node tests/ui/node_modules/playwright/cli.js install chromium
+node tests/ui/browser.cjs
+```
+
+The public build workflow runs these checks before compiling the OTA image.
+Browser checks cover English/Russian, desktop/mobile layouts, cookie persistence,
+forms, stale/offline feedback and confirmation dialogs. They do not certify a
+firmware upload or device operation. Publish and verify the OTA asset before
+updating the signed stable feed; never manually edit its signed payload.
+
 
 ## Local settings
 
@@ -112,6 +146,6 @@ signed download, installation, preserved settings/credentials and trial boot con
    The tool requires the key matching the firmware trust anchor.
 5. Publish `v<version>` and its OTA asset, then the signed stable.json to main.
 
-Stable release 0.5.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
+Stable release 1.0.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
 
 [Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).

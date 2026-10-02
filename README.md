@@ -1,11 +1,11 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 0.5.0
+# Samsung-ESP32-MQTT-Modbus — 1.0.1
 
 [Русский](README_RU.md)
 
-**[Download v0.5.0](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v0.5.0)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
+**[Download stable v1.0.0](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v1.0.0)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
 
 **Keep Samsung's factory features and add 4VRS control.**
 
@@ -76,6 +76,9 @@ Both Samsung boards retain their +5 V and common ground connections.
 The portal on port80 links to controls, MQTT, Modbus and GitHub updates.
 The Control link
 opens `/control`; advanced ESPHome controls remain on port8080. Both use `admin` and the same password.
+
+The main web interface supports English and Russian. English is the default;
+use the language selector to switch. Your browser remembers the selection.
 
 - Independent persistent checkboxes for MQTT, Modbus RTU and Modbus TCP; all default off.
 - Browser-configured MQTT broker/port/credentials/topic prefix and Home Assistant discovery.

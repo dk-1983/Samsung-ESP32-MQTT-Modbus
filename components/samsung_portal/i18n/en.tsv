@@ -1,0 +1,211 @@
+О системе	About
+О проекте	About this project
+Версия, соединения и память контроллера	Firmware, connections and controller memory
+Получаем данные…	Loading data…
+Прошивка	Firmware
+Контроллер	Controller
+Кондиционер	Air conditioner
+Адрес	Address
+Имя	Name
+Время работы	Uptime
+Свободная RAM	Free RAM
+Минимум RAM за сеанс	Minimum free RAM this session
+Крупнейший свободный блок	Largest free block
+Точка настройки	Setup access point
+Хранилище настроек	Settings storage
+Техническая диагностика	Technical diagnostics
+Исходники и документация	Source code and documentation
+4vrs Samsung-ESP32-MQTT-Modbus — локальное управление кондиционером Samsung через UART, MQTT и Modbus. Облако Samsung не требуется.	4vrs Samsung-ESP32-MQTT-Modbus — local Samsung air conditioner control via UART, MQTT and Modbus. Samsung cloud is not required.
+Настройки сохранятся. Связь с веб-пультом, MQTT и Modbus временно прервётся. После запуска UART включится автоматически.	Settings will be preserved. Web, MQTT and Modbus connections will briefly disconnect. UART will start automatically after reboot.
+Перезагрузка контроллера	Controller restart
+Перезагрузить контроллер? Настройки сохранятся, связь временно прервётся.	Restart the controller? Settings will be preserved; connections will briefly disconnect.
+Перезагрузить	Restart
+Перезагрузка запрошена. Ожидаем восстановления связи…	Restart requested. Waiting for reconnection…
+Ответ не получен. Проверяем, перезапустился ли контроллер…	No response received. Checking whether the controller restarted…
+Перезагрузка не выполнена:	Restart failed:
+Пока не удалось подтвердить перезапуск. Проверьте сеть и обновите страницу.	Restart is not confirmed yet. Check your network and reload this page.
+Контроллер на связи · данные обновлены	Controller connected · data updated
+Нет актуальных данных контроллера.	No current controller data.
+Некорректный ответ	Invalid response
+Нет подключения	Disconnected
+Нет свежего ответа	No fresh response
+Нет связи	Disconnected
+Свежие данные	Fresh data
+Инициализировано	Initialized
+Выполняется	In progress
+Не выполняется	Idle
+Ошибка	Error
+Подключён	Connected
+Включён	On
+Выключен	Off
+Обновление	Update
+свободно из	free of
+КБ	KB
+МБ	MB
+Управление	Control
+Обновления	Updates
+Пароли	Passwords
+Кондиционер Samsung	Samsung air conditioner
+В помещении	Room temperature
+Уставка	Target temperature
+Состояние	State
+Питание	Power
+Включение сохраняет режим кондиционера. Отправка команды не означает её выполнение: состояние обновится после ответа блока.	Power-on preserves the AC mode. Sending a command does not confirm execution: state updates after the AC responds.
+Включить	Turn on
+Выключить	Turn off
+Все основные настройки	All main controls
+Команды ещё не отправлялись с этой страницы.	No commands have been sent from this page yet.
+Настройки	Settings
+Выбор режима здесь сохраняет питание. Чтобы запустить выключенный блок, нажмите «Включить».	Changing the mode here preserves the power state. To start the AC, press Turn on.
+Legacy-пресеты экспериментальные. Наличие команды не означает поддержку конкретным блоком.	Legacy presets require verification. A command may not be supported by your AC model.
+Диагностика и расширенные функции	Diagnostics and advanced functions
+Служебные функции UART, экспериментальные параметры и сырые ответы остаются в расширенном пульте.	UART service functions, unverified parameters and raw responses are available in the advanced panel.
+Открыть расширенный пульт	Open advanced panel
+Подключаемся к контроллеру…	Connecting to the controller…
+Авто	Auto
+Без качания	Swing off
+Вентилятор	Fan
+Вентиляция	Fan only
+Вертикальное	Vertical
+Горизонтальное	Horizontal
+Выберите значение	Select a value
+Выполнение не подтверждено: истекло время ожидания	Execution not confirmed: response timed out
+Высокая	High
+Жалюзи	Swing
+Команда принята к отправке. Проверяйте состояние блока и результат ниже.	Command accepted for transmission. Check the AC state and result below.
+Кондиционер: нет свежих данных	AC: no fresh data
+Кондиционер: отвечает	AC: responding
+Контроллер: на связи	Controller: connected
+Контроллер: нет связи	Controller: disconnected
+Не удалось подтвердить приём команды:	Command acceptance could not be confirmed:
+Неизвестно	Unknown
+Нет актуальных данных	No current data
+Нет ожидающих команд	No pending commands
+Нет свежего ответа кондиционера	No fresh AC response
+Нет связи с контроллером:	Cannot reach controller:
+Низкая	Low
+Оба направления	Both directions
+Обогрев	Heat
+Обычный	Normal
+Ожидается ответ кондиционера	Waiting for AC response
+Осушение	Dry
+Отменена	Cancelled
+Охлаждение	Cool
+Подтверждена обратной связью	Confirmed by AC feedback
+Последняя команда контроллера:	Last controller command:
+Пресет	Preset
+Применить	Apply
+Режим неизвестен	Mode unknown
+Режим	Mode
+Сон	Sleep
+Состояние получено от кондиционера	State received from the AC
+Средняя	Medium
+Температура, °C	Temperature, °C
+Тихий	Quiet
+Турбо	Turbo
+MQTT: выключен	MQTT: disabled
+MQTT: нет связи	MQTT: disconnected
+MQTT: подключён	MQTT: connected
+UART: включён	UART: enabled
+UART: выключен	UART: disabled
+Modbus TCP · Wi-Fi, порт 502	Modbus TCP · Wi-Fi, port 502
+веб-пульт и OTA остаются доступны.	the web panel and OTA remain available.
+включайте его в доверенной локальной сети.	enable it only on a trusted local network.
+Modbus TCP не требует пароля	Modbus TCP does not require a password
+Адрес устройства	Device address
+Настройки сохранены.	Settings saved.
+Одна карта регистров Samsung-ESP32 для RS-485 и Wi-Fi. Транспорты включаются независимо	One Samsung-ESP32 register map for RS-485 and Wi-Fi. Transports are enabled independently
+Скорость RS-485	RS-485 baud rate
+Сохранить	Save
+Включить MQTT	Enable MQTT
+Обнаружение Home Assistant	Home Assistant Discovery
+Удалить сохранённый пароль	Delete saved password
+192.168.1.10 или mqtt.local	192.168.1.10 or mqtt.local
+MQTT через Wi-Fi	MQTT over Wi-Fi
+Пароль сохранён:	Password saved:
+Префикс:	Prefix:
+Адрес брокера	Broker address
+Локальный MQTT TCP без TLS. Команды отправляйте без retain.	Local MQTT over TCP without TLS. Send commands without retain.
+Настройки сохранены. Через 2 секунды плата перезагрузится для применения MQTT. UART после запуска будет включён. Обновите страницу через 15 секунд.	Settings saved. The controller will restart in 2 seconds to apply MQTT settings. UART will be enabled at startup. Reload this page after 15 seconds.
+Нет подключения к брокеру	Disconnected from broker
+Новый пароль	New password
+Оставить пустым, чтобы сохранить текущий пароль.	Leave blank to keep the current password.
+Подключение к внешнему брокеру в локальной сети. MQTT работает независимо от Modbus. Сохранение настроек перезагрузит плату для применения подключения.	Connect to a broker on the local network. MQTT operates independently of Modbus. Saving settings restarts the controller to apply the connection.
+Подключён к брокеру	Connected to broker
+Пользователь	Username
+Порт	Port
+Префикс топиков	Topic prefix
+да	yes
+нет	no
+при запросе входа используйте новый веб-пароль.	use the new web password if prompted to sign in.
+точка настройки: 8–63. Латинские буквы, цифры и знаки ASCII без пробелов.	setup access point: 8–63. Use ASCII letters, numbers and symbols without spaces.
+Если связь прервалась, проверьте вход с новым паролем перед повторной попыткой.	If disconnected, try signing in with the new password before retrying.
+Веб и OTA: 16–64 символа	Web and OTA: 16–64 characters
+Веб-интерфейс	Web interface
+Для загрузки прошивки с компьютера. Подписанные обновления GitHub используют отдельную проверку подписи.	For firmware uploads from a computer. Signed GitHub updates use separate signature verification.
+Если пароль забыт	Forgotten password
+Локальное OTA	Local OTA
+Меняйте только нужные пароли. Пустые поля сохраняют текущие значения. Сохранённые пароли не отображаются.	Change only the passwords you need. Empty fields preserve current values. Saved passwords are not displayed.
+Не удалось подтвердить сохранение:	Could not confirm saving:
+Не удалось проверить хранилище:	Could not check storage:
+Новые пароли не введены. Изменений нет.	No new passwords entered. Nothing changed.
+Новый пароль OTA	New OTA password
+Новый пароль точки настройки	New setup access point password
+Пароли и подтверждение должны совпадать.	Passwords and their confirmations must match.
+Пароли не изменились. Перезагрузка не требуется.	Passwords are unchanged. No restart required.
+Пароли сохранены на устройстве. Можно изменить выбранные.	Passwords are stored on the device. You can change selected passwords.
+Пароли сохранены. Контроллер перезагружается. Через 15 секунд откройте страницу заново	Passwords saved. The controller is restarting. Reopen this page after 15 seconds
+Пароль сети Samsung-Setup. Пароль домашней Wi-Fi-сети и MQTT здесь не меняются.	Password for Samsung-Setup. Home Wi-Fi and MQTT passwords are not changed here.
+Повторите пароль OTA	Confirm OTA password
+Повторите пароль точки настройки	Confirm setup access point password
+Повторите пароль	Confirm password
+Пользователь admin. Один пароль для настроек и пульта управления.	Username: admin. One password for settings and the control panel.
+После изменения плата перезагрузится. При смене веб-пароля браузер может запросить вход заново.	The controller restarts after a change. Changing the web password may require signing in again.
+Проверьте длину и символы пароля.	Check password length and allowed characters.
+Проверяем хранилище…	Checking storage…
+Сохранить и перезагрузить	Save and restart
+Сохранить новые пароли и перезагрузить контроллер? Убедитесь, что вы сохранили пароли.	Save new passwords and restart the controller? Make sure you have recorded the passwords.
+Точка настройки Wi-Fi	Wi-Fi setup access point
+Хранилище паролей недоступно.	Password storage is unavailable.
+Эта страница предназначена для смены паролей при наличии доступа. Восстановление забытого пароля пока не реализовано. Сохраните новые пароли перед применением.	Use this page to change passwords while you still have access. Forgotten-password recovery is not implemented. Record new passwords before applying them.
+Я знаю пароль точки настройки и понимаю, что текущее подключение будет потеряно	I know the setup access point password and understand that the current connection will be lost
+и укажите новую сеть. Убедитесь заранее, что знаете пароль Samsung-Setup.	and select a new network. Make sure you know the Samsung-Setup password first.
+настройки MQTT и Modbus, пароли веб-пульта, OTA и точки Samsung-Setup.	MQTT and Modbus settings, web, OTA and Samsung-Setup passwords.
+с её паролем и откройте	using its password and open
+Если связь пропала, проверьте наличие Samsung-Setup перед повторной попыткой.	If disconnected, check for Samsung-Setup before retrying.
+Сброс Wi-Fi	Reset Wi-Fi
+Будут удалены только имя и пароль сохранённой Wi-Fi-сети. Контроллер перезагрузится, и связь по текущему адресу будет потеряна.	Only the saved Wi-Fi name and password will be deleted. The controller will restart and disconnect from its current address.
+Вернуться к Wi-Fi	Back to Wi-Fi
+Включена	Enabled
+Выключена	Disabled
+Данные обновлены	Data updated
+Для настройки другой сети удалите сохранённое подключение и подключитесь к точке настройки контроллера. MQTT, Modbus и пароли доступа сохранятся.	To configure another network, remove the saved connection and connect to the controller setup access point. MQTT, Modbus and access passwords will be preserved.
+Канал	Channel
+Не удалось обновить данные:	Could not refresh data:
+Не удалось подтвердить сброс:	Could not confirm reset:
+Подключение к сети 2,4 ГГц	2.4 GHz Wi-Fi connection
+Подключение	Connection
+После перезапуска подключитесь к Samsung-Setup с текущим паролем точки настройки. Откройте	After restart, connect to Samsung-Setup using the current access point password. Open
+При отсутствии связи с сетью точка настройки запускается примерно через 10 секунд. Подключитесь к	If the network is unavailable, the setup access point starts after about 10 seconds. Connect to
+Сбросить только Wi-Fi	Reset Wi-Fi only
+Сеть удалена. Подключитесь к Samsung-Setup и откройте 192.168.4.1:8080.	Network removed. Connect to Samsung-Setup and open 192.168.4.1:8080.
+Смена сети	Change network
+Сеть	Network
+Сохранятся:	Preserved:
+Удалить сеть и перезагрузить	Delete network and restart
+Удалить сохранённую сеть и перезагрузить контроллер? Связь по текущему адресу будет потеряна.	Delete the saved network and restart the controller? The current connection will be lost.
+Уровень сигнала	Signal strength
+Этот адрес доступен после подключения к точке настройки. Пароль точки можно изменить в разделе «Пароли». После сброса старая сеть автоматически не восстанавливается.	This address is available after connecting to the setup access point. Its password can be changed in Passwords. Resetting Wi-Fi does not automatically restore the old network.
+Обновления GitHub	GitHub updates
+Автоматическая установка	Automatic installation
+Проверить	Check
+Установить	Install
+Изменения версий	Release notes
+Диагностика	Diagnostics
+Установлено:	Installed:
+Доступно:	Available:
+Принято	Accepted
+Только подписанные стабильные версии для этой платы. Запрет блокирует установку, но не проверку. При установке контроллер перезапускается.	Only signed stable releases for this board. Disabling automatic installation blocks installation, not checks. Installing an update restarts the controller.
+ д	 d
+ ч	 h
+ мин	 min

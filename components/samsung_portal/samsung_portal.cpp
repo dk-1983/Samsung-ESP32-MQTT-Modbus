@@ -7,13 +7,37 @@
 #include <Preferences.h>
 #include "esphome/components/web_server_base/web_server_base.h"
 #include "UiShell.h"
+#include "UiEnglish.h"
+#include "ui_language.h"
 #include "MqttPage.h"
 #include "ModbusPage.h"
 namespace esphome::samsung_portal {
 bool Portal::test_auth_(){if(web_.authenticate("admin",password_.c_str()))return true;web_.requestAuthentication();return false;}
 bool Portal::post_auth_(){if(!test_auth_())return false;if(web_.arg("token")!=token_){web_.send(403,"text/plain","Invalid token");return false;}if(updates_busy_()||restart_){web_.send(409,"text/plain","Update or restart in progress");return false;}return true;}
 void Portal::send_page_(const char *page){
- String body=FPSTR(page);body.replace("__TOKEN__",token_);body.replace("__STYLE__",FPSTR(UI_STYLE));body.replace("__NAV__",FPSTR(UI_NAV));
+ const bool ru=samsung_management::russian_ui(web_.header("Cookie").c_str());
+ const char *localized=page;
+ if(!ru){
+  const String path=web_.uri();
+  if(path=="/")localized=OVERVIEW_PAGE_EN;
+  else if(path=="/control")localized=CONTROL_PAGE_EN;
+  else if(path=="/mqtt")localized=MQTT_PAGE_EN;
+  else if(path=="/modbus")localized=MODBUS_PAGE_EN;
+  else if(path=="/wifi")localized=WIFI_PAGE_EN;
+  else if(path=="/wifi/reset")localized=WIFI_RESET_PAGE_EN;
+  else if(path=="/settings")localized=PASSWORDS_PAGE_EN;
+  else if(path=="/updates")localized=UPDATES_PAGE_EN;
+  else if(path=="/about")localized=ABOUT_PAGE_EN;
+ }
+ String nav=FPSTR(ru?UI_NAV:UI_NAV_EN);
+ String picker="<label style=\"margin-left:auto\">";
+ picker+=ru?"Язык":"Language";
+ picker+=" <select id=\"ui-language\" onchange=\"document.cookie='samsung_ui_lang='+this.value+'; Max-Age=31536000; Path=/; SameSite=Lax';location.reload()\">";
+ picker+=ru?"<option value=\"en\">English</option><option value=\"ru\" selected>Русский</option>":"<option value=\"en\" selected>English</option><option value=\"ru\">Русский</option>";
+ picker+="</select></label></nav>";nav.replace("</nav>",picker);
+ String body=FPSTR(localized);body.replace("__TOKEN__",token_);body.replace("__STYLE__",FPSTR(UI_STYLE));body.replace("__NAV__",nav);
+ web_.sendHeader("Content-Language",ru?"ru":"en");
+ web_.sendHeader("Vary","Cookie");
  web_.sendHeader("Cache-Control","no-store");web_.send(200,"text/html; charset=utf-8",body);
 }
 bool Portal::save_(const samsung_management::Config &c){
@@ -92,6 +116,7 @@ void Portal::credentials_setup_(){
  web_server_base::global_web_server_base->set_auth_password(password_.c_str());
 }
 void Portal::setup(){
+ const char *headers[]={"Cookie"};web_.collectHeaders(headers,1);
  pref_=global_preferences->make_preference<samsung_management::Config>(0x534d4701);
  samsung_management::Config saved;if(pref_.load(&saved)&&samsung_management::valid(saved))config_=saved;
  else {storage_ok_=pref_.save(&config_)&&global_preferences->sync();}

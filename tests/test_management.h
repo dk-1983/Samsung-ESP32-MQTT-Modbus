@@ -3,8 +3,18 @@
 #include "components/samsung_portal/credentials_model.h"
 #include "components/samsung_portal/update_model.h"
 #include "components/samsung_portal/boot_events.h"
+#include "components/samsung_portal/ui_language.h"
 void test_management(){
  using namespace samsung_management;
+ assert(!russian_ui("")&&!russian_ui("samsung_ui_lang=en"));
+ assert(russian_ui("samsung_ui_lang=ru")&&russian_ui("other=1; samsung_ui_lang=ru; extra=2"));
+ assert(!russian_ui("other_samsung_ui_lang=ru")&&!russian_ui("samsung_ui_lang=rus"));
+ assert(!russian_ui("other=ru")&&!russian_ui("samsung_ui_lang=de"));
+ assert(!russian_ui("samsung_ui_lang=")&&!russian_ui("samsung_ui_lang=RU"));
+ assert(!russian_ui("samsung_ui_lang=ru-extra")&&!russian_ui("samsung_ui_lang=%72%75"));
+ assert(russian_ui(" ;\t samsung_ui_lang=ru ; unrelated=value"));
+ assert(!russian_ui("unrelated=samsung_ui_lang=ru"));
+ assert(!russian_ui("samsung_ui_lang=en; samsung_ui_lang=ru"));
  {
   BootEvents b;
   assert(b.poll(0,true,false,false)==BootEvents::NONE);

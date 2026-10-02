@@ -14,6 +14,14 @@ jobs:
           python-version: '3.11'
       - run: pip install -r requirements.txt
       - run: python tests/run.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Browser regression tests (simulated API only)
+        run: |
+          npm install --prefix tests/ui --ignore-scripts --no-package-lock
+          node tests/ui/node_modules/playwright/cli.js install --with-deps chromium
+          node tests/ui/browser.cjs
       - name: Public defaults in a clean checkout
         run: |
           test ! -e secrets.yaml

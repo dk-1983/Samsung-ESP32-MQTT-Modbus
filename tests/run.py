@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 root = Path(__file__).resolve().parents[1]
+subprocess.run([sys.executable, str(root / 'tools/build_ui_translations.py'), '--check'], check=True)
 out = root / 'work'
 out.mkdir(exist_ok=True)
 os.environ['ZIG_GLOBAL_CACHE_DIR'] = str(out / 'zig-global-cache')
@@ -18,3 +19,4 @@ for name in ('test_protocol', 'test_bridge', 'test_inline'):
         print('\n'.join(log_path.read_text(encoding='utf-8', errors='replace').splitlines()[-60:]))
         sys.exit(result.returncode)
     subprocess.run([str(binary)], check=True)
+subprocess.run([sys.executable, str(root / 'tests/test_ui.py')], check=True)
