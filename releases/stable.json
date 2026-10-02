@@ -1,4 +1,4 @@
 {
-  "payload": "{\"channel\":\"stable\",\"profile\":\"samsung-s3-n16r8-v1\",\"schema\":1,\"sha256\":\"090a180feed3ca1a9f89535ad2e41783f181ebde96ac4db04bcc53fcceedeed4\",\"size\":1278816,\"url\":\"https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/download/v1.0.0/samsung-s3-n16r8-v1.0.0-ota.bin\",\"version\":\"1.0.0\"}",
-  "signature": "3045022100cca8e6c4d87d7a83043529776696d0d5cfc52f5b38d2c79a434a540bce21be1f02203a6caefcaf0b18da0bd1cb48bb4cb1677346e01070ec3993762a069531007dbf"
+  "payload": "{\"channel\":\"stable\",\"profile\":\"samsung-s3-n16r8-v1\",\"schema\":1,\"sha256\":\"e5ad07d64659586952f7c95f6d01a44aabd959847d8fff46a706f53dbde73d73\",\"size\":1312400,\"url\":\"https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/download/v1.0.1/samsung-s3-n16r8-v1.0.1-ota.bin\",\"version\":\"1.0.1\"}",
+  "signature": "3044022032f58b3ee2e94baba3d33d06aa4198e5239996f1e5d815b49eca1d9b94b2b2ca022068ee010d677fb2e5da506578066d5b01cabd5d972b64904adb720baecfcd87a0"
 }

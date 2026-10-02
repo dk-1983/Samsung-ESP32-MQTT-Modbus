@@ -146,6 +146,6 @@ signed download, installation, preserved settings/credentials and trial boot con
    The tool requires the key matching the firmware trust anchor.
 5. Publish `v<version>` and its OTA asset, then the signed stable.json to main.
 
-Stable release 1.0.0 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
+Stable release 1.0.1 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
 
 [Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).

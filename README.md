@@ -5,7 +5,7 @@
 
 [Русский](README_RU.md)
 
-**[Download stable v1.0.0](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v1.0.0)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
+**[Download stable v1.0.1](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v1.0.1)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
 
 **Keep Samsung's factory features and add 4VRS control.**
 
