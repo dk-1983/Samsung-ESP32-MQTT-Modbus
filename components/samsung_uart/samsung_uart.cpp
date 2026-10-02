@@ -45,10 +45,10 @@ void SamsungClimate::bridge_emit_(unsigned destination,const uint8_t *p,size_t n
   (destination?factory_:parent_)->write_array(p,n);
   if(own){last_tx_ms_=millis();++tx_frames_;last_tx_=hex(p,n);ESP_LOGD(TAG,"TX own %s",last_tx_.c_str());}
 }
-bool SamsungClimate::transmission_ready_(){
+bool SamsungClimate::transmission_ready_(bool status_read){
   if(!session.enabled)return false;
   if(!factory_)return acks_.empty()&&!available()&&!parser_.used&&uint32_t(millis()-last_tx_ms_)>=300&&uint32_t(millis()-last_rx_ms_)>=30;
-  if(!bridge_.ready(millis())||available()||factory_->available())return false;
+  if(!bridge_.ready(millis(),status_read)||available()||factory_->available())return false;
   for(auto *b:{parent_,factory_}){
     auto *u=static_cast<uart::IDFUARTComponent *>(b);
     if(u->is_failed()||uart_wait_tx_done(static_cast<uart_port_t>(u->get_hw_serial_number()),0)!=ESP_OK)return false;
@@ -88,7 +88,7 @@ std::string SamsungClimate::bridge_diagnostics()const{
 }
 bool SamsungClimate::send_(uint16_t type,const Bytes &payload,uint8_t counter){
   if(factory_){
-    if(!transmission_ready_()||!bridge_.choose_counter(millis(),counter_))return false;
+    if(!transmission_ready_(type==0x1202)||!bridge_.choose_counter(millis(),counter_))return false;
     return bridge_.send(type,payload,counter_,millis(),[this](unsigned d,const uint8_t *p,size_t n,bool own){bridge_emit_(d,p,n,own);});
   }
   if(!session.enabled || available() || parser_.used || uint32_t(millis()-last_tx_ms_)<300 || uint32_t(millis()-last_rx_ms_)<30)return false;

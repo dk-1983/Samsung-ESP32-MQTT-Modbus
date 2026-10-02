@@ -10,7 +10,7 @@ class InlineBridge {
   struct Transaction {bool used=false;uint8_t source=0,counter=0,family=0,group=0,reply=0;uint32_t at=0;} pending[24];
   struct Held {uint8_t data[259]{};size_t size=0;} held[8];
   size_t held_count=0;
-  bool busy=false,enabled=true;
+  bool busy=false,enabled=true,status_read_confirmed=false;
   uint8_t own_counter=0,own_group=0,own_reply=0,next_counter=0xE1;
   uint8_t retired_reply[256]{},retired_group[256]{};
   bool seen[256]{};uint32_t counter_at[256]{};
@@ -18,11 +18,13 @@ class InlineBridge {
   uint32_t frames[2]{},forwarded[2]{},completed=0,expired=0,errors=0,own_sent=0,own_replies=0,own_timeouts=0,overflows=0;
   size_t pending_count()const {size_t n=0;for(auto &p:pending)n+=p.used;return n;}
   void enable(bool value,uint32_t now){
-    enabled=value;busy=false;held_count=0;for(auto &s:streams)s.size=0;
+    enabled=value;busy=false;status_read_confirmed=false;held_count=0;for(auto &s:streams)s.size=0;
     for(auto &p:pending)p.used=false;last_fault=now;
   }
-  bool ready(uint32_t now)const{
-    return enabled&&!busy&&now>=5000&&completed>=5&&!pending_count()&&!streams[0].size&&!streams[1].size&&
+  bool ready(uint32_t now,bool status_read=false)const{
+    // A quiet factory module must not prevent the first read-only status query.
+    // Writes still require observed factory traffic or a verified own read response.
+    return enabled&&!busy&&now>=5000&&(status_read||completed>=5||status_read_confirmed)&&!pending_count()&&!streams[0].size&&!streams[1].size&&
       uint32_t(now-last_byte)>=80&&uint32_t(now-last_fault)>=2000&&uint32_t(now-last_send)>=300;
   }
   bool choose_counter(uint32_t now,uint8_t &counter)const{
@@ -30,7 +32,7 @@ class InlineBridge {
     return false;
   }
   template<class Emit> bool send(uint16_t type,const Bytes &payload,uint8_t counter,uint32_t now,Emit emit){
-    if(!ready(now)||((type&255)!=2&&(type&255)!=4)||(type>>8)<0x12||(type>>8)>0x14)return false;
+    if(!ready(now,type==0x1202)||((type&255)!=2&&(type&255)!=4)||(type>>8)<0x12||(type>>8)>0x14)return false;
     if(seen[counter]&&uint32_t(now-counter_at[counter])<30000)return false;
     auto p=frame(type,counter,payload);if(p.empty())return false;
     busy=true;own_counter=counter;own_group=type>>8;own_reply=uint8_t(type)+1;sent_at=last_send=now;
@@ -81,7 +83,10 @@ class InlineBridge {
     if(!known){raw(c,p,n,now,emit);return;}
     if(c==0&&p[10]==0xFE&&retired_reply[p[9]]==p[12]&&retired_group[p[9]]==p[11]){
       if(busy&&own_counter==p[9]&&own_reply==p[12]&&own_group==p[11]){
-        busy=false;++own_replies;if(valid(p,n))observe(p,n,true);release(now,emit);
+        busy=false;++own_replies;if(valid(p,n)){
+          if(p[11]==0x12&&p[12]==3)status_read_confirmed=true;
+          observe(p,n,true);
+        }release(now,emit);
       }
       return; // Old own replies are not factory replies or fresh command confirmation.
     }

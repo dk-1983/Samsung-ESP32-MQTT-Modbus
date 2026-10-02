@@ -45,7 +45,7 @@ class SamsungClimate : public Component, public climate::Climate, public uart::U
   climate::ClimateTraits traits()override;
   void control(const climate::ClimateCall &call)override;
   void received_(const uint8_t *p,size_t n,bool own=false);
-  bool transmission_ready_();
+  bool transmission_ready_(bool status_read=false);
   void bridge_emit_(unsigned destination,const uint8_t *p,size_t n,bool own);
   void publish_feedback_();
   void transports_();

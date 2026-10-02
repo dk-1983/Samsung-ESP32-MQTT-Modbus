@@ -14,6 +14,30 @@ struct Harness {
  uint8_t send(uint16_t type,const Bytes &p,uint32_t at){uint8_t c;assert(bridge.choose_counter(at,c));assert(bridge.send(type,p,c,at,emit()));return c;}
 };
 int main(int argc,char **argv){
+ {Harness h;h.bridge.enable(true,0);h.session.enable(true);
+  assert(!h.bridge.ready(4999,true)&&h.bridge.ready(5000,true)&&!h.bridge.ready(5000));
+  assert(!h.bridge.send(0x1204,{2,1,15},225,5000,h.emit()));
+  assert(!h.bridge.send(0x1302,{0x44,0},225,5000,h.emit()));
+  auto c=h.send(0x1202,query_payload(),5000);
+  assert(!h.session.accept(power_command(true),5050));
+  h.feed(0,frame(0x1203,c,{1,1,15,2,1,0xf0,0x43,1,0x32,0x5a,1,24,0x62,1,0x12}),5100);
+  assert(h.bridge.completed==0&&h.bridge.status_read_confirmed&&h.bridge.ready(5400));
+  assert(h.session.state.value[POWER]==0&&h.session.accept(power_command(true),5400));
+  h.bridge.enable(false,5500);assert(!h.bridge.ready(9000,true));
+  h.bridge.enable(true,9000);assert(!h.bridge.status_read_confirmed&&!h.bridge.ready(12000)&&h.bridge.ready(12000,true));
+ }
+ {Harness h;h.bridge.enable(true,0);auto c=h.send(0x1202,query_payload(),5000);
+  h.tick(6500);assert(h.bridge.own_timeouts==1&&!h.bridge.ready(7000,true));
+  h.feed(0,frame(0x1203,c,{2,1,0xf0}),6600); // Late response cannot unlock writes.
+  assert(!h.bridge.status_read_confirmed&&!h.bridge.ready(9000));
+  assert(h.bridge.ready(10000,true));h.send(0x1202,query_payload(),10000);
+ }
+ {Harness h;h.bridge.enable(true,0);
+  h.feed(1,frame(0x1202,10,{2,0}),4900);assert(!h.bridge.ready(5200,true));
+  h.feed(0,frame(0x1203,10,{2,1,0xf0}),5300);assert(h.bridge.ready(5500,true));
+  h.feed(1,{0xd0,0xc0},5600);assert(!h.bridge.ready(5900,true));
+  h.tick(5900);assert(!h.bridge.ready(6000,true)&&h.bridge.ready(8000,true));
+ }
  {Harness h;h.baseline();auto c=h.send(0x1202,{2,0},6000);
   h.feed(1,frame(0x1202,44,{2,0}),6100);assert(h.bridge.held_count==1);
   h.feed(0,frame(0x1206,45,{2,1,15}),6120);h.feed(1,frame(0x1207,45,{2,1,15}),6140);assert(h.bridge.busy&&h.out.size()==3);
