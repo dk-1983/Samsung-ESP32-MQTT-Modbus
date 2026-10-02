@@ -1,11 +1,11 @@
 ![Samsung-ESP32-MQTT-Modbus — 4VRS](docs/assets/banner-Samsung-ESP32.png)
 
 
-# Samsung-ESP32-MQTT-Modbus — 1.0.1
+# Samsung-ESP32-MQTT-Modbus — 1.0.2
 
 [Русский](README_RU.md)
 
-**[Download stable v1.0.1](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v1.0.1)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
+**[Download stable v1.0.2](https://github.com/dk-1983/Samsung-ESP32-MQTT-Modbus/releases/tag/v1.0.2)** — ready-made OTA binary for already provisioned ESP32-S3 N16R8 controllers. Not a first-install image for a blank board.
 
 **Keep Samsung's factory features and add 4VRS control.**
 
@@ -73,16 +73,17 @@ Both Samsung boards retain their +5 V and common ground connections.
 
 ## Controls and connections
 
-The portal on port80 links to controls, MQTT, Modbus and GitHub updates.
-The Control link
-opens `/control`; advanced ESPHome controls remain on port8080. Both use `admin` and the same password.
+The portal on port 80 links to controls, MQTT, Modbus and GitHub updates.
+The Control link opens `/control`; advanced ESPHome controls remain on port 8080.
+Both use `admin` and the same password stored on the device.
 
-The main web interface supports English and Russian. English is the default;
-use the language selector to switch. Your browser remembers the selection.
+The main web interface on port 80 supports English and Russian. English is the
+default; use the language selector to switch. Your browser remembers the selection.
+This selector does not change the advanced ESPHome interface on port 8080.
 
 - Independent persistent checkboxes for MQTT, Modbus RTU and Modbus TCP; all default off.
 - Browser-configured MQTT broker/port/credentials/topic prefix and Home Assistant discovery.
-- Browser-configured Modbus unit and RS485 baud rate; RTU defaults9600 8E1, TCP502.
+- Browser-configured Modbus unit and RS485 baud rate; RTU defaults to 9600 8E1, TCP port 502.
 - GitHub automatic-install checkbox, manual check/install, progress, signed manifest,
   board profile, SHA256 validation and rollback.
 - Local ESPHome OTA remains available and is coordinated with the GitHub worker.
@@ -92,29 +93,59 @@ use the language selector to switch. Your browser remembers the selection.
 · [Modbus register reference (Russian)](docs/MODBUS_REGISTERS_RU.md)
 · [UART function reference](docs/FUNCTIONS_RU.md)
 
-UART TX/RX GPIO17/18 uses9600 8N1. RS485 TX/RX/DE uses9/8/21.
+UART TX/RX GPIO17/18 uses 9600 8N1. RS485 TX/RX/DE uses 9/8/21.
 The AC uses D0 UART, not native Modbus; ESP32 implements the external register map.
-Core addresses follow MIM-B19N/B19NT; custom functions begin at2450.
+Core addresses follow MIM-B19N/B19NT; custom functions begin at 2450.
 
-UART is enabled on every boot in 0.4.2 and can be disabled in the control page.
+UART is enabled on every boot and can be disabled in the control page.
 Saving MQTT settings reboots the controller after two seconds to apply credentials.
 Feedback is never optimistic: acknowledgement is not proof of the requested AC state.
+
+## Hardware compatibility, first installation and updates
+
+**Inline bridge support starts with firmware 0.5.0. Versions 0.4.x use the earlier
+non-bridge configuration; 0.5.0 and later target the bridge wiring shown here.**
+From the ESP32 side, the AC motherboard uses RX GPIO18 / TX GPIO17, the original
+Wi-Fi/display board uses RX GPIO15 / TX GPIO16, and Modbus RS485 uses
+RX GPIO8 / TX GPIO9 / DE GPIO21.
+Module pads 8/9 are GPIO15/16 (the bridge), not GPIO8/9 (Modbus).
+
+Boards wired for the pre-0.5.0 non-bridge configuration are a different hardware
+configuration.
+Do not install the current OTA on them solely because their firmware version is
+older. Check the wiring against the current schematic first; an OTA update does
+not add the missing bridge connection or change the PCB routing.
+
+- **Configured controller with the current bridge wiring:** update through
+  `/updates`. A working 1.0.0 or 1.0.1 installation on this hardware can update
+  directly; no intermediate version is required. Preserve NVS when updating.
+- **New controller with the current bridge wiring:** build the current stable
+  source with `./Build.ps1`, personal `secrets.yaml` and `public_release: "false"`
+  (the default). Use `firmware.factory.bin` for initial USB/serial installation.
+  First boot saves the web, local OTA and Samsung-Setup passwords in NVS.
+  Connect to Samsung-Setup with your setup password and configure Wi-Fi at
+  `http://192.168.4.1:8080/`. Subsequent updates can use public OTA releases.
+
+The public `*-ota.bin` requires existing device credentials in NVS; it is not a
+first-install image for a blank board. A ready-made public provisioning image is
+not provided yet. Installing an old firmware version first is not required.
+Hardware compatibility and initial credential provisioning are separate requirements.
 
 ## Build and validation
 
 Run `./Build.ps1` to install pinned dependencies, run host tests and build, without
 flashing. Local configuration is in `secrets.yaml`; neither it nor locally built
 private binaries belong in a public release. OTA/factory binaries are under
-`work/build/.pioenvs/samsung-s3`. On the first private0.4.0 boot, credentials migrate
+`work/build/.pioenvs/samsung-s3`. On the first local build boot, credentials are saved
 to NVS and survive subsequent public OTA updates.
 
 The separate GitHub workflow prepares a clean public **OTA-only** artifact for
-already provisioned0.4.0+ devices. Signing/publishing is a separate step.
+controllers with the current bridge wiring and provisioned credentials. Signing/publishing is a separate step.
 See [release preparation](docs/MANAGEMENT.md#release).
 
 Power, fan Low/Medium/High/Turbo and both swing axes were tested on the target AC
-in earlier firmware. Persistent web settings, Modbus TCP and GitHub OTA from0.4.0
-to0.4.1 passed on the device, including credential/settings retention and boot confirmation.
+in earlier firmware. Persistent web settings, Modbus TCP and GitHub OTA have
+been checked on a device, including credential/settings retention and boot confirmation.
 Authenticated MQTT connectivity is verified. Physical RS485 and forced rollback still need testing.
 Experimental legacy controls require per-function verification on this model.
 
@@ -135,7 +166,8 @@ Other settings are preserved.
 
 [Overview, web controls and MQTT power commands (Russian)](docs/CONTROL_RU.md).
 
-Version 0.4.7 automatically restores UART control permission (register 01) after a reset. HVAC commands wait for readback; requested power is never restored automatically.
+HVAC commands require fresh control permission and feedback. Requested power is
+never restored automatically after a restart.
 
 In inline mode the factory board owns startup and notification ACKs. Own writes
 require fresh permission and feedback, use an idle transaction window and are

@@ -1,4 +1,4 @@
-# Settings and GitHub OTA — Samsung-ESP32 1.0.1
+# Settings and GitHub OTA — Samsung-ESP32 1.0.2
 
 [Русский](MANAGEMENT_RU.md)
 
@@ -137,8 +137,13 @@ signed download, installation, preserved settings/credentials and trial boot con
 
 ## Release
 
-1. Install a private0.4.0 build first to migrate personal credentials to NVS.
-   Public OTA is for provisioned devices, not first installation on a blank board.
+1. For a blank board, install a local build of the current stable source with personal
+   `secrets.yaml` and `public_release: "false"`; first boot saves credentials in NVS.
+   Inline bridge support starts with 0.5.0; 0.4.x uses the earlier non-bridge
+   configuration. Verify the GPIO wiring against the current schematic before
+   updating hardware wired for a pre-0.5.0 firmware. On the current hardware, configured
+   1.0.0/1.0.1 controllers can update directly. No old base firmware is required.
+   Public OTA requires saved credentials and is not a first-install image.
 2. Run `Prepare public OTA artifact` in GitHub Actions. Clean CI uses only
    `release.defaults.yaml`; packaging checks prevent local private binary publication.
 3. Download and bench-test the artifact; install `requirements-release.txt`.
@@ -146,6 +151,6 @@ signed download, installation, preserved settings/credentials and trial boot con
    The tool requires the key matching the firmware trust anchor.
 5. Publish `v<version>` and its OTA asset, then the signed stable.json to main.
 
-Stable release 1.0.1 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
+Stable release 1.0.2 provides a ready-made OTA binary and a signed stable update manifest. Public binaries require an already provisioned controller.
 
 [Home Assistant MQTT Discovery setup and validation status](HOME_ASSISTANT.md).

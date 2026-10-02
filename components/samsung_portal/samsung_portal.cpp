@@ -30,9 +30,9 @@ void Portal::send_page_(const char *page){
   else if(path=="/about")localized=ABOUT_PAGE_EN;
  }
  String nav=FPSTR(ru?UI_NAV:UI_NAV_EN);
- String picker="<label style=\"margin-left:auto\">";
+ String picker="<label class=\"language-picker\"><span class=\"visually-hidden\">";
  picker+=ru?"Язык":"Language";
- picker+=" <select id=\"ui-language\" onchange=\"document.cookie='samsung_ui_lang='+this.value+'; Max-Age=31536000; Path=/; SameSite=Lax';location.reload()\">";
+ picker+="</span><select id=\"ui-language\" onchange=\"document.cookie='samsung_ui_lang='+this.value+'; Max-Age=31536000; Path=/; SameSite=Lax';location.reload()\">";
  picker+=ru?"<option value=\"en\">English</option><option value=\"ru\" selected>Русский</option>":"<option value=\"en\" selected>English</option><option value=\"ru\">Русский</option>";
  picker+="</select></label></nav>";nav.replace("</nav>",picker);
  String body=FPSTR(localized);body.replace("__TOKEN__",token_);body.replace("__STYLE__",FPSTR(UI_STYLE));body.replace("__NAV__",nav);

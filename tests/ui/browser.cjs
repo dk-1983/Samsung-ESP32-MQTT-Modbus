@@ -19,8 +19,8 @@ async function main() {
   '/modbus/config':{rtu:false,tcp:true,unit:1,baud:9600},
   '/settings/config':{credentials_ready:true},
   '/wifi/status':{connected:true,ssid:'Test Wi-Fi',ip:'192.0.2.10',mac:'00:00:00:00:00:01',rssi:-50,channel:6,ap_active:false,ap_ssid:'Samsung-Setup'},
-  '/system/status':{version:'1.0.1',boot_id:1,controller:'ESP32-S3',ip:'192.0.2.10',mac:'00:00:00:00:00:01',hostname:'samsung-s3',uptime_s:90000,wifi:true,ac_fresh:true,uart:true,mqtt_enabled:true,mqtt_connected:true,rtu:false,tcp:true,free_heap:180000,min_heap:150000,max_block:100000,free_psram:7000000,psram_size:8388608,flash_size:16777216,storage_ok:true,update_busy:false,restarting:false},
-  '/updates/status':{installed:'1.0.1',available:'',phase:'idle',error:'',download_percent:0,busy:false,web_enabled:true,effective_enabled:true}
+  '/system/status':{version:'1.0.2',boot_id:1,controller:'ESP32-S3',ip:'192.0.2.10',mac:'00:00:00:00:00:01',hostname:'samsung-s3',uptime_s:90000,wifi:true,ac_fresh:true,uart:true,mqtt_enabled:true,mqtt_connected:true,rtu:false,tcp:true,free_heap:180000,min_heap:150000,max_block:100000,free_psram:7000000,psram_size:8388608,flash_size:16777216,storage_ok:true,update_busy:false,restarting:false},
+  '/updates/status':{installed:'1.0.2',available:'',phase:'idle',error:'',download_percent:0,busy:false,web_enabled:true,effective_enabled:true}
  };
  try {
   for (const language of ['en','ru']) {
@@ -58,6 +58,14 @@ async function main() {
      assert.equal(await page.locator('html').getAttribute('lang'),language);
      assert.equal(await page.locator('#ui-language').inputValue(),language);
      assert(await page.locator('#ui-language').isVisible());
+     const header = await page.locator('nav').evaluate(nav => ({
+      links: [...nav.querySelectorAll('a')].map(el => ({y:el.getBoundingClientRect().y,height:el.getBoundingClientRect().height})),
+      picker: {y:nav.querySelector('select').getBoundingClientRect().y,height:nav.querySelector('select').getBoundingClientRect().height}
+     }));
+     assert(header.links.every(link=>link.height<=41),`${language} header buttons stretched at ${width}px`);
+     if(width===1280) assert(header.links.every(link=>Math.abs(link.y-header.picker.y)<1),`${language} language picker wrapped on desktop`);
+     if(route==='/control') await page.locator('nav').screenshot({path:path.join(output,'screenshots',`${language}-header-${width}.png`)});
+
      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${language} ${route} overflows at ${width}px`);
      if(language==='en') {
       const text=await page.locator('body').evaluate(body=>{const clone=body.cloneNode(true);clone.querySelectorAll('script,style,select#ui-language').forEach(el=>el.remove());return clone.textContent;});
