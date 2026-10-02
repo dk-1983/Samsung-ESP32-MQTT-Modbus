@@ -63,7 +63,7 @@ async function main() {
       picker: {y:nav.querySelector('select').getBoundingClientRect().y,height:nav.querySelector('select').getBoundingClientRect().height}
      }));
      assert(header.links.every(link=>link.height<=41),`${language} header buttons stretched at ${width}px`);
-     if(width===1280) assert(header.links.every(link=>Math.abs(link.y-header.picker.y)<1),`${language} language picker wrapped on desktop`);
+     if(width===1280) assert(header.links.every(link=>Math.abs(link.y-header.picker.y)<1),`${language} language picker wrapped on desktop: ${JSON.stringify(header)}`);
      if(route==='/control') await page.locator('nav').screenshot({path:path.join(output,'screenshots',`${language}-header-${width}.png`)});
 
      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${language} ${route} overflows at ${width}px`);
